@@ -1,23 +1,56 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useDhikrStore } from '@/lib/store';
-import { prayerDhikrGroups, prayerTimesList, getCurrentPrayerIndex, getSimpleHijriDate, dailyVerses } from '@/lib/dhikr-data';
 import { useState, useEffect } from 'react';
-import { Star, TreePine, Sparkles, ChevronLeft, Clock, Bell } from 'lucide-react';
+import { IslamicIcon, Star, TreePine, Sparkles, ChevronLeft, Clock, Bell, Hand } from '@/components/dhikr/islamic-icons';
+import { prayerDhikrGroups, prayerTimesList, getCurrentPrayerIndex, getSimpleHijriDate, dailyVerses, smartNotifications, treeIcons, fetchPrayerTimes } from '@/lib/dhikr-data';
+import { useDhikrStore, ArabicFont } from '@/lib/store';
+
+function getFontClass(font: ArabicFont): string {
+  const map: Record<ArabicFont, string> = {
+    'cairo': 'var(--font-arabic)',
+    'amiri': 'var(--font-amiri)',
+    'noto-naskh': 'var(--font-noto-naskh)',
+    'tajawal': 'var(--font-tajawal)',
+    'ibm-plex': 'var(--font-ibm-plex)',
+    'scheherazade': 'var(--font-scheherazade)',
+  };
+  return map[font] || 'var(--font-arabic)';
+}
 
 export default function HomeScreen() {
-  const { setCurrentScreen, setSelectedPrayerIndex, setReadingSource, streak, treeLevel, completedPrayers, freeCounter, themeColor } = useDhikrStore();
+  const {
+    setCurrentScreen, setSelectedPrayerIndex, setReadingSource,
+    streak, treeLevel, completedPrayers, freeCounter, themeColor,
+    arabicFont, selectedCity, prayerTimes, setPrayerTimes,
+  } = useDhikrStore();
+
   const [hijriDate] = useState(() => getSimpleHijriDate());
   const [prayerIdx, setPrayerIdx] = useState(getCurrentPrayerIndex);
   const [verse] = useState(() => dailyVerses[Math.floor(new Date().getDay() % dailyVerses.length)]);
-  const [notif] = useState(() => dailyVerses[Math.floor(Math.random() * 5)]);
+  const [notif] = useState(() => smartNotifications[Math.floor(Math.random() * smartNotifications.length)]);
 
-  useEffect(() => { const t = setInterval(() => setPrayerIdx(getCurrentPrayerIndex()), 60000); return () => clearInterval(t); }, []);
+  const fontClass = getFontClass(arabicFont);
+
+  useEffect(() => {
+    const t = setInterval(() => setPrayerIdx(getCurrentPrayerIndex()), 60000);
+    return () => clearInterval(t);
+  }, []);
+
+  useEffect(() => {
+    if (selectedCity) {
+      fetchPrayerTimes(selectedCity).then(times => setPrayerTimes(times));
+    }
+  }, [selectedCity, setPrayerTimes]);
 
   const currentPrayer = prayerDhikrGroups[prayerIdx];
   const currentPrayerTime = prayerTimesList[prayerIdx];
-  const treeEmojis = ['🌱', '🌿', '🌳', '🎄', '🌴', '🏰', '🕌'];
+
+  const prayerTimeDisplay = (prayerId: string, defaultTime: string) => {
+    const fetched = prayerTimes[prayerId];
+    if (fetched && fetched !== '--:--') return fetched;
+    return defaultTime;
+  };
 
   const colorMap: Record<string, { main: string; light: string; bg: string; border: string; glow: string }> = {
     emerald: { main: 'text-emerald-400', light: 'text-emerald-300', bg: 'from-emerald-900/80 to-teal-900/60', border: 'border-emerald-700/30', glow: 'shadow-emerald-500/25' },
@@ -33,12 +66,15 @@ export default function HomeScreen() {
       {/* Hijri Date + Greeting */}
       <header className='px-4 pt-4 pb-2'>
         <div className='flex items-center justify-between mb-1'>
-          <div>
-            <h1 className='text-2xl font-bold text-white' style={{ fontFamily: 'var(--font-arabic)' }}>🕌 أذكاري</h1>
-            {hijriDate && <p className='text-slate-400 text-xs mt-0.5'>{hijriDate}</p>}
+          <div className='flex items-center gap-2.5'>
+            <IslamicIcon name='mosque' className='w-7 h-7 text-amber-400' />
+            <div>
+              <h1 className='text-2xl font-bold text-white' style={{ fontFamily: fontClass }}>أذكاري</h1>
+              {hijriDate && <p className='text-slate-400 text-xs mt-0.5'>{hijriDate}</p>}
+            </div>
           </div>
-          <button className={`w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors`}>
-            <Bell className='w-5 h-5 text-slate-400' />
+          <button className='w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors'>
+            <IslamicIcon name='bell' className='w-5 h-5 text-slate-400' />
           </button>
         </div>
       </header>
@@ -50,41 +86,41 @@ export default function HomeScreen() {
           className={`rounded-2xl bg-gradient-to-r ${clr.bg} border ${clr.border} p-4`}
         >
           <div className='flex items-center gap-3'>
-            <span className='text-2xl'>📡</span>
-            <p className={`${clr.light} text-sm leading-relaxed`} style={{ fontFamily: 'var(--font-arabic)' }}>{notif.text}</p>
+            <IslamicIcon name={notif.icon} className='w-6 h-6 text-amber-400 shrink-0' />
+            <p className={`${clr.light} text-sm leading-relaxed`} style={{ fontFamily: fontClass }}>{notif.text}</p>
           </div>
         </motion.div>
 
         {/* Daily Verse Card */}
         <motion.div
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className='rounded-2xl bg-white/5 border border-white/10 p-5'
+          className='glass-card rounded-2xl p-5 border border-amber-500/10'
         >
           <div className='flex items-center gap-2 mb-3'>
-            <span className='text-lg'>📖</span>
-            <span className='text-slate-400 text-xs'>آية اليوم</span>
+            <IslamicIcon name='book' className='w-5 h-5 text-amber-400' />
+            <span className='text-slate-400 text-xs' style={{ fontFamily: fontClass }}>آية اليوم</span>
           </div>
-          <p className='text-white text-lg leading-loose mb-2' style={{ fontFamily: 'var(--font-arabic)' }}>{verse.text}</p>
-          <p className={`${clr.main} text-xs`}>{verse.ref}</p>
+          <p className='text-white text-lg leading-loose mb-2' style={{ fontFamily: fontClass }}>{verse.text}</p>
+          <p className='text-amber-400 text-xs'>{verse.ref}</p>
         </motion.div>
 
         {/* Quick Free Counter */}
         <motion.div
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-          className='rounded-2xl bg-white/5 border border-white/10 p-4'
+          className='glass-card rounded-2xl p-4 border border-amber-500/10'
         >
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-3'>
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setCurrentScreen('counter')}
-                className='w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20'
+                className='w-14 h-14 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20'
               >
-                <span className='text-white text-xl'>🤚</span>
+                <IslamicIcon name='hand-tap' className='w-7 h-7 text-white' />
               </motion.button>
               <div>
-                <p className='text-white font-medium text-sm' style={{ fontFamily: 'var(--font-arabic)' }}>العداد السريع</p>
-                <p className={`${clr.main} text-2xl font-bold`}>{freeCounter}</p>
+                <p className='text-white font-medium text-sm' style={{ fontFamily: fontClass }}>العداد السريع</p>
+                <p className='text-amber-400 text-2xl font-bold'>{freeCounter}</p>
               </div>
             </div>
             <div className='text-left'>
@@ -99,44 +135,51 @@ export default function HomeScreen() {
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
           className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${clr.bg} border ${clr.border} p-5`}
         >
-          <div className='absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 opacity-60' />
-          <div className='flex items-center justify-between mb-3'>
-            <div className='flex items-center gap-2'>
-              <Clock className={`w-4 h-4 ${clr.light}`} />
-              <span className={`${clr.light}/60 text-xs`}>الصلاة القادمة</span>
+          <div className='islamic-shimmer absolute inset-0 pointer-events-none' />
+          <div className='absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 opacity-40' />
+          <div className='relative z-10'>
+            <div className='flex items-center justify-between mb-3'>
+              <div className='flex items-center gap-2'>
+                <Clock className={`w-4 h-4 ${clr.light}`} />
+                <span className={`${clr.light} text-xs opacity-60`}>الصلاة القادمة</span>
+              </div>
+              <span className='text-amber-400 text-xs font-medium'>
+                {prayerTimeDisplay(currentPrayerTime.id, currentPrayerTime?.time || '--:--')}
+              </span>
             </div>
-            <span className='text-slate-400 text-xs'>{currentPrayerTime?.time}</span>
+            <div className='flex items-center gap-3 mb-4'>
+              <IslamicIcon name={currentPrayerTime?.icon || 'sun'} className='w-8 h-8 text-amber-400' />
+              <h2 className='text-xl font-bold text-white' style={{ fontFamily: fontClass }}>{currentPrayerTime?.name}</h2>
+              {completedPrayers.includes(currentPrayer.prayerId) && (
+                <IslamicIcon name='check-circle' className='w-4 h-4 text-emerald-400' />
+              )}
+            </div>
+            <motion.button
+              whileTap={{ scale: 0.97 }} whileHover={{ scale: 1.01 }}
+              onClick={() => { setSelectedPrayerIndex(prayerIdx); setReadingSource('prayer'); setCurrentScreen('reading'); }}
+              className={`w-full py-3.5 rounded-xl bg-gradient-to-r ${clr.main === 'text-emerald-400' ? 'from-emerald-500 to-teal-500' : clr.main === 'text-blue-400' ? 'from-blue-500 to-indigo-500' : clr.main === 'text-purple-400' ? 'from-purple-500 to-violet-500' : clr.main === 'text-amber-400' ? 'from-amber-500 to-orange-500' : 'from-rose-500 to-pink-500'} text-white font-bold text-base shadow-lg ${clr.glow} hover:shadow-xl transition-shadow`}
+              style={{ fontFamily: fontClass }}
+            >
+              <span className='flex items-center justify-center gap-2'>
+                <Sparkles className='w-5 h-5' />
+                ابدأ أذكار ما بعد الصلاة
+              </span>
+            </motion.button>
           </div>
-          <div className='flex items-center gap-3 mb-4'>
-            <span className='text-3xl'>{currentPrayerTime?.icon}</span>
-            <h2 className='text-xl font-bold text-white' style={{ fontFamily: 'var(--font-arabic)' }}>{currentPrayerTime?.name}</h2>
-            {completedPrayers.includes(currentPrayer.prayerId) && <span className='text-lg'>✅</span>}
-          </div>
-          <motion.button
-            whileTap={{ scale: 0.97 }} whileHover={{ scale: 1.01 }}
-            onClick={() => { setSelectedPrayerIndex(prayerIdx); setReadingSource('prayer'); setCurrentScreen('reading'); }}
-            className={`w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-base shadow-lg ${clr.glow} hover:shadow-emerald-500/40 transition-shadow`}
-            style={{ fontFamily: 'var(--font-arabic)' }}
-          >
-            <span className='flex items-center justify-center gap-2'>
-              <Sparkles className='w-5 h-5' />
-              ابدأ أذكار ما بعد الصلاة
-            </span>
-          </motion.button>
         </motion.div>
 
         {/* Streak + Tree Row */}
         <div className='grid grid-cols-2 gap-3'>
           <motion.div initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}
-            className='rounded-2xl bg-amber-900/30 border border-amber-700/20 p-3.5'
+            className='glass-card rounded-2xl p-3.5 border border-amber-500/10'
           >
             <div className='flex items-center gap-1.5 mb-2'>
               <Star className='w-4 h-4 text-amber-400' />
-              <span className='text-amber-300/50 text-[11px]'>السلسلة</span>
+              <span className='text-amber-300/50 text-[11px]' style={{ fontFamily: fontClass }}>السلسلة</span>
             </div>
             <div className='flex items-baseline gap-1'>
               <span className='text-3xl font-bold text-amber-300'>{streak}</span>
-              <span className='text-amber-400/50 text-[11px]'>يوم</span>
+              <span className='text-amber-400/50 text-[11px]' style={{ fontFamily: fontClass }}>يوم</span>
             </div>
             <div className='mt-2 flex gap-0.5'>
               {[...Array(7)].map((_, i) => (
@@ -146,18 +189,21 @@ export default function HomeScreen() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
-            className='rounded-2xl bg-green-900/30 border border-green-700/20 p-3.5'
+            className='glass-card rounded-2xl p-3.5 border border-emerald-500/10'
           >
             <div className='flex items-center gap-1.5 mb-2'>
-              <TreePine className='w-4 h-4 text-green-400' />
-              <span className='text-green-300/50 text-[11px]'>شجرة الأذكار</span>
+              <TreePine className='w-4 h-4 text-emerald-400' />
+              <span className='text-emerald-300/50 text-[11px]' style={{ fontFamily: fontClass }}>شجرة الأذكار</span>
             </div>
             <div className='flex items-center gap-2'>
-              <span className='text-3xl'>{treeEmojis[Math.min(treeLevel, 6)]}</span>
+              <IslamicIcon
+                name={treeIcons[Math.min(treeLevel, treeIcons.length - 1)]}
+                className='w-8 h-8 text-emerald-400'
+              />
               <div>
-                <span className='text-lg font-bold text-green-300'>{treeLevel}</span>
-                <div className='w-16 bg-green-900/30 rounded-full h-1.5 mt-0.5'>
-                  <div className='bg-gradient-to-r from-green-400 to-emerald-400 h-1.5 rounded-full' style={{ width: `${Math.min(treeLevel * 100 / 7, 100)}%` }} />
+                <span className='text-lg font-bold text-emerald-300'>{treeLevel}</span>
+                <div className='w-16 bg-emerald-900/30 rounded-full h-1.5 mt-0.5'>
+                  <div className='bg-gradient-to-r from-emerald-400 to-teal-400 h-1.5 rounded-full' style={{ width: `${Math.min(treeLevel * 100 / 7, 100)}%` }} />
                 </div>
               </div>
             </div>
@@ -166,10 +212,10 @@ export default function HomeScreen() {
 
         {/* Today's Prayers */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
-          className='rounded-2xl bg-white/5 border border-white/10 p-4'
+          className='glass-card rounded-2xl p-4 border border-amber-500/10'
         >
           <div className='flex items-center justify-between mb-3'>
-            <h3 className='text-slate-300/50 text-xs'>أذكار اليوم ({completedPrayers.length}/5)</h3>
+            <h3 className='text-slate-300/50 text-xs' style={{ fontFamily: fontClass }}>أذكار اليوم ({completedPrayers.length}/5)</h3>
           </div>
           <div className='flex gap-2'>
             {prayerTimesList.map((p) => {
@@ -179,8 +225,12 @@ export default function HomeScreen() {
                 <button key={p.id} onClick={() => { setSelectedPrayerIndex(idx); setReadingSource('prayer'); setCurrentScreen('reading'); }}
                   className={`flex-1 flex flex-col items-center py-2.5 rounded-xl transition-all duration-300 ${done ? 'bg-emerald-500/15 border border-emerald-500/20' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`}
                 >
-                  <span className='text-lg mb-0.5'>{done ? '✅' : p.icon}</span>
-                  <span className={`text-[10px] ${done ? 'text-emerald-300' : 'text-slate-500'}`}>{p.name}</span>
+                  {done ? (
+                    <IslamicIcon name='check-circle' className='w-5 h-5 text-emerald-400 mb-0.5' />
+                  ) : (
+                    <IslamicIcon name={p.icon} className='w-5 h-5 text-slate-400 mb-0.5' />
+                  )}
+                  <span className={`text-[10px] ${done ? 'text-emerald-300' : 'text-slate-500'}`} style={{ fontFamily: fontClass }}>{p.name}</span>
                 </button>
               );
             })}

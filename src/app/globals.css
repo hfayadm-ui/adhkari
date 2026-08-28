@@ -46,71 +46,73 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(0.12 0.02 250);
+  --background: oklch(0.09 0.015 260);
   --foreground: oklch(0.93 0.01 250);
-  --card: oklch(0.16 0.02 250);
+  --card: oklch(0.13 0.018 260);
   --card-foreground: oklch(0.93 0.01 250);
-  --popover: oklch(0.16 0.02 250);
+  --popover: oklch(0.13 0.018 260);
   --popover-foreground: oklch(0.93 0.01 250);
-  --primary: oklch(0.65 0.15 160);
+  --primary: oklch(0.62 0.17 160);
   --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.22 0.02 250);
+  --secondary: oklch(0.22 0.02 260);
   --secondary-foreground: oklch(0.85 0.01 250);
-  --muted: oklch(0.22 0.02 250);
+  --muted: oklch(0.22 0.02 260);
   --muted-foreground: oklch(0.65 0.02 250);
-  --accent: oklch(0.22 0.03 160);
+  --accent: oklch(0.18 0.025 160);
   --accent-foreground: oklch(0.93 0.01 250);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.25 0.02 250);
-  --input: oklch(0.25 0.02 250);
-  --ring: oklch(0.65 0.15 160);
-  --chart-1: oklch(0.65 0.15 160);
+  --border: oklch(0.25 0.02 260);
+  --input: oklch(0.25 0.02 260);
+  --ring: oklch(0.62 0.17 160);
+  --gold: oklch(0.78 0.15 85);
+  --chart-1: oklch(0.62 0.17 160);
   --chart-2: oklch(0.60 0.12 180);
   --chart-3: oklch(0.55 0.10 200);
-  --chart-4: oklch(0.70 0.15 80);
+  --chart-4: oklch(0.78 0.15 85);
   --chart-5: oklch(0.75 0.18 70);
-  --sidebar: oklch(0.16 0.02 250);
+  --sidebar: oklch(0.13 0.018 260);
   --sidebar-foreground: oklch(0.93 0.01 250);
-  --sidebar-primary: oklch(0.65 0.15 160);
+  --sidebar-primary: oklch(0.62 0.17 160);
   --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.22 0.03 160);
+  --sidebar-accent: oklch(0.18 0.025 160);
   --sidebar-accent-foreground: oklch(0.93 0.01 250);
-  --sidebar-border: oklch(0.25 0.02 250);
-  --sidebar-ring: oklch(0.65 0.15 160);
+  --sidebar-border: oklch(0.25 0.02 260);
+  --sidebar-ring: oklch(0.62 0.17 160);
 }
 
 .dark {
-  --background: oklch(0.12 0.02 250);
+  --background: oklch(0.09 0.015 260);
   --foreground: oklch(0.93 0.01 250);
-  --card: oklch(0.16 0.02 250);
+  --card: oklch(0.13 0.018 260);
   --card-foreground: oklch(0.93 0.01 250);
-  --popover: oklch(0.16 0.02 250);
+  --popover: oklch(0.13 0.018 260);
   --popover-foreground: oklch(0.93 0.01 250);
-  --primary: oklch(0.65 0.15 160);
+  --primary: oklch(0.62 0.17 160);
   --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.22 0.02 250);
+  --secondary: oklch(0.22 0.02 260);
   --secondary-foreground: oklch(0.85 0.01 250);
-  --muted: oklch(0.22 0.02 250);
+  --muted: oklch(0.22 0.02 260);
   --muted-foreground: oklch(0.65 0.02 250);
-  --accent: oklch(0.22 0.03 160);
+  --accent: oklch(0.18 0.025 160);
   --accent-foreground: oklch(0.93 0.01 250);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(0.25 0.02 250);
-  --input: oklch(0.25 0.02 250);
-  --ring: oklch(0.65 0.15 160);
-  --chart-1: oklch(0.65 0.15 160);
+  --border: oklch(0.25 0.02 260);
+  --input: oklch(0.25 0.02 260);
+  --ring: oklch(0.62 0.17 160);
+  --gold: oklch(0.78 0.15 85);
+  --chart-1: oklch(0.62 0.17 160);
   --chart-2: oklch(0.60 0.12 180);
   --chart-3: oklch(0.55 0.10 200);
-  --chart-4: oklch(0.70 0.15 80);
+  --chart-4: oklch(0.78 0.15 85);
   --chart-5: oklch(0.75 0.18 70);
-  --sidebar: oklch(0.16 0.02 250);
+  --sidebar: oklch(0.13 0.018 260);
   --sidebar-foreground: oklch(0.93 0.01 250);
-  --sidebar-primary: oklch(0.65 0.15 160);
+  --sidebar-primary: oklch(0.62 0.17 160);
   --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.22 0.03 160);
+  --sidebar-accent: oklch(0.18 0.025 160);
   --sidebar-accent-foreground: oklch(0.93 0.01 250);
-  --sidebar-border: oklch(0.25 0.02 250);
-  --sidebar-ring: oklch(0.65 0.15 160);
+  --sidebar-border: oklch(0.25 0.02 260);
+  --sidebar-ring: oklch(0.62 0.17 160);
 }
 
 @layer base {
@@ -125,7 +127,7 @@
   }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - gold-tinted */
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -133,34 +135,78 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(52, 211, 153, 0.2);
+  background: rgba(212, 175, 55, 0.2);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(52, 211, 153, 0.4);
+  background: rgba(212, 175, 55, 0.4);
 }
 
-/* Pulse animation for tap button */
+/* Pulse animation for tap button - gold-tinted */
 @keyframes gentle-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.3); }
-  50% { box-shadow: 0 0 0 20px rgba(52, 211, 153, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.3); }
+  50% { box-shadow: 0 0 0 20px rgba(212, 175, 55, 0); }
 }
 
 .pulse-gentle {
   animation: gentle-pulse 2s infinite;
 }
 
-/* Smooth text animation for karaoke-style */
+/* Smooth text animation for karaoke-style - gold gradient */
 @keyframes text-reveal {
   from { background-position: 0% 50%; }
   to { background-position: 100% 50%; }
 }
 
 .text-karaoke {
-  background: linear-gradient(90deg, #6ee7b7 0%, #a7f3d0 50%, #6ee7b7 100%);
+  background: linear-gradient(90deg, #d4af37 0%, #f0d060 50%, #d4af37 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: text-reveal 3s linear infinite;
+}
+
+/* Islamic shimmer animation */
+@keyframes islamic-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.islamic-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: islamic-shimmer 3s ease-in-out infinite;
+}
+
+/* Islamic geometric border pattern */
+.islamic-border {
+  border-image: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(52, 211, 153, 0.1), rgba(212, 175, 55, 0.3)) 1;
+}
+
+/* Glassmorphism card utility */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Gold glow utility */
+.gold-glow {
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.15), 0 0 60px rgba(212, 175, 55, 0.05);
+}
+
+/* Arabic font family classes */
+.font-arabic-amiri { font-family: 'Amiri', serif; }
+.font-arabic-naskh { font-family: 'Noto Naskh Arabic', serif; }
+.font-arabic-tajawal { font-family: 'Tajawal', sans-serif; }
+.font-arabic-ibm-plex { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+.font-arabic-scheherazade { font-family: 'Scheherazade New', serif; }
+
+/* Islamic geometric pattern background (subtle CSS-only) */
+.islamic-pattern-bg {
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(52, 211, 153, 0.03) 0%, transparent 50%);
 }

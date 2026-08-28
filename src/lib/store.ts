@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 export type Screen = 'home' | 'reading' | 'completion' | 'stats' | 'settings' | 'library' | 'counter' | 'category-reading';
 export type ThemeColor = 'emerald' | 'blue' | 'purple' | 'amber' | 'rose';
+export type ArabicFont = 'cairo' | 'amiri' | 'noto-naskh' | 'tajawal' | 'ibm-plex' | 'scheherazade';
 
 interface DailyRecord {
   date: string;
@@ -15,6 +16,13 @@ interface CounterPreset {
   name: string;
   target: number;
   current: number;
+}
+
+interface SelectedCity {
+  name: string;
+  country: string;
+  lat: number;
+  lng: number;
 }
 
 interface DhikrState {
@@ -42,6 +50,7 @@ interface DhikrState {
   completedPrayers: string[];
   completePrayer: (prayerId: string) => void;
   todayStr: string;
+  resetDaily: () => void;
 
   // Streak & gamification
   streak: number;
@@ -72,8 +81,12 @@ interface DhikrState {
   setFontSize: (s: 'small' | 'medium' | 'large') => void;
   themeColor: ThemeColor;
   setThemeColor: (c: ThemeColor) => void;
-  calculationMethod: string;
-  setCalculationMethod: (m: string) => void;
+  arabicFont: ArabicFont;
+  setArabicFont: (f: ArabicFont) => void;
+  selectedCity: SelectedCity | null;
+  setSelectedCity: (city: SelectedCity | null) => void;
+  prayerTimes: {[key: string]: string};
+  setPrayerTimes: (t: {[key: string]: string}) => void;
 }
 
 function load<T>(key: string, def: T): T {
@@ -122,6 +135,11 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
     }
   },
   todayStr: today,
+  resetDaily: () => {
+    save('dz_completedPrayers', []);
+    save('dz_freeCounter', 0);
+    set({ completedPrayers: [], freeCounter: 0, currentCount: 0, completedSet: [], currentDhikrIndex: 0 });
+  },
 
   streak: load<number>('dz_streak', 0),
   streakFreezeAvailable: load<boolean>('dz_freezeAvail', true),
@@ -180,6 +198,10 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
   setFontSize: (s) => { save('dz_fontSize', s); set({ fontSize: s }); },
   themeColor: load<ThemeColor>('dz_theme', 'emerald'),
   setThemeColor: (c) => { save('dz_theme', c); set({ themeColor: c }); },
-  calculationMethod: load<string>('dz_calcMethod', 'أم القرى'),
-  setCalculationMethod: (m) => { save('dz_calcMethod', m); set({ calculationMethod: m }); },
+  arabicFont: load<ArabicFont>('dz_arabicFont', 'cairo'),
+  setArabicFont: (f) => { save('dz_arabicFont', f); set({ arabicFont: f }); },
+  selectedCity: load<SelectedCity | null>('dz_selectedCity', null),
+  setSelectedCity: (city) => { save('dz_selectedCity', city); set({ selectedCity: city }); },
+  prayerTimes: load<{[key: string]: string}>('dz_prayerTimes', {}),
+  setPrayerTimes: (t) => { save('dz_prayerTimes', t); set({ prayerTimes: t }); },
 }));

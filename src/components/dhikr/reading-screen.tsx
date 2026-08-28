@@ -1,10 +1,25 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useDhikrStore } from '@/lib/store';
-import { prayerDhikrGroups, getAdhkarByCategory, getCategoryName, motivationalQuotes } from '@/lib/dhikr-data';
+import { useDhikrStore, ArabicFont } from '@/lib/store';
+import { prayerDhikrGroups, getAdhkarByCategory, getCategoryName, motivationalQuotes, dhikrCategories } from '@/lib/dhikr-data';
+import { IslamicIcon } from '@/components/dhikr/islamic-icons';
+import { Home, ChevronRight, Volume2, VolumeX, Bookmark, Info, Star, Sparkles, Hand } from '@/components/dhikr/islamic-icons';
 import { useState } from 'react';
-import { ChevronRight, Volume2, VolumeX, Home, Share2, Bookmark, Info } from 'lucide-react';
+
+function getFontClass(font: ArabicFont): string {
+  const map: Record<ArabicFont, string> = {
+    'cairo': 'var(--font-arabic)', 'amiri': 'var(--font-amiri)',
+    'noto-naskh': 'var(--font-noto-naskh)', 'tajawal': 'var(--font-tajawal)',
+    'ibm-plex': 'var(--font-ibm-plex)', 'scheherazade': 'var(--font-scheherazade)',
+  };
+  return map[font] || 'var(--font-arabic)';
+}
+
+const categoryIconMap: Record<string, string> = {
+  morning: 'sunrise', evening: 'sunset', sleep: 'moon', waking: 'sun',
+  eating: 'utensils', travel: 'compass', misc: 'gem', prayer: 'mosque',
+};
 
 export default function ReadingScreen() {
   const {
@@ -12,7 +27,7 @@ export default function ReadingScreen() {
     currentDhikrIndex, currentCount, completedSet,
     setCurrentDhikrIndex, setCurrentCount, setCompletedSet, setCurrentScreen,
     completePrayer, addTodayRecord, setTreeLevel, setStreak, setTotalAllTime,
-    completedPrayers, soundEnabled, vibrationEnabled, fontSize, themeColor,
+    completedPrayers, soundEnabled, vibrationEnabled, fontSize, themeColor, arabicFont,
   } = useDhikrStore();
 
   const [showMotivation, setShowMotivation] = useState(false);
@@ -20,7 +35,6 @@ export default function ReadingScreen() {
   const [showOpening, setShowOpening] = useState(true);
   const [showReference, setShowReference] = useState(false);
 
-  // Build dhikr list based on source
   const prayerGroup = readingSource === 'prayer' ? prayerDhikrGroups[selectedPrayerIndex] : null;
   const categoryDhikrList = readingSource === 'category' ? getAdhkarByCategory(selectedCategoryId) : [];
   const dhikrList = readingSource === 'prayer' ? prayerGroup.dhikrList : categoryDhikrList;
@@ -38,6 +52,9 @@ export default function ReadingScreen() {
 
   const fontSizes = { small: 'text-lg', medium: 'text-2xl', large: 'text-3xl' };
   const fontClass = fontSizes[fontSize];
+  const fontVar = getFontClass(arabicFont);
+
+  const openingIcon = readingSource === 'prayer' ? 'mosque' : (categoryIconMap[selectedCategoryId] || 'mosque');
 
   function playTap() {
     if (!soundEnabled) return;
@@ -57,13 +74,11 @@ export default function ReadingScreen() {
     if (!currentDhikr) return;
     playTap();
     if (vibrationEnabled && 'vibrate' in navigator) navigator.vibrate(25);
-
     const newCount = currentCount + 1;
     if (newCount >= currentDhikr.count) {
       const newSet = [...completedSet, currentDhikrIndex];
       setCompletedSet(newSet);
       setTotalAllTime((useDhikrStore.getState().totalAllTime || 0) + currentDhikr.count);
-
       if (currentDhikrIndex + 1 < totalDhikr) {
         const q = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
         setCurrentQuote(q);
@@ -74,7 +89,6 @@ export default function ReadingScreen() {
           setCurrentCount(0);
         }, 2200);
       } else {
-        // All done
         if (readingSource === 'prayer') {
           const pid = prayerGroup.prayerId;
           completePrayer(pid);
@@ -91,20 +105,23 @@ export default function ReadingScreen() {
     }
   }
 
-  // Opening screen
   if (showOpening) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className='flex flex-col items-center justify-center min-h-screen px-6 pb-24'>
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 200, damping: 15 }} className='text-center max-w-sm'>
-          <div className='w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-xl shadow-emerald-500/20'>
-            <span className='text-4xl'>🕌</span>
+          <div className='relative w-28 h-28 mx-auto mb-6'>
+            <div className='absolute inset-0 rounded-full bg-gradient-to-br from-amber-500/20 via-emerald-500/10 to-transparent gold-glow' />
+            <div className='absolute inset-0 rounded-full bg-gradient-to-br from-amber-500/5 to-emerald-500/5 animate-pulse' />
+            <div className='relative w-28 h-28 rounded-full bg-gradient-to-br from-amber-500/30 via-emerald-600/40 to-teal-700/50 flex items-center justify-center shadow-2xl shadow-emerald-500/20 border border-amber-400/20'>
+              <IslamicIcon name={openingIcon} className='w-12 h-12 text-amber-200' color='#fde68a' />
+            </div>
           </div>
-          <h2 className='text-2xl font-bold text-white mb-4' style={{ fontFamily: 'var(--font-arabic)' }}>{title}</h2>
-          <p className='text-emerald-200/70 text-base leading-relaxed mb-3' style={{ fontFamily: 'var(--font-arabic)' }}>{openingMsg}</p>
+          <h2 className='text-2xl font-bold text-white mb-4' style={{ fontFamily: fontVar }}>{title}</h2>
+          <p className='text-emerald-200/70 text-base leading-relaxed mb-3' style={{ fontFamily: fontVar }}>{openingMsg}</p>
           <p className='text-slate-400 text-xs mb-8'>{dhikrList.length} أذكار بانتظارك</p>
           <motion.button whileTap={{ scale: 0.95 }} onClick={() => setShowOpening(false)}
-            className='w-full py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-lg shadow-lg shadow-emerald-500/25'
-            style={{ fontFamily: 'var(--font-arabic)' }}>
+            className='w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 via-emerald-500 to-teal-500 text-white font-bold text-lg shadow-lg shadow-emerald-500/25'
+            style={{ fontFamily: fontVar }}>
             بسم الله ابدأ
           </motion.button>
         </motion.div>
@@ -115,11 +132,11 @@ export default function ReadingScreen() {
   return (
     <div className='flex flex-col min-h-screen pb-24 relative'>
       {/* Top Bar */}
-      <header className='flex items-center justify-between p-4 pb-2'>
+      <header className='glass-card flex items-center justify-between p-4 pb-3 rounded-b-2xl border-t-0 border-x-0'>
         <button onClick={() => setCurrentScreen('home')} className='flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors'>
           <Home className='w-5 h-5' /><span className='text-sm'>الرئيسية</span>
         </button>
-        <h2 className='text-emerald-200 font-medium text-sm' style={{ fontFamily: 'var(--font-arabic)' }}>{title}</h2>
+        <h2 className='text-emerald-200 font-medium text-sm' style={{ fontFamily: fontVar }}>{title}</h2>
         <button onClick={() => useDhikrStore.getState().toggleSound()} className='w-9 h-9 rounded-full bg-white/5 flex items-center justify-center'>
           {soundEnabled ? <Volume2 className='w-4 h-4 text-emerald-400' /> : <VolumeX className='w-4 h-4 text-slate-500' />}
         </button>
@@ -129,15 +146,16 @@ export default function ReadingScreen() {
       <div className='px-4 mb-3'>
         <div className='flex items-center justify-between mb-1.5'>
           <span className='text-emerald-300/50 text-[11px]'>{completedSet.length}/{totalDhikr} أذكار مكتملة</span>
-          <span className='text-emerald-400 text-[11px] font-medium'>{Math.round(progressPct)}%</span>
+          <span className='text-amber-400 text-[11px] font-medium'>{Math.round(progressPct)}%</span>
         </div>
-        <div className='w-full bg-white/5 rounded-full h-1.5 overflow-hidden'>
-          <motion.div className='bg-gradient-to-r from-emerald-400 to-teal-400 h-1.5 rounded-full'
+        <div className='w-full bg-white/5 rounded-full h-1.5 overflow-hidden relative'>
+          <motion.div className='bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-400 h-1.5 rounded-full'
             initial={{ width: 0 }} animate={{ width: `${progressPct}%` }} transition={{ duration: 0.4 }} />
+          <div className='absolute inset-0 islamic-shimmer rounded-full' />
         </div>
         <div className='flex gap-1 mt-2 justify-center'>
           {dhikrList.map((_, idx) => (
-            <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx < currentDhikrIndex ? 'bg-emerald-400 w-5' : idx === currentDhikrIndex ? 'bg-teal-400 w-3' : 'bg-white/5 w-1.5'}`} />
+            <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx < currentDhikrIndex ? 'bg-amber-400 w-5' : idx === currentDhikrIndex ? 'bg-emerald-400 w-3' : 'bg-white/5 w-1.5'}`} />
           ))}
         </div>
       </div>
@@ -149,7 +167,7 @@ export default function ReadingScreen() {
             <motion.div key={`d-${currentDhikrIndex}`} initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={{ type: 'spring', stiffness: 300, damping: 30 }} className='w-full max-w-sm mx-auto text-center'>
               {/* Category + actions */}
               <div className='flex items-center justify-center gap-3 mb-5'>
-                <span className='px-3 py-1 rounded-full bg-white/5 border border-white/10 text-emerald-400 text-xs'>{currentDhikr.category}</span>
+                <span className='px-3 py-1 rounded-full glass-card border-amber-500/20 text-amber-300 text-xs' style={{ fontFamily: fontVar }}>{currentDhikr.category}</span>
                 {currentDhikr.reference && (
                   <button onClick={() => setShowReference(!showReference)} className='w-7 h-7 rounded-full bg-white/5 flex items-center justify-center'>
                     <Info className='w-3.5 h-3.5 text-slate-400' />
@@ -170,31 +188,37 @@ export default function ReadingScreen() {
 
               {/* Benefit */}
               {currentDhikr.benefit && (
-                <p className='text-amber-300/60 text-xs mb-4 flex items-center gap-1 justify-center'>
-                  <span>✨</span> {currentDhikr.benefit}
+                <p className='text-amber-300/60 text-xs mb-4 flex items-center gap-1.5 justify-center'>
+                  <Sparkles className='w-3.5 h-3.5 text-amber-300' /> <span style={{ fontFamily: fontVar }}>{currentDhikr.benefit}</span>
                 </p>
               )}
 
-              {/* Dhikr Text */}
+              {/* Dhikr Text with Islamic corners */}
               <div className='relative mb-8'>
-                <div className='absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent rounded-2xl' />
-                <p className={`relative ${fontClass} font-bold text-white leading-loose py-6 px-4`} style={{ fontFamily: 'var(--font-arabic)' }}>{currentDhikr.text}</p>
+                <div className='absolute inset-0 bg-gradient-to-b from-amber-500/5 via-emerald-500/3 to-transparent rounded-2xl' />
+                {/* Corner ornaments */}
+                <div className='absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-amber-500/20 rounded-tr-2xl' />
+                <div className='absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-amber-500/20 rounded-tl-2xl' />
+                <div className='absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-amber-500/20 rounded-br-2xl' />
+                <div className='absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-amber-500/20 rounded-bl-2xl' />
+                <p className={`relative ${fontClass} font-bold text-white leading-loose py-6 px-4`} style={{ fontFamily: fontVar }}>{currentDhikr.text}</p>
               </div>
 
               {/* Counter */}
               <div className='flex items-center justify-center gap-5 mb-8'>
-                <span className='text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-emerald-200 to-teal-400'>{currentCount}</span>
-                <span className='text-2xl text-emerald-300/30'>/</span>
-                <span className='text-2xl text-emerald-300/30'>{currentDhikr.count}</span>
+                <span className='text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-amber-200 via-amber-300 to-amber-500'>{currentCount}</span>
+                <span className='text-2xl text-amber-400/30'>/</span>
+                <span className='text-2xl text-amber-400/30'>{currentDhikr.count}</span>
               </div>
 
               {/* Tap Button */}
               <motion.button whileTap={{ scale: 0.92 }} onClick={handleTap}
-                className='relative w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-2xl shadow-emerald-500/30 flex items-center justify-center'>
-                <div className='absolute inset-0 rounded-full border border-emerald-400/20 animate-ping' />
+                className='relative w-34 h-34 mx-auto rounded-full bg-gradient-to-br from-amber-500 via-emerald-500 to-teal-600 shadow-2xl shadow-amber-500/30 gold-glow flex items-center justify-center' style={{ width: '136px', height: '136px' }}>
+                <div className='absolute inset-0 rounded-full border border-amber-400/20 animate-ping' />
+                <div className='absolute inset-2 rounded-full border border-amber-300/10' />
                 <div className='relative text-center'>
-                  <span className='text-white text-3xl block'>🤚</span>
-                  <span className='text-emerald-100/70 text-[10px] mt-0.5 block'>اضغط للتسبيح</span>
+                  <IslamicIcon name='hand-tap' className='w-10 h-10 text-white mx-auto' color='#ffffff' />
+                  <span className='text-amber-100/70 text-[10px] mt-1 block' style={{ fontFamily: fontVar }}>اضغط للتسبيح</span>
                 </div>
               </motion.button>
 
@@ -203,17 +227,17 @@ export default function ReadingScreen() {
                 <button onClick={() => {
                   if (currentDhikrIndex + 1 < totalDhikr) { setCurrentDhikrIndex(currentDhikrIndex + 1); setCurrentCount(0); }
                 }} className='mt-5 text-slate-500 text-xs hover:text-slate-300 transition-colors flex items-center gap-1 mx-auto'>
-                  تخطي <ChevronRight className='w-3 h-3' />
+                  <span style={{ fontFamily: fontVar }}>تخطي</span> <ChevronRight className='w-3 h-3' />
                 </button>
               )}
             </motion.div>
           ) : showMotivation ? (
             <motion.div key='motiv' initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.1 }} className='text-center max-w-sm mx-auto'>
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', delay: 0.15 }}
-                className='w-14 h-14 mx-auto mb-5 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg'>
-                <span className='text-2xl'>⭐</span>
+                className='w-16 h-16 mx-auto mb-5 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg gold-glow'>
+                <Star className='w-8 h-8 text-white' />
               </motion.div>
-              <p className='text-lg text-amber-200 leading-relaxed font-medium' style={{ fontFamily: 'var(--font-arabic)' }}>{currentQuote}</p>
+              <p className='text-lg text-amber-200 leading-relaxed font-medium' style={{ fontFamily: fontVar }}>{currentQuote}</p>
             </motion.div>
           ) : null}
         </AnimatePresence>
