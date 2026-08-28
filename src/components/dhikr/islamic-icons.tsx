@@ -7,7 +7,7 @@ import {
   Award, Zap, RotateCcw, Target, Plus, Minus, Volume2, VolumeX,
   Search, CheckCircle2, Bookmark, Info, Share2, Copy, Compass, Gem,
   Utensils, Shield, MapPin, Type, Palette, Eye, Heart, Flame,
-  CircleDot, Landmark, PalmTree, Trees, StarOff, X, ArrowRight,
+  CircleDot, Landmark, PalmTree, Trees, StarOff, X, ArrowRight, Check,
   Mosque as LucideMosque, Waves
 } from 'lucide-react';
 import React from 'react';
@@ -180,7 +180,7 @@ export default IslamicIcon;
 export { 
   Home, BookOpen, Hand, BarChart3, Settings, ChevronLeft, ChevronRight,
   ChevronDown, ChevronUp, Clock, Trophy, TreePine, TrendingUp, Calendar,
-  Award, Zap, RotateCcw, Target, Volume2, VolumeX, Search, CheckCircle2,
+  Award, Zap, RotateCcw, Target, Volume2, VolumeX, Search, CheckCircle2, Check,
   Bookmark, Info, Share2, Copy, Compass, Star, Flame, Sparkles,
   Sun, Moon, Sunrise, Sunset, CloudSun, Bell, Leaf, Gem, Utensils,
   Shield, MapPin, Type, Palette, Heart, Eye, Landmark, X, Plus, Minus, ArrowRight

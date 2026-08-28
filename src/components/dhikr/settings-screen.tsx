@@ -1,30 +1,42 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useDhikrStore, ThemeColor } from '@/lib/store';
-import { Volume2, VolumeX, Vibrate, VibrateOff, Type, Palette, Moon, RotateCcw, Shield, Info, ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { useDhikrStore, ThemeColor, ArabicFont } from '@/lib/store';
+import { IslamicIcon } from '@/components/dhikr/islamic-icons';
+import { Volume2, VolumeX, Palette, Type, RotateCcw, MapPin, ChevronDown, Search, Check } from '@/components/dhikr/islamic-icons';
+import { countries, CityData, fetchPrayerTimes } from '@/lib/dhikr-data';
+import { useState, useEffect, useMemo } from 'react';
 
-const themes: { id: ThemeColor; name: string; gradient: string; dot: string }[] = [
-  { id: 'emerald', name: 'أخضر زمردي', gradient: 'from-emerald-500 to-teal-500', dot: 'bg-emerald-400' },
-  { id: 'blue', name: 'أزرق سماوي', gradient: 'from-blue-500 to-cyan-500', dot: 'bg-blue-400' },
-  { id: 'purple', name: 'بنفسجي', gradient: 'from-purple-500 to-violet-500', dot: 'bg-purple-400' },
-  { id: 'amber', name: 'ذهبي', gradient: 'from-amber-500 to-orange-500', dot: 'bg-amber-400' },
-  { id: 'rose', name: 'وردي', gradient: 'from-rose-500 to-pink-500', dot: 'bg-rose-400' },
+function getFontClass(font: ArabicFont): string {
+  const map: Record<ArabicFont, string> = {
+    'cairo': 'var(--font-arabic)', 'amiri': 'var(--font-amiri)',
+    'noto-naskh': 'var(--font-noto-naskh)', 'tajawal': 'var(--font-tajawal)',
+    'ibm-plex': 'var(--font-ibm-plex)', 'scheherazade': 'var(--font-scheherazade)',
+  };
+  return map[font] || 'var(--font-arabic)';
+}
+
+const themes: { id: ThemeColor; name: string; dot: string }[] = [
+  { id: 'emerald', name: 'أخضر زمردي', dot: 'bg-emerald-400' },
+  { id: 'blue', name: 'أزرق سماوي', dot: 'bg-blue-400' },
+  { id: 'purple', name: 'بنفسجي', dot: 'bg-purple-400' },
+  { id: 'amber', name: 'ذهبي', dot: 'bg-amber-400' },
+  { id: 'rose', name: 'وردي', dot: 'bg-rose-400' },
 ];
 
-const fontSizes: { id: 'small' | 'medium' | 'large'; name: string; sample: string }[] = [
-  { id: 'small', name: 'صغير', sample: 'text-sm' },
-  { id: 'medium', name: 'متوسط', sample: 'text-lg' },
-  { id: 'large', name: 'كبير', sample: 'text-2xl' },
+const fontOptions: { id: ArabicFont; name: string; desc: string; fontVar: string }[] = [
+  { id: 'cairo', name: 'القاهرة', desc: 'خط عصري واضح', fontVar: 'var(--font-arabic)' },
+  { id: 'amiri', name: 'أميري', desc: 'خط كلاسيكي أنيق', fontVar: 'var(--font-amiri)' },
+  { id: 'noto-naskh', name: 'نسخ عربي', desc: 'خط النسخ التقليدي', fontVar: 'var(--font-noto-naskh)' },
+  { id: 'tajawal', name: 'تجوال', desc: 'خط حديث ومقروء', fontVar: 'var(--font-tajawal)' },
+  { id: 'ibm-plex', name: 'IBM بليكس', desc: 'خط تقني متوازن', fontVar: 'var(--font-ibm-plex)' },
+  { id: 'scheherazade', name: 'شهرزاد', desc: 'خط أدبي جميل', fontVar: 'var(--font-scheherazade)' },
 ];
-
-const calcMethods = ['أم القرى', 'الإتحاد الإسلامي', 'المذهب الحنفي', 'تصحيح المسافة', 'الهيئة المصرية'];
 
 function SettingRow({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}
-      className='rounded-2xl bg-white/5 border border-white/10 p-4'>
+      className='glass-card rounded-2xl border-white/10 p-4'>
       {children}
     </motion.div>
   );
@@ -32,7 +44,7 @@ function SettingRow({ children, delay = 0 }: { children: React.ReactNode; delay?
 
 function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
   return (
-    <button onClick={onChange} className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${value ? 'bg-emerald-500' : 'bg-slate-700'}`}>
+    <button onClick={onChange} className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${value ? 'bg-gradient-to-r from-amber-500 to-emerald-500' : 'bg-slate-700'}`}>
       <motion.div className='absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md'
         animate={{ left: value ? 'calc(100% - 22px)' : '2px' }} transition={{ type: 'spring', stiffness: 500, damping: 30 }} />
     </button>
@@ -42,48 +54,98 @@ function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
 export default function SettingsScreen() {
   const {
     soundEnabled, toggleSound, vibrationEnabled, toggleVibration,
-    fontSize, setFontSize, themeColor, setThemeColor,
-    calculationMethod, setCalculationMethod,
-    resetDaily, streak, setStreak, treeLevel, setTreeLevel, totalAllTime,
+    themeColor, setThemeColor, arabicFont, setArabicFont,
+    selectedCity, setSelectedCity, setPrayerTimes,
+    streak, setStreak, treeLevel, setTreeLevel, resetDaily,
   } = useDhikrStore();
-  const [showCalc, setShowCalc] = useState(false);
+  const fontVar = getFontClass(arabicFont);
+
+  const [showCityPicker, setShowCityPicker] = useState(false);
+  const [citySearch, setCitySearch] = useState('');
+  const [expandedCountry, setExpandedCountry] = useState<string | null>(null);
+  const [loadingCity, setLoadingCity] = useState(false);
+
+  // Filter countries based on search
+  const filteredCountries = useMemo(() => {
+    if (!citySearch) return countries;
+    return countries.filter(c =>
+      c.name.includes(citySearch) || c.cities.some(city => city.name.includes(citySearch))
+    );
+  }, [citySearch]);
+
+  // Auto-expand first matching country on search
+  useEffect(() => {
+    if (citySearch) setExpandedCountry(filteredCountries[0]?.code || null);
+  }, [citySearch, filteredCountries]);
+
+  const selectCity = async (city: CityData) => {
+    setLoadingCity(true);
+    setSelectedCity(city);
+    try {
+      const times = await fetchPrayerTimes(city);
+      setPrayerTimes(times);
+    } catch { /* */ }
+    setLoadingCity(false);
+    setShowCityPicker(false);
+    setCitySearch('');
+  };
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='flex flex-col min-h-screen pb-24'>
       <header className='px-4 pt-4 pb-2'>
-        <h1 className='text-2xl font-bold text-white' style={{ fontFamily: 'var(--font-arabic)' }}>⚙ الإعدادات</h1>
+        <div className='flex items-center gap-2.5'>
+          <IslamicIcon name='settings' className='w-7 h-7 text-amber-400' />
+          <h1 className='text-2xl font-bold text-white' style={{ fontFamily: fontVar }}>الإعدادات</h1>
+        </div>
       </header>
 
       <main className='flex-1 px-4 pt-3 space-y-3'>
         {/* Theme Colors */}
         <SettingRow delay={0.05}>
           <div className='flex items-center gap-3 mb-3'>
-            <div className='w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center'><Palette className='w-4 h-4 text-emerald-400' /></div>
-            <div><p className='text-white font-medium text-sm' style={{ fontFamily: 'var(--font-arabic)' }}>لون التطبيق</p><p className='text-slate-400 text-[11px]'>اختر الثيم المفضل</p></div>
+            <div className='w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center'><Palette className='w-4 h-4 text-amber-400' /></div>
+            <div><p className='text-white font-medium text-sm' style={{ fontFamily: fontVar }}>لون التطبيق</p><p className='text-slate-400 text-[11px]' style={{ fontFamily: fontVar }}>اختر الثيم المفضل</p></div>
           </div>
           <div className='flex gap-2 flex-wrap'>
             {themes.map(t => (
               <button key={t.id} onClick={() => setThemeColor(t.id)}
                 className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all ${themeColor === t.id ? 'bg-white/10 border border-white/20' : 'bg-white/[0.03] border border-white/5 hover:bg-white/5'}`}>
-                <div className={`w-4 h-4 rounded-full ${t.dot}`} />
-                <span className='text-slate-200 text-xs'>{t.name}</span>
+                <div className='relative'>
+                  <div className={`w-4 h-4 rounded-full ${t.dot}`} />
+                  {themeColor === t.id && <Check className='w-2.5 h-2.5 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2' />}
+                </div>
+                <span className='text-slate-200 text-xs' style={{ fontFamily: fontVar }}>{t.name}</span>
               </button>
             ))}
           </div>
         </SettingRow>
 
-        {/* Font Size */}
+        {/* Arabic Font Selection */}
         <SettingRow delay={0.1}>
           <div className='flex items-center gap-3 mb-3'>
-            <div className='w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center'><Type className='w-4 h-4 text-emerald-400' /></div>
-            <div><p className='text-white font-medium text-sm' style={{ fontFamily: 'var(--font-arabic)' }}>حجم الخط</p><p className='text-slate-400 text-[11px]'>حجم خط الأذكار أثناء القراءة</p></div>
+            <div className='w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center'><Type className='w-4 h-4 text-amber-400' /></div>
+            <div><p className='text-white font-medium text-sm' style={{ fontFamily: fontVar }}>خط الأذكار</p><p className='text-slate-400 text-[11px]' style={{ fontFamily: fontVar }}>اختر الخط العربي لعرض الأذكار</p></div>
           </div>
-          <div className='flex gap-2'>
-            {fontSizes.map(f => (
-              <button key={f.id} onClick={() => setFontSize(f.id)}
-                className={`flex-1 py-2.5 rounded-xl text-center transition-all ${fontSize === f.id ? 'bg-emerald-500/15 border border-emerald-500/25' : 'bg-white/5 border border-white/10'}`}>
-                <span className={`text-slate-200 ${f.sample} block`} style={{ fontFamily: 'var(--font-arabic)' }}>سبحان الله</span>
-                <span className='text-[10px] text-slate-400 block mt-0.5'>{f.name}</span>
+          <div className='space-y-2'>
+            {fontOptions.map(f => (
+              <button key={f.id} onClick={() => setArabicFont(f.id)}
+                className={`w-full text-right rounded-xl p-3 transition-all border ${
+                  arabicFont === f.id
+                    ? 'bg-amber-500/10 border-amber-500/20'
+                    : 'bg-white/[0.02] border-white/5 hover:bg-white/5'
+                }`}>
+                <div className='flex items-center justify-between'>
+                  <div className='relative w-5 h-5 flex items-center justify-center'>
+                    {arabicFont === f.id && <Check className='w-4 h-4 text-amber-400' />}
+                  </div>
+                  <div className='text-right'>
+                    <p className={`text-sm font-medium ${arabicFont === f.id ? 'text-amber-200' : 'text-slate-200'}`}>{f.name}</p>
+                    <p className='text-[10px] text-slate-400'>{f.desc}</p>
+                  </div>
+                </div>
+                <p className='text-lg text-slate-300 mt-1.5 leading-relaxed' style={{ fontFamily: f.fontVar }}>
+                  بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
+                </p>
               </button>
             ))}
           </div>
@@ -94,9 +156,9 @@ export default function SettingsScreen() {
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-3'>
               <div className='w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center'>
-                {soundEnabled ? <Volume2 className='w-4 h-4 text-emerald-400' /> : <VolumeX className='w-4 h-4 text-slate-500' />}
+                {soundEnabled ? <Volume2 className='w-4 h-4 text-amber-400' /> : <VolumeX className='w-4 h-4 text-slate-500' />}
               </div>
-              <div><p className='text-white font-medium text-sm' style={{ fontFamily: 'var(--font-arabic)' }}>الأصوات</p><p className='text-slate-400 text-[11px]'>صوت خفيف عند الضغط</p></div>
+              <div><p className='text-white font-medium text-sm' style={{ fontFamily: fontVar }}>الأصوات</p><p className='text-slate-400 text-[11px]' style={{ fontFamily: fontVar }}>صوت خفيف عند الضغط</p></div>
             </div>
             <Toggle value={soundEnabled} onChange={toggleSound} />
           </div>
@@ -107,59 +169,124 @@ export default function SettingsScreen() {
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-3'>
               <div className='w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center'>
-                {vibrationEnabled ? <Vibrate className='w-4 h-4 text-emerald-400' /> : <VibrateOff className='w-4 h-4 text-slate-500' />}
+                <IslamicIcon name={vibrationEnabled ? 'sparkles' : 'x'} className={`w-4 h-4 ${vibrationEnabled ? 'text-amber-400' : 'text-slate-500'}`} />
               </div>
-              <div><p className='text-white font-medium text-sm' style={{ fontFamily: 'var(--font-arabic)' }}>الاهتزاز</p><p className='text-slate-400 text-[11px]'>اهتزاز خفيف عند الضغط</p></div>
+              <div><p className='text-white font-medium text-sm' style={{ fontFamily: fontVar }}>الاهتزاز</p><p className='text-slate-400 text-[11px]' style={{ fontFamily: fontVar }}>اهتزاز خفيف عند الضغط</p></div>
             </div>
             <Toggle value={vibrationEnabled} onChange={toggleVibration} />
           </div>
         </SettingRow>
 
-        {/* Prayer Calculation */}
+        {/* City / Prayer Times */}
         <SettingRow delay={0.25}>
           <div className='flex items-center gap-3 mb-3'>
-            <div className='w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center'><Moon className='w-4 h-4 text-emerald-400' /></div>
-            <div><p className='text-white font-medium text-sm' style={{ fontFamily: 'var(--font-arabic)' }}>طريقة حساب المواقيت</p></div>
+            <div className='w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center'><MapPin className='w-4 h-4 text-amber-400' /></div>
+            <div><p className='text-white font-medium text-sm' style={{ fontFamily: fontVar }}>الموقع - مواقيت الصلاة</p><p className='text-slate-400 text-[11px]' style={{ fontFamily: fontVar }}>اختر مدينتك لعرض المواقيت الصحيحة</p></div>
           </div>
-          <button onClick={() => setShowCalc(!showCalc)} className='w-full flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10'>
-            <span className='text-emerald-300 text-sm'>{calculationMethod}</span>
-            <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${showCalc ? 'rotate-180' : ''}`} />
+          {selectedCity ? (
+            <div className='flex items-center justify-between p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-2'>
+              <div>
+                <p className='text-amber-200 text-sm font-medium' style={{ fontFamily: fontVar }}>{selectedCity.name}</p>
+                <p className='text-slate-400 text-[11px]'>{selectedCity.country}</p>
+              </div>
+              <button onClick={() => setShowCityPicker(true)} className='text-amber-300 text-xs px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 transition-colors' style={{ fontFamily: fontVar }}>
+                تغيير
+              </button>
+            </div>
+          ) : null}
+          <button onClick={() => setShowCityPicker(true)}
+            className='w-full flex items-center justify-between p-3 rounded-xl glass-card border-white/10 hover:bg-white/8 transition-colors'>
+            <span className='text-amber-300 text-sm' style={{ fontFamily: fontVar }}>{selectedCity ? selectedCity.name : 'اختر المدينة'}</span>
+            <MapPin className='w-4 h-4 text-amber-400' />
           </button>
-          {showCalc && (
-            <div className='mt-2 grid grid-cols-2 gap-1.5'>
-              {calcMethods.map(m => (
-                <button key={m} onClick={() => { setCalculationMethod(m); setShowCalc(false); }}
-                  className={`py-2 px-3 rounded-lg text-xs transition-all ${calculationMethod === m ? 'bg-emerald-500/15 border border-emerald-500/25 text-emerald-300' : 'bg-white/5 border border-white/10 text-slate-400'}`}
-                  style={{ fontFamily: 'var(--font-arabic)' }}>{m}</button>
-              ))}
+          {loadingCity && (
+            <div className='mt-2 flex items-center gap-2 justify-center'>
+              <div className='w-4 h-4 border-2 border-amber-400/30 border-t-amber-400 rounded-full animate-spin' />
+              <span className='text-amber-300 text-xs' style={{ fontFamily: fontVar }}>جارٍ جلب المواقيت...</span>
             </div>
           )}
         </SettingRow>
+
+        {/* City Picker Modal */}
+        {showCityPicker && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className='fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-end justify-center'
+            onClick={() => { setShowCityPicker(false); setCitySearch(''); }}>
+            <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className='w-full max-w-md bg-[#0d1220] rounded-t-3xl max-h-[80vh] flex flex-col border-t border-amber-500/20'
+              onClick={e => e.stopPropagation()}>
+              {/* Modal Header */}
+              <div className='p-4 border-b border-white/10'>
+                <div className='flex items-center justify-between mb-3'>
+                  <h3 className='text-white font-bold text-lg' style={{ fontFamily: fontVar }}>اختر مدينتك</h3>
+                  <button onClick={() => { setShowCityPicker(false); setCitySearch(''); }}>
+                    <IslamicIcon name='x' className='w-5 h-5 text-slate-400' />
+                  </button>
+                </div>
+                <div className='relative'>
+                  <Search className='absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500' />
+                  <input type='text' value={citySearch} onChange={e => setCitySearch(e.target.value)}
+                    placeholder='ابحث عن مدينة أو دولة...'
+                    className='w-full pr-10 pl-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-amber-500/30'
+                    style={{ fontFamily: fontVar }} autoFocus />
+                </div>
+              </div>
+              {/* City List */}
+              <div className='flex-1 overflow-y-auto p-4 space-y-2'>
+                {filteredCountries.map(country => (
+                  <div key={country.code}>
+                    <button onClick={() => setExpandedCountry(expandedCountry === country.code ? null : country.code)}
+                      className='w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-white/5 transition-colors'>
+                      <span className='text-white text-sm font-medium' style={{ fontFamily: fontVar }}>{country.name}</span>
+                      <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${expandedCountry === country.code ? 'rotate-180' : ''}`} />
+                    </button>
+                    {expandedCountry === country.code && (
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className='pr-4 space-y-1'>
+                        {country.cities.map(city => (
+                          <button key={city.name} onClick={() => selectCity(city)}
+                            className={`w-full text-right p-2.5 rounded-lg transition-all text-sm ${selectedCity?.name === city.name ? 'bg-amber-500/15 text-amber-200 border border-amber-500/20' : 'text-slate-300 hover:bg-white/5'}`}
+                            style={{ fontFamily: fontVar }}>
+                            <div className='flex items-center justify-between'>
+                              <span>{city.name}</span>
+                              {selectedCity?.name === city.name && <Check className='w-4 h-4 text-amber-400' />}
+                            </div>
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
 
         {/* Data Management */}
         <SettingRow delay={0.3}>
           <div className='flex items-center gap-3 mb-3'>
             <div className='w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center'><RotateCcw className='w-4 h-4 text-slate-400' /></div>
-            <div><p className='text-white font-medium text-sm' style={{ fontFamily: 'var(--font-arabic)' }}>إدارة البيانات</p></div>
+            <div><p className='text-white font-medium text-sm' style={{ fontFamily: fontVar }}>إدارة البيانات</p></div>
           </div>
           <div className='space-y-2'>
             <button onClick={() => { if (confirm('إعادة تعيين أذكار اليوم؟')) resetDaily(); }}
-              className='w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-sm hover:bg-white/10 transition-colors'
-              style={{ fontFamily: 'var(--font-arabic)' }}>إعادة تعيين أذكار اليوم</button>
+              className='w-full py-2.5 rounded-xl glass-card border-white/10 text-slate-300 text-sm hover:bg-white/10 transition-colors'
+              style={{ fontFamily: fontVar }}>إعادة تعيين أذكار اليوم</button>
             <button onClick={() => { if (confirm('إعادة تعيين جميع البيانات؟ لا يمكن التراجع.')) { setStreak(0); setTreeLevel(0); localStorage.clear(); window.location.reload(); } }}
               className='w-full py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm hover:bg-red-500/20 transition-colors'
-              style={{ fontFamily: 'var(--font-arabic)' }}>حذف جميع البيانات</button>
+              style={{ fontFamily: fontVar }}>حذف جميع البيانات</button>
           </div>
         </SettingRow>
 
         {/* About */}
         <SettingRow delay={0.35}>
           <div className='text-center'>
-            <span className='text-3xl block mb-2'>🕌</span>
-            <h3 className='text-white font-bold text-base mb-0.5' style={{ fontFamily: 'var(--font-arabic)' }}>أذكاري</h3>
-            <p className='text-slate-400 text-xs'>تطبيق أذكار ما بعد الصلاة</p>
-            <p className='text-emerald-300/30 text-[10px] mt-2'>الإصدار 2.0.0</p>
-            <p className='text-slate-500 text-[10px] mt-1'>بسم الله، جعلنا هذا التطبيق في ميزان حسناتكم</p>
+            <div className='w-14 h-14 mx-auto mb-2 rounded-full bg-gradient-to-br from-amber-500/20 via-emerald-500/10 to-teal-500/20 flex items-center justify-center border border-amber-500/15 gold-glow'>
+              <IslamicIcon name='mosque' className='w-7 h-7 text-amber-300' />
+            </div>
+            <h3 className='text-white font-bold text-base mb-0.5' style={{ fontFamily: fontVar }}>أذكاري</h3>
+            <p className='text-slate-400 text-xs' style={{ fontFamily: fontVar }}>تطبيق أذكار شامل</p>
+            <p className='text-amber-300/30 text-[10px] mt-2'>الإصدار 3.0.0</p>
+            <p className='text-slate-500 text-[10px] mt-1' style={{ fontFamily: fontVar }}>بسم الله، جعلنا هذا التطبيق في ميزان حسناتكم</p>
           </div>
         </SettingRow>
       </main>
