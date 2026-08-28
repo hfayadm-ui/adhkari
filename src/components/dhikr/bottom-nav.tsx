@@ -2,12 +2,13 @@
 
 import { motion } from 'framer-motion';
 import { useDhikrStore, Screen } from '@/lib/store';
-import { Home, BookOpen, Hand, BarChart3, Settings } from '@/components/dhikr/islamic-icons';
+import { Home, BookOpen, Hand, BarChart3, Settings, Wind } from '@/components/dhikr/islamic-icons';
 
 const tabs: { id: Screen; label: string; iconName: string; icon: React.ReactNode }[] = [
   { id: 'home', label: 'الرئيسية', iconName: 'home', icon: <Home className='w-5 h-5' /> },
   { id: 'library', label: 'المكتبة', iconName: 'book', icon: <BookOpen className='w-5 h-5' /> },
   { id: 'counter', label: 'المسبحة', iconName: 'hand', icon: <Hand className='w-5 h-5' /> },
+  { id: 'relaxation', label: 'استرخاء', iconName: 'wind', icon: <Wind className='w-5 h-5' /> },
   { id: 'stats', label: 'إحصائيات', iconName: 'bar-chart', icon: <BarChart3 className='w-5 h-5' /> },
   { id: 'settings', label: 'الإعدادات', iconName: 'settings', icon: <Settings className='w-5 h-5' /> },
 ];
@@ -44,7 +45,7 @@ export default function BottomNav() {
                 <button
                   key={tab.id}
                   onClick={() => setCurrentScreen(tab.id)}
-                  className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all duration-200 min-w-[56px] ${
+                  className={`relative flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl transition-all duration-200 min-w-[48px] ${
                     active ? `${c.active}` : 'app-text-muted hover:app-text-2'
                   }`}
                 >

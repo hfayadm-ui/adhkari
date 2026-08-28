@@ -1,6 +1,6 @@
 'use client';
 
-import { 
+import {
   Sun, Moon, Star, Sunrise, Sunset, CloudSun, Sparkles, Leaf, Bell,
   BookOpen, Hand, BarChart3, Settings, Home, ChevronLeft, ChevronRight,
   ChevronDown, ChevronUp, Clock, Trophy, TreePine, TrendingUp, Calendar,
@@ -8,7 +8,7 @@ import {
   Search, CheckCircle2, Bookmark, Info, Share2, Copy, Compass, Gem,
   Utensils, Shield, MapPin, Type, Palette, Eye, Heart, Flame,
   CircleDot, Landmark, PalmTree, Trees, StarOff, X, ArrowRight, Check,
-  Mosque as LucideMosque, Waves
+  Mosque as LucideMosque, Waves, Wind, Brain, Flower2, Cloud, Droplets, Play, Pause, RotateCw
 } from 'lucide-react';
 import React from 'react';
 
@@ -158,6 +158,14 @@ const iconMap: Record<string, React.FC<{className?: string; color?: string}>> = 
   'x': X,
   'arrow-right': ArrowRight,
   'waves': Waves,
+  'wind': Wind,
+  'brain': Brain,
+  'flower': Flower2,
+  'cloud': Cloud,
+  'droplets': Droplets,
+  'play': Play,
+  'pause': Pause,
+  'rotate-cw': RotateCw,
 };
 
 interface IconProps {
@@ -177,11 +185,12 @@ export function IslamicIcon({ name, className = 'w-5 h-5', color }: IconProps) {
 export default IslamicIcon;
 
 // Re-export all lucide icons used elsewhere
-export { 
+export {
   Home, BookOpen, Hand, BarChart3, Settings, ChevronLeft, ChevronRight,
   ChevronDown, ChevronUp, Clock, Trophy, TreePine, TrendingUp, Calendar,
   Award, Zap, RotateCcw, Target, Volume2, VolumeX, Search, CheckCircle2, Check,
   Bookmark, Info, Share2, Copy, Compass, Star, Flame, Sparkles,
   Sun, Moon, Sunrise, Sunset, CloudSun, Bell, Leaf, Gem, Utensils,
-  Shield, MapPin, Type, Palette, Heart, Eye, Landmark, X, Plus, Minus, ArrowRight
+  Shield, MapPin, Type, Palette, Heart, Eye, Landmark, X, Plus, Minus, ArrowRight,
+  Wind, Brain, Flower2, Cloud, Droplets, Play, Pause, RotateCw
 };
