@@ -226,7 +226,7 @@ export default function ReadingScreen() {
               {currentCount > 0 && (
                 <button onClick={() => {
                   if (currentDhikrIndex + 1 < totalDhikr) { setCurrentDhikrIndex(currentDhikrIndex + 1); setCurrentCount(0); }
-                }} className='mt-5 text-slate-500 text-xs hover:text-slate-300 transition-colors flex items-center gap-1 mx-auto'>
+                }} className='mt-10 text-slate-500 text-xs hover:text-slate-300 transition-colors flex items-center gap-1 mx-auto bg-transparent py-2 px-5 rounded-full border border-white/5 hover:border-white/10 hover:bg-white/[0.03]'>
                   <span style={{ fontFamily: fontVar }}>تخطي</span> <ChevronRight className='w-3 h-3' />
                 </button>
               )}
