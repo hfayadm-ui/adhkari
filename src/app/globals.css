@@ -44,42 +44,69 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* ================================ */
+/*   LIGHT MODE (default :root)      */
+/* ================================ */
 :root {
   --radius: 0.625rem;
-  --background: oklch(0.09 0.015 260);
-  --foreground: oklch(0.93 0.01 250);
-  --card: oklch(0.13 0.018 260);
-  --card-foreground: oklch(0.93 0.01 250);
-  --popover: oklch(0.13 0.018 260);
-  --popover-foreground: oklch(0.93 0.01 250);
-  --primary: oklch(0.62 0.17 160);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.22 0.02 260);
-  --secondary-foreground: oklch(0.85 0.01 250);
-  --muted: oklch(0.22 0.02 260);
-  --muted-foreground: oklch(0.65 0.02 250);
-  --accent: oklch(0.18 0.025 160);
-  --accent-foreground: oklch(0.93 0.01 250);
+  --background: oklch(0.985 0.005 85);
+  --foreground: oklch(0.20 0.02 260);
+  --card: oklch(0.995 0.002 85);
+  --card-foreground: oklch(0.20 0.02 260);
+  --popover: oklch(0.995 0.002 85);
+  --popover-foreground: oklch(0.20 0.02 260);
+  --primary: oklch(0.55 0.15 160);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.94 0.008 85);
+  --secondary-foreground: oklch(0.30 0.02 260);
+  --muted: oklch(0.94 0.008 85);
+  --muted-foreground: oklch(0.50 0.02 260);
+  --accent: oklch(0.92 0.03 85);
+  --accent-foreground: oklch(0.25 0.02 260);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.25 0.02 260);
-  --input: oklch(0.25 0.02 260);
-  --ring: oklch(0.62 0.17 160);
-  --gold: oklch(0.78 0.15 85);
-  --chart-1: oklch(0.62 0.17 160);
-  --chart-2: oklch(0.60 0.12 180);
-  --chart-3: oklch(0.55 0.10 200);
-  --chart-4: oklch(0.78 0.15 85);
-  --chart-5: oklch(0.75 0.18 70);
-  --sidebar: oklch(0.13 0.018 260);
-  --sidebar-foreground: oklch(0.93 0.01 250);
-  --sidebar-primary: oklch(0.62 0.17 160);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.18 0.025 160);
-  --sidebar-accent-foreground: oklch(0.93 0.01 250);
-  --sidebar-border: oklch(0.25 0.02 260);
-  --sidebar-ring: oklch(0.62 0.17 160);
+  --border: oklch(0.88 0.01 85);
+  --input: oklch(0.88 0.01 85);
+  --ring: oklch(0.55 0.15 160);
+  --gold: oklch(0.75 0.16 85);
+  --chart-1: oklch(0.55 0.15 160);
+  --chart-2: oklch(0.55 0.10 200);
+  --chart-3: oklch(0.50 0.08 230);
+  --chart-4: oklch(0.75 0.16 85);
+  --chart-5: oklch(0.70 0.18 70);
+  --sidebar: oklch(0.97 0.005 85);
+  --sidebar-foreground: oklch(0.20 0.02 260);
+  --sidebar-primary: oklch(0.55 0.15 160);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.93 0.02 85);
+  --sidebar-accent-foreground: oklch(0.25 0.02 260);
+  --sidebar-border: oklch(0.90 0.01 85);
+  --sidebar-ring: oklch(0.55 0.15 160);
+
+  /* App tokens - LIGHT */
+  --app-bg: linear-gradient(180deg, #faf8f4 0%, #f5f0e8 40%, #f0ebe0 100%);
+  --app-text: #1e293b;
+  --app-text-2: #475569;
+  --app-text-3: #94a3b8;
+  --app-text-muted: #64748b;
+  --app-surface: rgba(0,0,0,0.04);
+  --app-surface-hover: rgba(0,0,0,0.07);
+  --app-card-bg: rgba(255,255,255,0.75);
+  --app-card-border: rgba(0,0,0,0.08);
+  --app-nav-bg: rgba(255,255,255,0.92);
+  --app-modal-bg: #ffffff;
+  --app-shimmer: rgba(180,140,20,0.06);
+  --app-pattern-1: rgba(180,140,20,0.04);
+  --app-pattern-2: rgba(16,150,100,0.03);
+  --app-ring-track: rgba(0,0,0,0.06);
+  --app-chart-bar: rgba(0,0,0,0.08);
+  --app-scrollbar: rgba(180,140,20,0.25);
+  --app-input-bg: rgba(0,0,0,0.04);
+  --app-input-border: rgba(0,0,0,0.10);
 }
 
+/* ================================ */
+/*   DARK MODE (.dark)               */
+/* ================================ */
 .dark {
   --background: oklch(0.09 0.015 260);
   --foreground: oklch(0.93 0.01 250);
@@ -113,6 +140,27 @@
   --sidebar-accent-foreground: oklch(0.93 0.01 250);
   --sidebar-border: oklch(0.25 0.02 260);
   --sidebar-ring: oklch(0.62 0.17 160);
+
+  /* App tokens - DARK */
+  --app-bg: linear-gradient(180deg, #060b18 0%, #0a0f1a 40%, #0d1117 100%);
+  --app-text: #f1f5f9;
+  --app-text-2: #94a3b8;
+  --app-text-3: #64748b;
+  --app-text-muted: #475569;
+  --app-surface: rgba(255,255,255,0.05);
+  --app-surface-hover: rgba(255,255,255,0.10);
+  --app-card-bg: rgba(255,255,255,0.03);
+  --app-card-border: rgba(255,255,255,0.06);
+  --app-nav-bg: rgba(10,15,26,0.94);
+  --app-modal-bg: #0d1220;
+  --app-shimmer: rgba(212,175,55,0.08);
+  --app-pattern-1: rgba(212,175,55,0.03);
+  --app-pattern-2: rgba(52,211,153,0.03);
+  --app-ring-track: rgba(255,255,255,0.05);
+  --app-chart-bar: rgba(255,255,255,0.08);
+  --app-scrollbar: rgba(212,175,55,0.2);
+  --app-input-bg: rgba(255,255,255,0.05);
+  --app-input-border: rgba(255,255,255,0.10);
 }
 
 @layer base {
@@ -127,37 +175,36 @@
   }
 }
 
-/* Custom scrollbar - gold-tinted */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.2);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.4);
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--app-scrollbar); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--app-scrollbar); filter: brightness(1.4); }
 
-/* Pulse animation for tap button - gold-tinted */
+/* ================================ */
+/*   App Theme Utility Classes       */
+/* ================================ */
+.app-text { color: var(--app-text); }
+.app-text-2 { color: var(--app-text-2); }
+.app-text-muted { color: var(--app-text-muted); }
+.app-surface { background: var(--app-surface); }
+.app-surface-h:hover { background: var(--app-surface-hover); }
+.app-border-c { border-color: var(--app-card-border); }
+.app-input { background: var(--app-input-bg); border-color: var(--app-input-border); }
+
+/* ================================ */
+/*   Animations                      */
+/* ================================ */
 @keyframes gentle-pulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.3); }
   50% { box-shadow: 0 0 0 20px rgba(212, 175, 55, 0); }
 }
+.pulse-gentle { animation: gentle-pulse 2s infinite; }
 
-.pulse-gentle {
-  animation: gentle-pulse 2s infinite;
-}
-
-/* Smooth text animation for karaoke-style - gold gradient */
 @keyframes text-reveal {
   from { background-position: 0% 50%; }
   to { background-position: 100% 50%; }
 }
-
 .text-karaoke {
   background: linear-gradient(90deg, #d4af37 0%, #f0d060 50%, #d4af37 100%);
   background-size: 200% auto;
@@ -167,46 +214,43 @@
   animation: text-reveal 3s linear infinite;
 }
 
-/* Islamic shimmer animation */
+/* ================================ */
+/*   Islamic Utilities                */
+/* ================================ */
 @keyframes islamic-shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
-
 .islamic-shimmer {
-  background: linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.08) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, var(--app-shimmer) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: islamic-shimmer 3s ease-in-out infinite;
 }
 
-/* Islamic geometric border pattern */
 .islamic-border {
   border-image: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(52, 211, 153, 0.1), rgba(212, 175, 55, 0.3)) 1;
 }
 
-/* Glassmorphism card utility */
 .glass-card {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--app-card-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--app-card-border);
 }
 
-/* Gold glow utility */
 .gold-glow {
   box-shadow: 0 0 30px rgba(212, 175, 55, 0.15), 0 0 60px rgba(212, 175, 55, 0.05);
 }
 
-/* Arabic font family classes */
+.islamic-pattern-bg {
+  background-image: 
+    radial-gradient(circle at 25% 25%, var(--app-pattern-1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, var(--app-pattern-2) 0%, transparent 50%);
+}
+
+/* Arabic font classes */
 .font-arabic-amiri { font-family: 'Amiri', serif; }
 .font-arabic-naskh { font-family: 'Noto Naskh Arabic', serif; }
 .font-arabic-tajawal { font-family: 'Tajawal', sans-serif; }
 .font-arabic-ibm-plex { font-family: 'IBM Plex Sans Arabic', sans-serif; }
 .font-arabic-scheherazade { font-family: 'Scheherazade New', serif; }
-
-/* Islamic geometric pattern background (subtle CSS-only) */
-.islamic-pattern-bg {
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(52, 211, 153, 0.03) 0%, transparent 50%);
-}

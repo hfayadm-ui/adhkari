@@ -116,11 +116,11 @@ export default function ReadingScreen() {
               <IslamicIcon name={openingIcon} className='w-12 h-12 text-amber-200' color='#fde68a' />
             </div>
           </div>
-          <h2 className='text-2xl font-bold text-white mb-4' style={{ fontFamily: fontVar }}>{title}</h2>
+          <h2 className='text-2xl font-bold app-text mb-4' style={{ fontFamily: fontVar }}>{title}</h2>
           <p className='text-emerald-200/70 text-base leading-relaxed mb-3' style={{ fontFamily: fontVar }}>{openingMsg}</p>
-          <p className='text-slate-400 text-xs mb-8'>{dhikrList.length} أذكار بانتظارك</p>
+          <p className='app-text-2 text-xs mb-8'>{dhikrList.length} أذكار بانتظارك</p>
           <motion.button whileTap={{ scale: 0.95 }} onClick={() => setShowOpening(false)}
-            className='w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 via-emerald-500 to-teal-500 text-white font-bold text-lg shadow-lg shadow-emerald-500/25'
+            className='w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 via-emerald-500 to-teal-500 app-text font-bold text-lg shadow-lg shadow-emerald-500/25'
             style={{ fontFamily: fontVar }}>
             بسم الله ابدأ
           </motion.button>
@@ -133,12 +133,12 @@ export default function ReadingScreen() {
     <div className='flex flex-col min-h-screen pb-24 relative'>
       {/* Top Bar */}
       <header className='glass-card flex items-center justify-between p-4 pb-3 rounded-b-2xl border-t-0 border-x-0'>
-        <button onClick={() => setCurrentScreen('home')} className='flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors'>
+        <button onClick={() => setCurrentScreen('home')} className='flex items-center gap-1.5 app-text-2 hover:app-text transition-colors'>
           <Home className='w-5 h-5' /><span className='text-sm'>الرئيسية</span>
         </button>
         <h2 className='text-emerald-200 font-medium text-sm' style={{ fontFamily: fontVar }}>{title}</h2>
-        <button onClick={() => useDhikrStore.getState().toggleSound()} className='w-9 h-9 rounded-full bg-white/5 flex items-center justify-center'>
-          {soundEnabled ? <Volume2 className='w-4 h-4 text-emerald-400' /> : <VolumeX className='w-4 h-4 text-slate-500' />}
+        <button onClick={() => useDhikrStore.getState().toggleSound()} className='w-9 h-9 rounded-full app-surface flex items-center justify-center'>
+          {soundEnabled ? <Volume2 className='w-4 h-4 text-emerald-400' /> : <VolumeX className='w-4 h-4 app-text-muted' />}
         </button>
       </header>
 
@@ -148,14 +148,14 @@ export default function ReadingScreen() {
           <span className='text-emerald-300/50 text-[11px]'>{completedSet.length}/{totalDhikr} أذكار مكتملة</span>
           <span className='text-amber-400 text-[11px] font-medium'>{Math.round(progressPct)}%</span>
         </div>
-        <div className='w-full bg-white/5 rounded-full h-1.5 overflow-hidden relative'>
+        <div className='w-full app-surface rounded-full h-1.5 overflow-hidden relative'>
           <motion.div className='bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-400 h-1.5 rounded-full'
             initial={{ width: 0 }} animate={{ width: `${progressPct}%` }} transition={{ duration: 0.4 }} />
           <div className='absolute inset-0 islamic-shimmer rounded-full' />
         </div>
         <div className='flex gap-1 mt-2 justify-center'>
           {dhikrList.map((_, idx) => (
-            <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx < currentDhikrIndex ? 'bg-amber-400 w-5' : idx === currentDhikrIndex ? 'bg-emerald-400 w-3' : 'bg-white/5 w-1.5'}`} />
+            <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx < currentDhikrIndex ? 'bg-amber-400 w-5' : idx === currentDhikrIndex ? 'bg-emerald-400 w-3' : 'app-surface w-1.5'}`} />
           ))}
         </div>
       </div>
@@ -169,12 +169,12 @@ export default function ReadingScreen() {
               <div className='flex items-center justify-center gap-3 mb-5'>
                 <span className='px-3 py-1 rounded-full glass-card border-amber-500/20 text-amber-300 text-xs' style={{ fontFamily: fontVar }}>{currentDhikr.category}</span>
                 {currentDhikr.reference && (
-                  <button onClick={() => setShowReference(!showReference)} className='w-7 h-7 rounded-full bg-white/5 flex items-center justify-center'>
-                    <Info className='w-3.5 h-3.5 text-slate-400' />
+                  <button onClick={() => setShowReference(!showReference)} className='w-7 h-7 rounded-full app-surface flex items-center justify-center'>
+                    <Info className='w-3.5 h-3.5 app-text-2' />
                   </button>
                 )}
-                <button className='w-7 h-7 rounded-full bg-white/5 flex items-center justify-center'>
-                  <Bookmark className='w-3.5 h-3.5 text-slate-400' />
+                <button className='w-7 h-7 rounded-full app-surface flex items-center justify-center'>
+                  <Bookmark className='w-3.5 h-3.5 app-text-2' />
                 </button>
               </div>
 
@@ -201,7 +201,7 @@ export default function ReadingScreen() {
                 <div className='absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-amber-500/20 rounded-tl-2xl' />
                 <div className='absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-amber-500/20 rounded-br-2xl' />
                 <div className='absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-amber-500/20 rounded-bl-2xl' />
-                <p className={`relative ${fontClass} font-bold text-white leading-loose py-6 px-4`} style={{ fontFamily: fontVar }}>{currentDhikr.text}</p>
+                <p className={`relative ${fontClass} font-bold app-text leading-loose py-6 px-4`} style={{ fontFamily: fontVar }}>{currentDhikr.text}</p>
               </div>
 
               {/* Counter */}
@@ -217,7 +217,7 @@ export default function ReadingScreen() {
                 <div className='absolute inset-0 rounded-full border border-amber-400/20 animate-ping' />
                 <div className='absolute inset-2 rounded-full border border-amber-300/10' />
                 <div className='relative text-center'>
-                  <IslamicIcon name='hand-tap' className='w-10 h-10 text-white mx-auto' color='#ffffff' />
+                  <IslamicIcon name='hand-tap' className='w-10 h-10 app-text mx-auto' color='#ffffff' />
                   <span className='text-amber-100/70 text-[10px] mt-1 block' style={{ fontFamily: fontVar }}>اضغط للتسبيح</span>
                 </div>
               </motion.button>
@@ -226,7 +226,7 @@ export default function ReadingScreen() {
               {currentCount > 0 && (
                 <button onClick={() => {
                   if (currentDhikrIndex + 1 < totalDhikr) { setCurrentDhikrIndex(currentDhikrIndex + 1); setCurrentCount(0); }
-                }} className='mt-10 text-slate-500 text-xs hover:text-slate-300 transition-colors flex items-center gap-1 mx-auto bg-transparent py-2 px-5 rounded-full border border-white/5 hover:border-white/10 hover:bg-white/[0.03]'>
+                }} className='mt-10 app-text-muted text-xs hover:app-text-2 transition-colors flex items-center gap-1 mx-auto bg-transparent py-2 px-5 rounded-full border app-border-c hover:app-border-c hover:app-surface'>
                   <span style={{ fontFamily: fontVar }}>تخطي</span> <ChevronRight className='w-3 h-3' />
                 </button>
               )}
@@ -235,7 +235,7 @@ export default function ReadingScreen() {
             <motion.div key='motiv' initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.1 }} className='text-center max-w-sm mx-auto'>
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', delay: 0.15 }}
                 className='w-16 h-16 mx-auto mb-5 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg gold-glow'>
-                <Star className='w-8 h-8 text-white' />
+                <Star className='w-8 h-8 app-text' />
               </motion.div>
               <p className='text-lg text-amber-200 leading-relaxed font-medium' style={{ fontFamily: fontVar }}>{currentQuote}</p>
             </motion.div>

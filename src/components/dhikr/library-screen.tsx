@@ -57,14 +57,14 @@ export default function LibraryScreen() {
       <header className='px-4 pt-4 pb-3'>
         <div className='flex items-center gap-2.5 mb-3'>
           <IslamicIcon name='book' className='w-7 h-7 text-amber-400' />
-          <h1 className='text-2xl font-bold text-white' style={{ fontFamily: fontVar }}>مكتبة الأذكار</h1>
+          <h1 className='text-2xl font-bold app-text' style={{ fontFamily: fontVar }}>مكتبة الأذكار</h1>
         </div>
         <div className='relative'>
-          <Search className='absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500' />
+          <Search className='absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 app-text-muted' />
           <input
             type='text' value={search} onChange={e => setSearch(e.target.value)}
             placeholder='ابحث في الأذكار...'
-            className='w-full pr-10 pl-4 py-3 rounded-xl glass-card text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-amber-500/30 transition-colors'
+            className='w-full pr-10 pl-4 py-3 rounded-xl glass-card app-text text-sm placeholder:app-text-muted focus:outline-none focus:border-amber-500/30 transition-colors'
             style={{ fontFamily: fontVar }}
           />
         </div>
@@ -83,20 +83,20 @@ export default function LibraryScreen() {
               transition={{ delay: i * 0.05 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => openCategory(cat.id)}
-              className={`w-full glass-card rounded-2xl p-4 flex items-center gap-4 hover:bg-white/8 transition-colors text-right border ${cBorder}`}
+              className={`w-full glass-card rounded-2xl p-4 flex items-center gap-4 app-surface-h transition-colors text-right border ${cBorder}`}
             >
               <div className='w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/10 to-emerald-500/5 flex items-center justify-center flex-shrink-0 border border-amber-500/10'>
                 <IslamicIcon name={cat.icon} className='w-6 h-6 text-amber-300' />
               </div>
               <div className='flex-1 min-w-0'>
-                <h3 className='text-white font-bold text-sm mb-0.5' style={{ fontFamily: fontVar }}>{cat.name}</h3>
-                <p className='text-slate-400 text-xs truncate' style={{ fontFamily: fontVar }}>{cat.description}</p>
+                <h3 className='app-text font-bold text-sm mb-0.5' style={{ fontFamily: fontVar }}>{cat.name}</h3>
+                <p className='app-text-2 text-xs truncate' style={{ fontFamily: fontVar }}>{cat.description}</p>
                 <div className='flex items-center gap-2 mt-1.5'>
-                  <span className='text-[10px] text-slate-500'>{count} ذكر</span>
+                  <span className='text-[10px] app-text-muted'>{count} ذكر</span>
                   {done > 0 && <span className='text-[10px] text-emerald-400 flex items-center gap-0.5'><CheckCircle2 className='w-3 h-3' /> {done} مكتمل</span>}
                 </div>
               </div>
-              <ChevronLeft className='w-5 h-5 text-slate-500 rotate-180 flex-shrink-0' />
+              <ChevronLeft className='w-5 h-5 app-text-muted rotate-180 flex-shrink-0' />
             </motion.button>
           );
         })}
@@ -110,10 +110,10 @@ export default function LibraryScreen() {
             <Star className='w-5 h-5 text-amber-400' />
             <h3 className='text-amber-200 font-bold text-sm' style={{ fontFamily: fontVar }}>الأذكار المفضلة</h3>
           </div>
-          <p className='text-slate-400 text-xs' style={{ fontFamily: fontVar }}>قريباً.. يمكنك حفظ أذكارك المفضلة للوصول السريع</p>
+          <p className='app-text-2 text-xs' style={{ fontFamily: fontVar }}>قريباً.. يمكنك حفظ أذكارك المفضلة للوصول السريع</p>
           <div className='flex gap-2 mt-3 flex-wrap'>
             {['سبحان الله', 'الحمد لله', 'الله أكبر', 'أستغفر الله', 'لا إله إلا الله'].map(d => (
-              <span key={d} className='px-2.5 py-1 rounded-full glass-card text-[10px] text-slate-300 border-amber-500/10' style={{ fontFamily: fontVar }}>{d}</span>
+              <span key={d} className='px-2.5 py-1 rounded-full glass-card text-[10px] app-text-2 border-amber-500/10' style={{ fontFamily: fontVar }}>{d}</span>
             ))}
           </div>
         </motion.div>

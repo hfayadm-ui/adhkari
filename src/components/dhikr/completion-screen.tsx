@@ -54,13 +54,13 @@ export default function CompletionScreen() {
         {/* Main Icon */}
         <motion.div initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 15 }}
           className='relative w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 via-emerald-400 to-teal-500 flex items-center justify-center mb-6 shadow-2xl shadow-amber-500/30 gold-glow'>
-          <Heart className='w-10 h-10 text-white' />
+          <Heart className='w-10 h-10 app-text' />
           <div className='absolute inset-0 rounded-full border border-amber-300/30 animate-pulse' />
         </motion.div>
 
         {/* Title */}
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-          className='text-2xl font-bold text-white mb-3 text-center' style={{ fontFamily: fontVar }}>
+          className='text-2xl font-bold app-text mb-3 text-center' style={{ fontFamily: fontVar }}>
           {allDone ? (
             <span className='flex items-center justify-center gap-2'>
               <Star className='w-5 h-5 text-amber-300' />
@@ -113,20 +113,20 @@ export default function CompletionScreen() {
         {/* Actions */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65 }} className='w-full max-w-sm space-y-2.5'>
           <motion.button whileTap={{ scale: 0.97 }} onClick={() => setCurrentScreen('home')}
-            className='w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-emerald-500 to-teal-500 text-white font-bold text-base shadow-lg shadow-emerald-500/25'
+            className='w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-emerald-500 to-teal-500 app-text font-bold text-base shadow-lg shadow-emerald-500/25'
             style={{ fontFamily: fontVar }}>العودة للرئيسية</motion.button>
           <div className='grid grid-cols-3 gap-2'>
             <motion.button whileTap={{ scale: 0.97 }} onClick={() => setCurrentScreen('reading')}
-              className='glass-card py-3 rounded-xl text-white text-xs hover:bg-white/10 transition-colors'>
+              className='glass-card py-3 rounded-xl app-text text-xs app-surface-h transition-colors'>
               <span className='flex flex-col items-center gap-1'><RotateCcw className='w-4 h-4' /><span style={{ fontFamily: fontVar }}>إعادة</span></span>
             </motion.button>
             <motion.button whileTap={{ scale: 0.97 }} onClick={handleCopy}
-              className='glass-card py-3 rounded-xl text-white text-xs hover:bg-white/10 transition-colors'>
+              className='glass-card py-3 rounded-xl app-text text-xs app-surface-h transition-colors'>
               <span className='flex flex-col items-center gap-1'><Copy className='w-4 h-4' />{copied ? 'تم!' : 'نسخ'}</span>
             </motion.button>
             <motion.button whileTap={{ scale: 0.97 }} onClick={() => {
               if ('share' in navigator) (navigator as unknown as { share: (d: { title: string; text: string }) => Promise<void> }).share({ title: 'أذكاري', text: shareText }).catch(() => {});
-            }} className='glass-card py-3 rounded-xl text-white text-xs hover:bg-white/10 transition-colors'>
+            }} className='glass-card py-3 rounded-xl app-text text-xs app-surface-h transition-colors'>
               <span className='flex flex-col items-center gap-1'><Share2 className='w-4 h-4' /><span style={{ fontFamily: fontVar }}>مشاركة</span></span>
             </motion.button>
           </div>

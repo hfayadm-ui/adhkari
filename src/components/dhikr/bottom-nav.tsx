@@ -13,11 +13,11 @@ const tabs: { id: Screen; label: string; iconName: string; icon: React.ReactNode
 ];
 
 const colorMap: Record<string, { active: string; bg: string; border: string }> = {
-  emerald: { active: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
-  blue: { active: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
-  purple: { active: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
-  amber: { active: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
-  rose: { active: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/20' },
+  emerald: { active: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-500/10', border: 'border-emerald-200 dark:border-emerald-500/20' },
+  blue: { active: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-500/10', border: 'border-blue-200 dark:border-blue-500/20' },
+  purple: { active: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-100 dark:bg-purple-500/10', border: 'border-purple-200 dark:border-purple-500/20' },
+  amber: { active: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-500/10', border: 'border-amber-200 dark:border-amber-500/20' },
+  rose: { active: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-100 dark:bg-rose-500/10', border: 'border-rose-200 dark:border-rose-500/20' },
 };
 
 export default function BottomNav() {
@@ -29,9 +29,9 @@ export default function BottomNav() {
   return (
     <nav className='fixed bottom-0 left-0 right-0 z-50'>
       <div className='max-w-md mx-auto'>
-        <div className='mx-3 mb-3 rounded-2xl border border-white/8'
+        <div className='mx-3 mb-3 rounded-2xl border app-border-c'
           style={{
-            background: 'rgba(10, 15, 26, 0.94)',
+            background: 'var(--app-nav-bg)',
             backdropFilter: 'blur(24px) saturate(1.5)',
             WebkitBackdropFilter: 'blur(24px) saturate(1.5)',
           }}
@@ -45,7 +45,7 @@ export default function BottomNav() {
                   key={tab.id}
                   onClick={() => setCurrentScreen(tab.id)}
                   className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all duration-200 min-w-[56px] ${
-                    active ? `${c.active}` : 'text-slate-500 hover:text-slate-300'
+                    active ? `${c.active}` : 'app-text-muted hover:app-text-2'
                   }`}
                 >
                   {active && (

@@ -38,7 +38,7 @@ export default function StatsScreen() {
       <header className='px-4 pt-4 pb-2'>
         <div className='flex items-center gap-2.5'>
           <IslamicIcon name='bar-chart' className='w-7 h-7 text-amber-400' />
-          <h1 className='text-2xl font-bold text-white' style={{ fontFamily: fontVar }}>الإحصائيات والإنجازات</h1>
+          <h1 className='text-2xl font-bold app-text' style={{ fontFamily: fontVar }}>الإحصائيات والإنجازات</h1>
         </div>
       </header>
 
@@ -63,9 +63,9 @@ export default function StatsScreen() {
         </div>
 
         {/* Weekly Bar Chart */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className='glass-card rounded-2xl border-white/10 p-4'>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className='glass-card rounded-2xl app-border-c p-4'>
           <div className='flex items-center justify-between mb-4'>
-            <h3 className='text-white font-medium text-sm flex items-center gap-2' style={{ fontFamily: fontVar }}>
+            <h3 className='app-text font-medium text-sm flex items-center gap-2' style={{ fontFamily: fontVar }}>
               <Calendar className='w-4 h-4 text-amber-400' /> هذا الأسبوع
             </h3>
           </div>
@@ -75,16 +75,16 @@ export default function StatsScreen() {
               const isToday = i === (dayMap[todayIdx] ?? 3);
               return (
                 <div key={i} className='flex-1 flex flex-col items-center gap-1'>
-                  <span className='text-[9px] text-slate-400'>{v > 0 ? v : ''}</span>
+                  <span className='text-[9px] app-text-2'>{v > 0 ? v : ''}</span>
                   <div className='w-full rounded-t-lg relative' style={{ height: '100px' }}>
                     <div className='absolute bottom-0 w-full rounded-t-lg transition-all duration-700'
                       style={{
                         height: `${Math.max(h, 3)}%`,
-                        background: isToday ? 'linear-gradient(to top, #f59e0b, #fbbf24)' : 'rgba(255,255,255,0.08)',
+                        background: isToday ? 'linear-gradient(to top, #f59e0b, #fbbf24)' : 'var(--app-chart-bar)',
                       }}
                     />
                   </div>
-                  <span className={`text-[9px] ${isToday ? 'text-amber-400 font-bold' : 'text-slate-500'}`}>{weekLabels[i]}</span>
+                  <span className={`text-[9px] ${isToday ? 'text-amber-400 font-bold' : 'app-text-muted'}`}>{weekLabels[i]}</span>
                 </div>
               );
             })}
@@ -92,8 +92,8 @@ export default function StatsScreen() {
         </motion.div>
 
         {/* Dhikr Breakdown */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className='glass-card rounded-2xl border-white/10 p-4'>
-          <h3 className='text-white font-medium text-sm mb-3 flex items-center gap-2' style={{ fontFamily: fontVar }}>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className='glass-card rounded-2xl app-border-c p-4'>
+          <h3 className='app-text font-medium text-sm mb-3 flex items-center gap-2' style={{ fontFamily: fontVar }}>
             <Award className='w-4 h-4 text-amber-400' /> تفصيل الأذكار
           </h3>
           <div className='space-y-2.5'>
@@ -104,10 +104,10 @@ export default function StatsScreen() {
               { name: 'أستغفر الله', count: istighfar, icon: 'shield' },
               { name: 'عداد حر', count: freeCounter, icon: 'hand' },
             ].map((item, i) => (
-              <div key={i} className='flex items-center justify-between p-2.5 rounded-xl bg-white/[0.03]'>
+              <div key={i} className='flex items-center justify-between p-2.5 rounded-xl app-surface'>
                 <div className='flex items-center gap-2.5'>
                   <IslamicIcon name={item.icon} className='w-5 h-5 text-amber-400/60' />
-                  <span className='text-slate-200 text-sm' style={{ fontFamily: fontVar }}>{item.name}</span>
+                  <span className='app-text-2 text-sm' style={{ fontFamily: fontVar }}>{item.name}</span>
                 </div>
                 <span className='text-amber-300 font-bold'>{item.count.toLocaleString()}</span>
               </div>
@@ -120,8 +120,8 @@ export default function StatsScreen() {
         </motion.div>
 
         {/* Achievements */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className='glass-card rounded-2xl border-white/10 p-4'>
-          <h3 className='text-white font-medium text-sm mb-3 flex items-center gap-2' style={{ fontFamily: fontVar }}>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className='glass-card rounded-2xl app-border-c p-4'>
+          <h3 className='app-text font-medium text-sm mb-3 flex items-center gap-2' style={{ fontFamily: fontVar }}>
             <Zap className='w-4 h-4 text-amber-400' /> الإنجازات
           </h3>
           <div className='grid grid-cols-3 gap-2'>
@@ -133,9 +133,9 @@ export default function StatsScreen() {
               { name: 'شجرة مثمرة', done: treeLevel >= 5 },
               { name: 'ألف ذكر', done: totalAllTime >= 1000 },
             ].map((a, i) => (
-              <div key={i} className={`rounded-xl p-2.5 text-center transition-all ${a.done ? 'bg-amber-500/10 border border-amber-500/15' : 'bg-white/[0.03] border border-white/5'}`}>
-                <IslamicIcon name={a.done ? 'check-circle' : 'lock'} className={`w-5 h-5 mx-auto mb-0.5 ${a.done ? 'text-amber-300' : 'text-slate-500'}`} />
-                <span className={`text-[9px] block ${a.done ? 'text-amber-200' : 'text-slate-500'}`} style={{ fontFamily: fontVar }}>{a.name}</span>
+              <div key={i} className={`rounded-xl p-2.5 text-center transition-all ${a.done ? 'bg-amber-500/10 border border-amber-500/15' : 'app-surface border app-border-c'}`}>
+                <IslamicIcon name={a.done ? 'check-circle' : 'lock'} className={`w-5 h-5 mx-auto mb-0.5 ${a.done ? 'text-amber-300' : 'app-text-muted'}`} />
+                <span className={`text-[9px] block ${a.done ? 'text-amber-200' : 'app-text-muted'}`} style={{ fontFamily: fontVar }}>{a.name}</span>
               </div>
             ))}
           </div>

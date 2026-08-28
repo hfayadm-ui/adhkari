@@ -84,12 +84,12 @@ export default function CounterScreen() {
         <div className='flex items-center gap-2.5'>
           <IslamicIcon name='hand' className='w-6 h-6 text-amber-400' />
           <div>
-            <h1 className='text-2xl font-bold text-white' style={{ fontFamily: fontVar }}>المسبحة</h1>
-            <p className='text-slate-400 text-xs' style={{ fontFamily: fontVar }}>العداد الحر / اضغط طويلاً للتصفير</p>
+            <h1 className='text-2xl font-bold app-text' style={{ fontFamily: fontVar }}>المسبحة</h1>
+            <p className='app-text-2 text-xs' style={{ fontFamily: fontVar }}>العداد الحر / اضغط طويلاً للتصفير</p>
           </div>
         </div>
-        <button onClick={resetFreeCounter} className='w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-white/10 transition-colors'>
-          <RotateCcw className='w-5 h-5 text-slate-400' />
+        <button onClick={resetFreeCounter} className='w-10 h-10 rounded-full glass-card flex items-center justify-center app-surface-h transition-colors'>
+          <RotateCcw className='w-5 h-5 app-text-2' />
         </button>
       </header>
 
@@ -98,7 +98,7 @@ export default function CounterScreen() {
         <div className='mb-6 text-center'>
           <div className='flex items-center justify-center gap-2 mb-2'>
             <Target className={`w-4 h-4 ${clr.text}`} />
-            <span className='text-slate-400 text-xs' style={{ fontFamily: fontVar }}>الهدف</span>
+            <span className='app-text-2 text-xs' style={{ fontFamily: fontVar }}>الهدف</span>
             <button onClick={() => setShowTargetPicker(!showTargetPicker)} className='text-amber-300 text-xs flex items-center gap-0.5'>
               {currentTarget} {showTargetPicker ? <ChevronUp className='w-3 h-3' /> : <ChevronDown className='w-3 h-3' />}
             </button>
@@ -109,7 +109,7 @@ export default function CounterScreen() {
                 <div className='flex gap-2 justify-center flex-wrap'>
                   {targetOptions.map(t => (
                     <button key={t} onClick={() => { setCustomTarget(t); setShowTargetPicker(false); setActivePreset(null); }}
-                      className={`px-3 py-1 rounded-lg text-xs transition-all ${customTarget === t && !activePreset ? 'bg-amber-500/20 border border-amber-500/30 text-amber-300' : 'glass-card border border-white/10 text-slate-400'}`}>
+                      className={`px-3 py-1 rounded-lg text-xs transition-all ${customTarget === t && !activePreset ? 'bg-amber-500/20 border border-amber-500/30 text-amber-300' : 'glass-card border app-border-c app-text-2'}`}>
                       {t}
                     </button>
                   ))}
@@ -122,7 +122,7 @@ export default function CounterScreen() {
         {/* Main Counter Display */}
         <div className='relative mb-8'>
           <svg className='w-64 h-64 -rotate-90' viewBox='0 0 200 200'>
-            <circle cx='100' cy='100' r='90' fill='none' stroke='rgba(255,255,255,0.05)' strokeWidth='6' />
+            <circle cx='100' cy='100' r='90' fill='none' stroke='var(--app-ring-track)' strokeWidth='6' />
             <motion.circle
               cx='100' cy='100' r='90' fill='none' stroke='url(#counterGrad)' strokeWidth='6' strokeLinecap='round'
               strokeDasharray={565.48}
@@ -143,12 +143,12 @@ export default function CounterScreen() {
                 {activePreset ? currentProgress : freeCounter}
               </motion.span>
             </AnimatePresence>
-            <span className='text-slate-400 text-sm' style={{ fontFamily: fontVar }}>/ {currentTarget}</span>
+            <span className='app-text-2 text-sm' style={{ fontFamily: fontVar }}>/ {currentTarget}</span>
           </div>
           {isComplete && (
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className='absolute -top-2 -right-2'>
               <div className='w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center gold-glow'>
-                <IslamicIcon name='star' className='w-5 h-5 text-white' />
+                <IslamicIcon name='star' className='w-5 h-5 app-text' />
               </div>
             </motion.div>
           )}
@@ -163,11 +163,11 @@ export default function CounterScreen() {
           className={`w-32 h-32 rounded-full bg-gradient-to-br ${clr.btn} shadow-2xl ${clr.glow} ${clr.btnBorder} border-2 flex items-center justify-center active:shadow-inner transition-shadow mb-6 gold-glow`}
         >
           <motion.span animate={{ scale: tapAnim ? 0.9 : 1 }}>
-            <IslamicIcon name='hand-tap' className='w-12 h-12 text-white' color='#ffffff' />
+            <IslamicIcon name='hand-tap' className='w-12 h-12 app-text' color='#ffffff' />
           </motion.span>
         </motion.button>
 
-        <p className='text-slate-500 text-xs mb-6' style={{ fontFamily: fontVar }}>اضغط للعدّ / اضغط مطولاً للتصفير</p>
+        <p className='app-text-muted text-xs mb-6' style={{ fontFamily: fontVar }}>اضغط للعدّ / اضغط مطولاً للتصفير</p>
 
         {/* Presets */}
         <div className='w-full max-w-sm'>
@@ -182,12 +182,12 @@ export default function CounterScreen() {
                   const pct = Math.min(preset.current / preset.target * 100, 100);
                   return (
                     <button key={preset.id} onClick={() => { setActivePreset(preset.id === activePreset ? null : preset.id); }}
-                      className={`w-full glass-card rounded-xl p-3 transition-all border ${activePreset === preset.id ? 'border-amber-500/20' : 'border-white/10 hover:bg-white/8'}`}>
+                      className={`w-full glass-card rounded-xl p-3 transition-all border ${activePreset === preset.id ? 'border-amber-500/20' : 'app-border-c app-surface-h'}`}>
                       <div className='flex items-center justify-between mb-1.5'>
-                        <span className={`text-sm ${activePreset === preset.id ? 'text-white' : 'text-slate-300'}`} style={{ fontFamily: fontVar }}>{preset.name}</span>
-                        <span className='text-xs text-slate-400'>{preset.current}/{preset.target}</span>
+                        <span className={`text-sm ${activePreset === preset.id ? 'app-text' : 'app-text-2'}`} style={{ fontFamily: fontVar }}>{preset.name}</span>
+                        <span className='text-xs app-text-2'>{preset.current}/{preset.target}</span>
                       </div>
-                      <div className='w-full bg-white/5 rounded-full h-1.5'>
+                      <div className='w-full app-surface rounded-full h-1.5'>
                         <div className={`h-1.5 rounded-full transition-all bg-gradient-to-r ${clr.ring}`} style={{ width: `${pct}%` }} />
                       </div>
                     </button>

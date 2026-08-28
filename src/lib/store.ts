@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 export type Screen = 'home' | 'reading' | 'completion' | 'stats' | 'settings' | 'library' | 'counter' | 'category-reading';
 export type ThemeColor = 'emerald' | 'blue' | 'purple' | 'amber' | 'rose';
+export type AppMode = 'dark' | 'light';
 export type ArabicFont = 'cairo' | 'amiri' | 'noto-naskh' | 'tajawal' | 'ibm-plex' | 'scheherazade';
 
 interface DailyRecord {
@@ -73,6 +74,8 @@ interface DhikrState {
   updatePreset: (id: string, current: number) => void;
 
   // Settings
+  appMode: AppMode;
+  setAppMode: (m: AppMode) => void;
   soundEnabled: boolean;
   toggleSound: () => void;
   vibrationEnabled: boolean;
@@ -190,6 +193,8 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
     set({ counterPresets: presets });
   },
 
+  appMode: load<AppMode>('dz_appMode', 'dark'),
+  setAppMode: (m) => { save('dz_appMode', m); set({ appMode: m }); },
   soundEnabled: load<boolean>('dz_sound', true),
   toggleSound: () => { const v = !get().soundEnabled; save('dz_sound', v); set({ soundEnabled: v }); },
   vibrationEnabled: load<boolean>('dz_vibration', true),

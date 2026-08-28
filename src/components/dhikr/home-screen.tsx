@@ -53,11 +53,11 @@ export default function HomeScreen() {
   };
 
   const colorMap: Record<string, { main: string; light: string; bg: string; border: string; glow: string }> = {
-    emerald: { main: 'text-emerald-400', light: 'text-emerald-300', bg: 'from-emerald-900/80 to-teal-900/60', border: 'border-emerald-700/30', glow: 'shadow-emerald-500/25' },
-    blue: { main: 'text-blue-400', light: 'text-blue-300', bg: 'from-blue-900/80 to-indigo-900/60', border: 'border-blue-700/30', glow: 'shadow-blue-500/25' },
-    purple: { main: 'text-purple-400', light: 'text-purple-300', bg: 'from-purple-900/80 to-violet-900/60', border: 'border-purple-700/30', glow: 'shadow-purple-500/25' },
-    amber: { main: 'text-amber-400', light: 'text-amber-300', bg: 'from-amber-900/80 to-orange-900/60', border: 'border-amber-700/30', glow: 'shadow-amber-500/25' },
-    rose: { main: 'text-rose-400', light: 'text-rose-300', bg: 'from-rose-900/80 to-pink-900/60', border: 'border-rose-700/30', glow: 'shadow-rose-500/25' },
+    emerald: { main: 'text-emerald-600 dark:text-emerald-400', light: 'text-emerald-700 dark:text-emerald-300', bg: 'from-emerald-50 to-teal-50 dark:from-emerald-900/80 dark:to-teal-900/60', border: 'border-emerald-200 dark:border-emerald-700/30', glow: 'shadow-emerald-500/15 dark:shadow-emerald-500/25' },
+    blue: { main: 'text-blue-600 dark:text-blue-400', light: 'text-blue-700 dark:text-blue-300', bg: 'from-blue-50 to-indigo-50 dark:from-blue-900/80 dark:to-indigo-900/60', border: 'border-blue-200 dark:border-blue-700/30', glow: 'shadow-blue-500/15 dark:shadow-blue-500/25' },
+    purple: { main: 'text-purple-600 dark:text-purple-400', light: 'text-purple-700 dark:text-purple-300', bg: 'from-purple-50 to-violet-50 dark:from-purple-900/80 dark:to-violet-900/60', border: 'border-purple-200 dark:border-purple-700/30', glow: 'shadow-purple-500/15 dark:shadow-purple-500/25' },
+    amber: { main: 'text-amber-600 dark:text-amber-400', light: 'text-amber-700 dark:text-amber-300', bg: 'from-amber-50 to-orange-50 dark:from-amber-900/80 dark:to-orange-900/60', border: 'border-amber-200 dark:border-amber-700/30', glow: 'shadow-amber-500/15 dark:shadow-amber-500/25' },
+    rose: { main: 'text-rose-600 dark:text-rose-400', light: 'text-rose-700 dark:text-rose-300', bg: 'from-rose-50 to-pink-50 dark:from-rose-900/80 dark:to-pink-900/60', border: 'border-rose-200 dark:border-rose-700/30', glow: 'shadow-rose-500/15 dark:shadow-rose-500/25' },
   };
   const clr = colorMap[themeColor] || colorMap.emerald;
 
@@ -69,12 +69,12 @@ export default function HomeScreen() {
           <div className='flex items-center gap-2.5'>
             <IslamicIcon name='mosque' className='w-7 h-7 text-amber-400' />
             <div>
-              <h1 className='text-2xl font-bold text-white' style={{ fontFamily: fontClass }}>أذكاري</h1>
-              {hijriDate && <p className='text-slate-400 text-xs mt-0.5'>{hijriDate}</p>}
+              <h1 className='text-2xl font-bold app-text' style={{ fontFamily: fontClass }}>أذكاري</h1>
+              {hijriDate && <p className='app-text-2 text-xs mt-0.5'>{hijriDate}</p>}
             </div>
           </div>
-          <button className='w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors'>
-            <IslamicIcon name='bell' className='w-5 h-5 text-slate-400' />
+          <button className='w-10 h-10 rounded-full app-surface flex items-center justify-center app-surface-h transition-colors'>
+            <IslamicIcon name='bell' className='w-5 h-5 app-text-2' />
           </button>
         </div>
       </header>
@@ -98,9 +98,9 @@ export default function HomeScreen() {
         >
           <div className='flex items-center gap-2 mb-3'>
             <IslamicIcon name='book' className='w-5 h-5 text-amber-400' />
-            <span className='text-slate-400 text-xs' style={{ fontFamily: fontClass }}>آية اليوم</span>
+            <span className='app-text-2 text-xs' style={{ fontFamily: fontClass }}>آية اليوم</span>
           </div>
-          <p className='text-white text-lg leading-loose mb-2' style={{ fontFamily: fontClass }}>{verse.text}</p>
+          <p className='app-text text-lg leading-loose mb-2' style={{ fontFamily: fontClass }}>{verse.text}</p>
           <p className='text-amber-400 text-xs'>{verse.ref}</p>
         </motion.div>
 
@@ -116,16 +116,16 @@ export default function HomeScreen() {
                 onClick={() => setCurrentScreen('counter')}
                 className='w-14 h-14 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20'
               >
-                <IslamicIcon name='hand-tap' className='w-7 h-7 text-white' />
+                <IslamicIcon name='hand-tap' className='w-7 h-7 app-text' />
               </motion.button>
               <div>
-                <p className='text-white font-medium text-sm' style={{ fontFamily: fontClass }}>العداد السريع</p>
+                <p className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>العداد السريع</p>
                 <p className='text-amber-400 text-2xl font-bold'>{freeCounter}</p>
               </div>
             </div>
             <div className='text-left'>
-              <p className='text-slate-500 text-xs'>اضغط للفتح</p>
-              <ChevronLeft className='w-4 h-4 text-slate-500 rotate-180' />
+              <p className='app-text-muted text-xs'>اضغط للفتح</p>
+              <ChevronLeft className='w-4 h-4 app-text-muted rotate-180' />
             </div>
           </div>
         </motion.div>
@@ -149,7 +149,7 @@ export default function HomeScreen() {
             </div>
             <div className='flex items-center gap-3 mb-4'>
               <IslamicIcon name={currentPrayerTime?.icon || 'sun'} className='w-8 h-8 text-amber-400' />
-              <h2 className='text-xl font-bold text-white' style={{ fontFamily: fontClass }}>{currentPrayerTime?.name}</h2>
+              <h2 className='text-xl font-bold app-text' style={{ fontFamily: fontClass }}>{currentPrayerTime?.name}</h2>
               {completedPrayers.includes(currentPrayer.prayerId) && (
                 <IslamicIcon name='check-circle' className='w-4 h-4 text-emerald-400' />
               )}
@@ -157,7 +157,7 @@ export default function HomeScreen() {
             <motion.button
               whileTap={{ scale: 0.97 }} whileHover={{ scale: 1.01 }}
               onClick={() => { setSelectedPrayerIndex(prayerIdx); setReadingSource('prayer'); setCurrentScreen('reading'); }}
-              className={`w-full py-3.5 rounded-xl bg-gradient-to-r ${clr.main === 'text-emerald-400' ? 'from-emerald-500 to-teal-500' : clr.main === 'text-blue-400' ? 'from-blue-500 to-indigo-500' : clr.main === 'text-purple-400' ? 'from-purple-500 to-violet-500' : clr.main === 'text-amber-400' ? 'from-amber-500 to-orange-500' : 'from-rose-500 to-pink-500'} text-white font-bold text-base shadow-lg ${clr.glow} hover:shadow-xl transition-shadow`}
+              className={`w-full py-3.5 rounded-xl bg-gradient-to-r ${themeColor === 'emerald' ? 'from-emerald-600 to-teal-600 dark:from-emerald-500 dark:to-teal-500' : themeColor === 'blue' ? 'from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500' : themeColor === 'purple' ? 'from-purple-600 to-violet-600 dark:from-purple-500 dark:to-violet-500' : themeColor === 'amber' ? 'from-amber-600 to-orange-600 dark:from-amber-500 dark:to-orange-500' : 'from-rose-600 to-pink-600 dark:from-rose-500 dark:to-pink-500'} app-text font-bold text-base shadow-lg ${clr.glow} hover:shadow-xl transition-shadow`}
               style={{ fontFamily: fontClass }}
             >
               <span className='flex items-center justify-center gap-2'>
@@ -215,7 +215,7 @@ export default function HomeScreen() {
           className='glass-card rounded-2xl p-4 border border-amber-500/10'
         >
           <div className='flex items-center justify-between mb-3'>
-            <h3 className='text-slate-300/50 text-xs' style={{ fontFamily: fontClass }}>أذكار اليوم ({completedPrayers.length}/5)</h3>
+            <h3 className='app-text-2/50 text-xs' style={{ fontFamily: fontClass }}>أذكار اليوم ({completedPrayers.length}/5)</h3>
           </div>
           <div className='flex gap-2'>
             {prayerTimesList.map((p) => {
@@ -223,14 +223,14 @@ export default function HomeScreen() {
               const idx = prayerDhikrGroups.findIndex(g => g.prayerId === p.id);
               return (
                 <button key={p.id} onClick={() => { setSelectedPrayerIndex(idx); setReadingSource('prayer'); setCurrentScreen('reading'); }}
-                  className={`flex-1 flex flex-col items-center py-2.5 rounded-xl transition-all duration-300 ${done ? 'bg-emerald-500/15 border border-emerald-500/20' : 'bg-white/5 border border-white/10 hover:bg-white/10'}`}
+                  className={`flex-1 flex flex-col items-center py-2.5 rounded-xl transition-all duration-300 ${done ? 'bg-emerald-500/15 border border-emerald-500/20' : 'app-surface border app-border-c app-surface-h'}`}
                 >
                   {done ? (
                     <IslamicIcon name='check-circle' className='w-5 h-5 text-emerald-400 mb-0.5' />
                   ) : (
-                    <IslamicIcon name={p.icon} className='w-5 h-5 text-slate-400 mb-0.5' />
+                    <IslamicIcon name={p.icon} className='w-5 h-5 app-text-2 mb-0.5' />
                   )}
-                  <span className={`text-[10px] ${done ? 'text-emerald-300' : 'text-slate-500'}`} style={{ fontFamily: fontClass }}>{p.name}</span>
+                  <span className={`text-[10px] ${done ? 'text-emerald-300' : 'app-text-muted'}`} style={{ fontFamily: fontClass }}>{p.name}</span>
                 </button>
               );
             })}
