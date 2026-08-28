@@ -1,0 +1,742 @@
+     1→'use client';
+     2→
+     3→import { motion, AnimatePresence } from 'framer-motion';
+     4→import { useState, useEffect, useRef, useCallback } from 'react';
+     5→import { IslamicIcon } from '@/components/dhikr/islamic-icons';
+     6→import { Wind, Brain, Flower2, Heart, Droplets, Play, Pause, RotateCcw, ChevronLeft } from '@/components/dhikr/islamic-icons';
+     7→import { useDhikrStore, ArabicFont } from '@/lib/store';
+     8→
+     9→// ==================== أنواع تقنيات التنفس ====================
+    10→interface BreathingTechnique {
+    11→  id: string;
+    12→  name: string;
+    13→  description: string;
+    14→  benefit: string;
+    15→  icon: string;
+    16→  color: string;
+    17→  phases: { name: string; duration: number; instruction: string }[];
+    18→  cycles: number;
+    19→  islamicNote?: string;
+    20→}
+    21→
+    22→const breathingTechniques: BreathingTechnique[] = [
+    23→  {
+    24→    id: '478',
+    25→    name: 'تنفس 4-7-8 المهدّئ',
+    26→    description: 'تقنية التنفس المهدّئ الشهيرة التي تساعد على الاسترخاء العميق والنوم السريع',
+    27→    benefit: 'يقلل التوتر ويساعد على النوم',
+    28→    icon: 'wind',
+    29→    color: 'from-sky-500 to-blue-600',
+    30→    islamicNote: 'قال النبي ﷺ: "إذا أوى أحدكم إلى فراشه فلينفض فراشه بداخل إزاره فإنه لا يدري ما خلفه عليه"',
+    31→    phases: [
+    32→      { name: 'شهيق', duration: 4, instruction: 'تنفّس ببطء من أنفك' },
+    33→      { name: 'حبس', duration: 7, instruction: 'احبس نفسك بهدوء' },
+    34→      { name: 'زفير', duration: 8, instruction: 'أخرج النفس ببطء من فمك' },
+    35→    ],
+    36→    cycles: 4,
+    37→  },
+    38→  {
+    39→    id: 'box',
+    40→    name: 'التنفس المربّع',
+    41→    description: 'تقنية مستخدمة في التأمل تساعد على التركيز وتهدئة العقل بسرعة',
+    42→    benefit: 'يزيد التركيز ويهدئ العقل',
+    43→    icon: 'brain',
+    44→    color: 'from-violet-500 to-purple-600',
+    45→    islamicNote: 'الخشوع في الصلاة يتطلب صفاء الذهن، والتنفس المربّع يساعد على ذلك',
+    46→    phases: [
+    47→      { name: 'شهيق', duration: 4, instruction: 'تنفّس ببطء' },
+    48→      { name: 'حبس', duration: 4, instruction: 'احبس النفس' },
+    49→      { name: 'زفير', duration: 4, instruction: 'أخرج النفس ببطء' },
+    50→      { name: 'حبس', duration: 4, instruction: 'انتظر قبل الشهيق التالي' },
+    51→    ],
+    52→    cycles: 4,
+    53→  },
+    54→  {
+    55→    id: 'deep',
+    56→    name: 'التنفس العميق من البطن',
+    57→    description: 'تنفس عميق يملأ البطن بالهواء لتنشيط الجهاز العصبي المبسّط',
+    58→    benefit: 'يقلل ضغط الدم وتهدئة الجسم',
+    59→    icon: 'droplets',
+    60→    color: 'from-emerald-500 to-teal-600',
+    61→    islamicNote: 'قال تعالى: ﴿أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ﴾',
+    62→    phases: [
+    63→      { name: 'شهيق', duration: 5, instruction: 'تنفّس عميقاً واملأ بطنك' },
+    64→      { name: 'زفير', duration: 5, instruction: 'أفرغ بطنك ببطء' },
+    65→    ],
+    66→    cycles: 6,
+    67→  },
+    68→  {
+    69→    id: 'relaxing',
+    70→    name: 'تنفس الاسترخاء',
+    71→    description: 'تنفس بطيء ومتساوٍ لتهدئة الجهاز العصبي وتقليل القلق',
+    72→    benefit: 'يخفف القلق والتوتر العضلي',
+    73→    icon: 'flower',
+    74→    color: 'from-rose-500 to-pink-600',
+    75→    islamicNote: 'قال ﷺ: "إنَّ سورةً من القرآن ثلاثون آية شفعت لصاحبها حتى غُفر له: ﴿تبارك الذي بيده الملك﴾"',
+    76→    phases: [
+    77→      { name: 'شهيق', duration: 4, instruction: 'تنفّس ببطء وعمق' },
+    78→      { name: 'زفير', duration: 6, instruction: 'أخرج النفس أبطأ من الشهيق' },
+    79→    ],
+    80→    cycles: 5,
+    81→  },
+    82→];
+    83→
+    84→// ==================== أدوات تقليل التوتر ====================
+    85→interface RelaxationTool {
+    86→  id: string;
+    87→  name: string;
+    88→  description: string;
+    89→  icon: string;
+    90→  color: string;
+    91→  content: string[];
+    92→  islamicContext?: string;
+    93→}
+    94→
+    95→const relaxationTools: RelaxationTool[] = [
+    96→  {
+    97→    id: 'muscle',
+    98→    name: 'الاسترخاء العضلي التدريجي',
+    99→    description: 'تقنية لتفكيك التوتر العضلي عضلة بعضلة',
+   100→    icon: 'shield',
+   101→    color: 'from-blue-500 to-indigo-600',
+   102→    islamicContext: 'الاسترخاء بعد الوضوء يعيد النشاط للجسم والروح معاً',
+   103→    content: [
+   104→      'اجلس في مكان هادئ مريح وأغلق عينيك',
+   105→      'خذ 3 أنفاس عميقة للاستعداد',
+   106→      'ابدأ بقدميك: شدّ عضلاتهما 5 ثوانٍ ثم أرخِ',
+   107→      'انتقل إلى ربليك: شدّ 5 ثوانٍ ثم أرخِ',
+   108→      'شدّ فخذيك معاً ثم أرخِ ببطء',
+   109→      'اضغط بطنك للداخل ثم أرخِ',
+   110→      'شدّ كتفيك نحو أذنيك ثم أرخِ',
+   111→      'أغلق يديك بقوة ثم أرخِ',
+   112→      'توتّر وجهك (جبهة، عيون، فك) ثم أرخِ',
+   113→      'خذ نفساً عميقاً واشعر بالاسترخاء الكامل',
+   114→      'قل: اللهم إني أعوذ بك من الهم والحزن',
+   115→    ],
+   116→  },
+   117→  {
+   118→    id: 'dhikr-calm',
+   119→    name: 'أذكار السكينة',
+   120→    description: 'أذكار مخصصة لتهدئة القلب وتسكين النفس',
+   121→    icon: 'heart',
+   122→    color: 'from-emerald-500 to-green-600',
+   123→    islamicContext: 'أفضل ما يُسكَّن به القلق ذكر الله تعالى',
+   124→    content: [
+   125→      '﴿أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ﴾',
+   126→      'استمع لتلاوة سورة الرحمن بهدوء',
+   127→      'ردّد: حسبي الله لا إله إلا هو عليه توكلت',
+   128→      'قل: اللهم إني أعوذ بك من الهم والحزن والعجز والكسل',
+   129→      'ردّد: لا إله إلا أنت سبحانك إني كنت من الظالمين',
+   130→      'صلّ على النبي ﷺ وادعُ بالفرج',
+   131→      'استمع لصوت المطر أو الطبيعة',
+   132→      'أغمض عينيك وتخيّل الجنة ونعيمها',
+   133→      'ردّد: رب اشرح لي صدري ويسّر لي أمري',
+   134→      'اختم بـ: subhanAllah 33 مرة بهدوء',
+   135→    ],
+   136→  },
+   137→  {
+   138→    id: 'body-scan',
+   139→    name: 'الوعي الجسدي',
+   140→    description: 'فحص الجسم للوعي بأماكن التوتر وتحريرها',
+   141→    icon: 'eye',
+   142→    color: 'from-amber-500 to-orange-600',
+   143→    islamicContext: 'النبي ﷺ قال: "إن لبدنك عليك حقاً" - الوعي بالجسم من العبادة',
+   144→    content: [
+   145→      'استلقِ أو اجلس مريحاً وأغلق عينيك',
+   146→      'خذ 3 أنفاس عميقة',
+   147→      'وجّه انتباهك إلى رأسك: هل تشعر بتوتر؟',
+   148→      'انتقل إلى وجهك: أرخِ عضلات الوجه بالكامل',
+   149→      'انتبه لرقبتك وكتفيك: أرخِ أي شدّ',
+   150→      'تحسّس ذراعيك ويديك: دعها تسترخي',
+   151→      'انتبه لصدرك: شعر بكل نفس يدخل ويخرج',
+   152→      'انتقل لبطنك: دعه يرتخي مع التنفس',
+   153→      'تحسّس ساقيك وقدميك: أرخِ تماماً',
+   154→      'اشعر بجسمك كله مسترخياً ومتّصلاً بالأرض',
+   155→      'قل في سرك: اللهم أنت السلام ومنك السلام',
+   156→    ],
+   157→  },
+   158→  {
+   159→    id: 'gratitude',
+   160→    name: 'شكر وامتنان',
+   161→    description: 'تأمل في نعم الله لتحويل التركيز من المشاكل إلى النعم',
+   162→    icon: 'sparkles',
+   163→    color: 'from-rose-500 to-pink-600',
+   164→    islamicContext: '﴿لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ﴾',
+   165→    content: [
+   166→      'اجلس مريحاً وخذ نفساً عميقاً',
+   167→      'فكّر في 3 نعم صحية تشعر بها الآن',
+   168→      'تأمّل نعمة البصر: كم من شخص لا يرى؟',
+   169→      'تأمّل نعمة السمع: كم من أصوات تحبها؟',
+   170→      'اشكر نعمة الإيمان: ما أجمل أن تعرف ربك',
+   171→      'فكّر في شخص تحبه واشكر وجوده في حياتك',
+   172→      'تذكّر نعمة الأمن والأمان حولك',
+   173→      'فكّر في لحظة سعيدة مرّت عليك هذا الأسبوع',
+   174→      'قل: الحمد لله الذي بنعمته تتم الصالحات',
+   175→      'ادعُ: ربِّ اشكر نعمتك التي أنعمت عليّ',
+   176→    ],
+   177→  },
+   178→];
+   179→
+   180→// ==================== مكون الرسوم المتحركة للتنفس ====================
+   181→function BreathingCircle({ phase, isActive, totalTime, elapsed }: {
+   182→  phase: string;
+   183→  isActive: boolean;
+   184→  totalTime: number;
+   185→  elapsed: number;
+   186→}) {
+   187→  const isInhale = phase === 'شهيق';
+   188→  const isHold = phase === 'حبس';
+   189→  const isExhale = phase === 'زفير';
+   190→
+   191→  const scaleValue = isActive
+   192→    ? isInhale ? 1.35 : isExhale ? 0.85 : 1.15
+   193→    : 1;
+   194→
+   195→  const glowColor = isInhale
+   196→    ? 'rgba(59, 130, 246, 0.4)'
+   197→    : isExhale
+   198→    ? 'rgba(147, 51, 234, 0.4)'
+   199→    : 'rgba(16, 185, 129, 0.3)';
+   200→
+   201→  const progress = totalTime > 0 ? (elapsed % totalTime) / totalTime : 0;
+   202→
+   203→  return (
+   204→    <div className='relative flex items-center justify-center my-6'>
+   205→      {/* Outer glow rings */}
+   206→      <motion.div
+   207→        className='absolute w-52 h-52 rounded-full'
+   208→        animate={{
+   209→          scale: isActive ? [1, scaleValue * 1.15] : 1,
+   210→          opacity: isActive ? [0.15, 0.3, 0.15] : 0.1,
+   211→        }}
+   212→        transition={{ duration: totalTime || 4, repeat: isActive ? Infinity : 0, ease: 'easeInOut' }}
+   213→        style={{ background: `radial-gradient(circle, ${glowColor}, transparent)` }}
+   214→      />
+   215→      <motion.div
+   216→        className='absolute w-40 h-40 rounded-full'
+   217→        animate={{
+   218→          scale: isActive ? [1, scaleValue * 1.1] : 1,
+   219→          opacity: isActive ? [0.2, 0.4, 0.2] : 0.15,
+   220→        }}
+   221→        transition={{ duration: totalTime || 4, repeat: isActive ? Infinity : 0, ease: 'easeInOut' }}
+   222→        style={{ background: `radial-gradient(circle, ${glowColor}, transparent)` }}
+   223→      />
+   224→
+   225→      {/* Main circle */}
+   226→      <motion.div
+   227→        className='relative w-36 h-36 rounded-full flex flex-col items-center justify-center'
+   228→        style={{
+   229→          background: 'var(--app-surface)',
+   230→          border: '2px solid var(--app-border)',
+   231→          boxShadow: isActive ? `0 0 40px ${glowColor}, 0 0 80px ${glowColor}` : '0 0 20px rgba(212,175,55,0.1)',
+   232→        }}
+   233→        animate={{
+   234→          scale: isActive ? [1, scaleValue] : 1,
+   235→        }}
+   236→        transition={{ duration: totalTime || 4, repeat: isActive ? Infinity : 0, ease: 'easeInOut' }}
+   237→      >
+   238→        <motion.span
+   239→          className='text-2xl font-bold app-text'
+   240→          animate={{ opacity: isActive ? 1 : 0.5 }}
+   241→        >
+   242→          {phase || '...' }
+   243→        </motion.span>
+   244→        {isActive && (
+   245→          <motion.span
+   246→            className='text-xs app-text-2 mt-1'
+   247→            initial={{ opacity: 0 }}
+   248→            animate={{ opacity: 1 }}
+   249→          >
+   250→            {Math.ceil(totalTime - (elapsed % totalTime))}ث
+   251→          </motion.span>
+   252→        )}
+   253→      </motion.div>
+   254→
+   255→      {/* Orbiting particles */}
+   256→      {isActive && [0, 1, 2].map((i) => (
+   257→        <motion.div
+   258→          key={i}
+   259→          className='absolute w-2 h-2 rounded-full bg-amber-400/60'
+   260→          animate={{
+   261→            rotate: [0 + i * 120, 360 + i * 120],
+   262→          }}
+   263→          transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
+   264→          style={{
+   265→            transformOrigin: '120px center',
+   266→          }}
+   267→        />
+   268→      ))}
+   269→    </div>
+   270→  );
+   271→}
+   272→
+   273→// ==================== مكون حلقة التنفس ====================
+   274→function BreathingSession({ technique, onBack }: { technique: BreathingTechnique; onBack: () => void }) {
+   275→  const [isActive, setIsActive] = useState(false);
+   276→  const [currentCycle, setCurrentCycle] = useState(0);
+   277→  const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
+   278→  const [elapsed, setElapsed] = useState(0);
+   279→  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+   280→  const startTimeRef = useRef<number>(0);
+   281→  const pauseTimeRef = useRef<number>(0);
+   282→
+   283→  const currentPhase = technique.phases[currentPhaseIndex];
+   284→  const totalDuration = technique.phases.reduce((s, p) => s + p.duration, 0);
+   285→  const totalSessionTime = totalDuration * technique.cycles;
+   286→  const isFinished = currentCycle >= technique.cycles;
+   287→
+   288→  const getCurrentPhaseElapsed = useCallback(() => {
+   289→    const elapsedInCycles = elapsed % totalDuration;
+   290→    let acc = 0;
+   291→    for (let i = 0; i < technique.phases.length; i++) {
+   292→      if (elapsedInCycles < acc + technique.phases[i].duration) {
+   293→        setCurrentPhaseIndex(i);
+   294→        return elapsedInCycles - acc;
+   295→      }
+   296→      acc += technique.phases[i].duration;
+   297→    }
+   298→    return 0;
+   299→  }, [elapsed, totalDuration, technique.phases]);
+   300→
+   301→  useEffect(() => {
+   302→    if (isActive) {
+   303→      startTimeRef.current = Date.now() - pauseTimeRef.current;
+   304→      timerRef.current = setInterval(() => {
+   305→        const e = Math.floor((Date.now() - startTimeRef.current) / 1000);
+   306→        setElapsed(e);
+   307→        const cycle = Math.floor(e / totalDuration);
+   308→        setCurrentCycle(cycle);
+   309→        if (cycle >= technique.cycles) {
+   310→          setIsActive(false);
+   311→          if (timerRef.current) clearInterval(timerRef.current);
+   312→        }
+   313→      }, 100);
+   314→    } else {
+   315→      if (timerRef.current) clearInterval(timerRef.current);
+   316→      pauseTimeRef.current = elapsed * 1000;
+   317→    }
+   318→    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+   319→  }, [isActive, totalDuration, technique.cycles, elapsed]);
+   320→
+   321→  useEffect(() => {
+   322→    getCurrentPhaseElapsed();
+   323→  }, [getCurrentPhaseElapsed]);
+   324→
+   325→  const reset = () => {
+   326→    setIsActive(false);
+   327→    setCurrentCycle(0);
+   328→    setCurrentPhaseIndex(0);
+   329→    setElapsed(0);
+   330→    pauseTimeRef.current = 0;
+   331→  };
+   332→
+   333→  const overallProgress = Math.min(elapsed / totalSessionTime, 1);
+   334→
+   335→  return (
+   336→    <motion.div
+   337→      initial={{ opacity: 0, y: 20 }}
+   338→      animate={{ opacity: 1, y: 0 }}
+   339→      exit={{ opacity: 0, y: -20 }}
+   340→      className='min-h-screen flex flex-col'
+   341→    >
+   342→      {/* Header */}
+   343→      <div className='flex items-center justify-between px-4 pt-4 pb-2'>
+   344→        <button onClick={onBack} className='w-10 h-10 rounded-full app-surface flex items-center justify-center app-surface-h'>
+   345→          <ChevronLeft className='w-5 h-5 app-text' />
+   346→        </button>
+   347→        <h2 className='app-text font-bold text-base'>{technique.name}</h2>
+   348→        <button onClick={reset} className='w-10 h-10 rounded-full app-surface flex items-center justify-center app-surface-h'>
+   349→          <RotateCcw className='w-4 h-4 app-text-2' />
+   350→        </button>
+   351→      </div>
+   352→
+   353→      {/* Progress bar */}
+   354→      <div className='mx-4 mb-2'>
+   355→        <div className='h-1.5 rounded-full app-surface overflow-hidden'>
+   356→          <motion.div
+   357→            className='h-full rounded-full bg-gradient-to-l from-amber-400 to-amber-500'
+   358→            style={{ width: `${overallProgress * 100}%` }}
+   359→          />
+   360→        </div>
+   361→        <div className='flex justify-between mt-1'>
+   362→          <span className='app-text-muted text-[10px]'>الدورة {Math.min(currentCycle + 1, technique.cycles)}/{technique.cycles}</span>
+   363→          <span className='app-text-muted text-[10px]'>{Math.floor(elapsed / 60)}:{String(elapsed % 60).padStart(2, '0')}</span>
+   364→        </div>
+   365→      </div>
+   366→
+   367→      {/* Breathing animation */}
+   368→      <div className='flex-1 flex flex-col items-center justify-center px-4'>
+   369→        <BreathingCircle
+   370→          phase={isFinished ? 'تم!' : currentPhase?.name || '...'}
+   371→          isActive={isActive}
+   372→          totalTime={currentPhase?.duration || 4}
+   373→          elapsed={elapsed}
+   374→        />
+   375→        {/* Instruction */}
+   376→        <AnimatePresence mode='wait'>
+   377→          <motion.p
+   378→            key={currentPhaseIndex}
+   379→            initial={{ opacity: 0, y: 10 }}
+   380→            animate={{ opacity: 1, y: 0 }}
+   381→            exit={{ opacity: 0, y: -10 }}
+   382→            className='app-text-2 text-sm text-center mt-4 mb-2'
+   383→          >
+   384→            {isFinished ? 'أحسنت! أكملت جميع الدورات' : currentPhase?.instruction || ''}
+   385→          </motion.p>
+   386→        </AnimatePresence>
+   387→
+   388→        {/* Phase indicators */}
+   389→        <div className='flex items-center gap-2 mt-3'>
+   390→          {technique.phases.map((p, i) => (
+   391→            <div
+   392→              key={i}
+   393→              className={`px-3 py-1.5 rounded-full text-xs transition-all duration-300 ${
+   394→                i === currentPhaseIndex && isActive
+   395→                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+   396→                  : 'app-surface app-text-muted'
+   397→              }`}
+   398→            >
+   399→              {p.name}
+   400→            </div>
+   401→          ))}
+   402→        </div>
+   403→
+   404→        {/* Islamic note */}
+   405→        {technique.islamicNote && (
+   406→          <motion.div
+   407→            initial={{ opacity: 0 }}
+   408→            animate={{ opacity: 1 }}
+   409→            transition={{ delay: 0.5 }}
+   410→            className='mt-6 text-center max-w-xs'
+   411→          >
+   412→            <p className='text-amber-400/60 text-[11px] leading-relaxed'>{technique.islamicNote}</p>
+   413→          </motion.div>
+   414→        )}
+   415→      </div>
+   416→
+   417→      {/* Control button */}
+   418→      <div className='px-4 pb-8 pt-4 flex justify-center'>
+   419→        <motion.button
+   420→          whileTap={{ scale: 0.95 }}
+   421→          onClick={() => !isFinished && setIsActive(!isActive)}
+   422→          className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all ${
+   423→            isFinished
+   424→              ? 'bg-emerald-500/20 border border-emerald-500/30'
+   425→              : isActive
+   426→              ? 'bg-amber-500/20 border border-amber-500/30'
+   427→              : 'bg-gradient-to-br from-amber-500 to-amber-600 shadow-amber-500/20'
+   428→          }`}
+   429→        >
+   430→          {isFinished ? (
+   431→            <IslamicIcon name='check-circle' className='w-7 h-7 text-emerald-400' />
+   432→          ) : isActive ? (
+   433→            <Pause className='w-7 h-7 text-amber-300' />
+   434→          ) : (
+   435→            <Play className='w-7 h-7 text-white ml-0.5' />
+   436→          )}
+   437→        </motion.button>
+   438→      </div>
+   439→    </motion.div>
+   440→  );
+   441→}
+   442→
+   443→// ==================== مكون أداة الاسترخاء ====================
+   444→function RelaxationToolViewer({ tool, onBack }: { tool: RelaxationTool; onBack: () => void }) {
+   445→  const [currentStep, setCurrentStep] = useState(0);
+   446→  const [isComplete, setIsComplete] = useState(false);
+   447→
+   448→  const next = () => {
+   449→    if (currentStep < tool.content.length - 1) {
+   450→      setCurrentStep(currentStep + 1);
+   451→    } else {
+   452→      setIsComplete(true);
+   453→    }
+   454→  };
+   455→
+   456→  const reset = () => {
+   457→    setCurrentStep(0);
+   458→    setIsComplete(false);
+   459→  };
+   460→
+   461→  const progress = (currentStep + 1) / tool.content.length;
+   462→
+   463→  return (
+   464→    <motion.div
+   465→      initial={{ opacity: 0, y: 20 }}
+   466→      animate={{ opacity: 1, y: 0 }}
+   467→      exit={{ opacity: 0, y: -20 }}
+   468→      className='min-h-screen flex flex-col'
+   469→    >
+   470→      {/* Header */}
+   471→      <div className='flex items-center justify-between px-4 pt-4 pb-2'>
+   472→        <button onClick={onBack} className='w-10 h-10 rounded-full app-surface flex items-center justify-center app-surface-h'>
+   473→          <ChevronLeft className='w-5 h-5 app-text' />
+   474→        </button>
+   475→        <h2 className='app-text font-bold text-sm'>{tool.name}</h2>
+   476→        <button onClick={reset} className='w-10 h-10 rounded-full app-surface flex items-center justify-center app-surface-h'>
+   477→          <RotateCcw className='w-4 h-4 app-text-2' />
+   478→        </button>
+   479→      </div>
+   480→
+   481→      {/* Progress */}
+   482→      <div className='mx-4 mb-4'>
+   483→        <div className='h-1.5 rounded-full app-surface overflow-hidden'>
+   484→          <motion.div
+   485→            className='h-full rounded-full bg-gradient-to-l from-amber-400 to-amber-500'
+   486→            style={{ width: `${progress * 100}%` }}
+   487→            transition={{ duration: 0.3 }}
+   488→          />
+   489→        </div>
+   490→        <span className='app-text-muted text-[10px] mt-1 block'>{currentStep + 1} / {tool.content.length}</span>
+   491→      </div>
+   492→
+   493→      <div className='flex-1 flex flex-col items-center justify-center px-6'>
+   494→        <AnimatePresence mode='wait'>
+   495→          {isComplete ? (
+   496→            <motion.div
+   497→              key='complete'
+   498→              initial={{ opacity: 0, scale: 0.8 }}
+   499→              animate={{ opacity: 1, scale: 1 }}
+   500→              className='text-center'
+   501→            >
+   502→              <motion.div
+   503→                initial={{ scale: 0 }}
+   504→                animate={{ scale: 1 }}
+   505→                transition={{ type: 'spring', stiffness: 200 }}
+   506→                className='w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center'
+   507→              >
+   508→                <IslamicIcon name='check-circle' className='w-10 h-10 text-emerald-400' />
+   509→              </motion.div>
+   510→              <h3 className='app-text text-xl font-bold mb-2'>أحسنت!</h3>
+   511→              <p className='app-text-2 text-sm mb-6'>أكملت الجلسة بنجاح، نسأل الله أن يريح قلبك</p>
+   512→              <motion.button
+   513→                whileTap={{ scale: 0.95 }}
+   514→                onClick={reset}
+   515→                className='px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-medium text-sm shadow-lg shadow-amber-500/20'
+   516→              >
+   517→                إعادة الجلسة
+   518→              </motion.button>
+   519→            </motion.div>
+   520→          ) : (
+   521→            <motion.div
+   522→              key={currentStep}
+   523→              initial={{ opacity: 0, x: 30 }}
+   524→              animate={{ opacity: 1, x: 0 }}
+   525→              exit={{ opacity: 0, x: -30 }}
+   526→              className='text-center w-full'
+   527→            >
+   528→              {/* Step number */}
+   529→              <div className='w-12 h-12 mx-auto mb-6 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/20 flex items-center justify-center'>
+   530→                <span className='text-amber-400 font-bold text-lg'>{currentStep + 1}</span>
+   531→              </div>
+   532→
+   533→              {/* Step text */}
+   534→              <p className='app-text text-lg leading-loose mb-8' style={{ fontFamily: 'var(--font-arabic)' }}>
+   535→                {tool.content[currentStep]}
+   536→              </p>
+   537→
+   538→              {/* Islamic context for first step */}
+   539→              {currentStep === 0 && tool.islamicContext && (
+   540→                <motion.p
+   541→                  initial={{ opacity: 0 }}
+   542→                  animate={{ opacity: 1 }}
+   543→                  transition={{ delay: 0.3 }}
+   544→                  className='text-amber-400/50 text-xs leading-relaxed mb-6'
+   545→                >
+   546→                  {tool.islamicContext}
+   547→                </motion.p>
+   548→              )}
+   549→            </motion.div>
+   550→          )}
+   551→        </AnimatePresence>
+   552→      </div>
+   553→
+   554→      {/* Next button */}
+   555→      {!isComplete && (
+   556→        <div className='px-4 pb-8 flex justify-center'>
+   557→          <motion.button
+   558→            whileTap={{ scale: 0.95 }}
+   559→            onClick={next}
+   560→            className='w-full max-w-xs py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold text-sm shadow-lg shadow-amber-500/20'
+   561→          >
+   562→            {currentStep < tool.content.length - 1 ? 'الخطوة التالية' : 'إنهاء الجلسة'}
+   563→          </motion.button>
+   564→        </div>
+   565→      )}
+   566→    </motion.div>
+   567→  );
+   568→}
+   569→
+   570→// ==================== الشاشة الرئيسية ====================
+   571→function getFontClass(font: ArabicFont): string {
+   572→  const map: Record<ArabicFont, string> = {
+   573→    'cairo': 'var(--font-arabic)',
+   574→    'amiri': 'var(--font-amiri)',
+   575→    'noto-naskh': 'var(--font-noto-naskh)',
+   576→    'tajawal': 'var(--font-tajawal)',
+   577→    'ibm-plex': 'var(--font-ibm-plex)',
+   578→    'scheherazade': 'var(--font-scheherazade)',
+   579→  };
+   580→  return map[font] || 'var(--font-arabic)';
+   581→}
+   582→
+   583→export default function RelaxationScreen() {
+   584→  const { arabicFont, themeColor } = useDhikrStore();
+   585→  const [activeView, setActiveView] = useState<'main' | 'breathing' | 'tool'>('main');
+   586→  const [selectedTechnique, setSelectedTechnique] = useState<BreathingTechnique | null>(null);
+   587→  const [selectedTool, setSelectedTool] = useState<RelaxationTool | null>(null);
+   588→
+   589→  const fontClass = getFontClass(arabicFont);
+   590→
+   591→  const handleBack = () => {
+   592→    if (activeView !== 'main') {
+   593→      setActiveView('main');
+   594→      setSelectedTechnique(null);
+   595→      setSelectedTool(null);
+   596→    }
+   597→  };
+   598→
+   599→  // Show breathing session
+   600→  if (activeView === 'breathing' && selectedTechnique) {
+   601→    return <BreathingSession technique={selectedTechnique} onBack={handleBack} />;
+   602→  }
+   603→
+   604→  // Show relaxation tool
+   605→  if (activeView === 'tool' && selectedTool) {
+   606→    return <RelaxationToolViewer tool={selectedTool} onBack={handleBack} />;
+   607→  }
+   608→
+   609→  return (
+   610→    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='min-h-screen pb-24'>
+   611→      {/* Header */}
+   612→      <header className='px-4 pt-4 pb-4'>
+   613→        <div className='flex items-center gap-3 mb-1'>
+   614→          <div className='w-10 h-10 rounded-full bg-gradient-to-br from-sky-500/20 to-blue-600/10 border border-sky-500/20 flex items-center justify-center'>
+   615→            <Wind className='w-5 h-5 text-sky-400' />
+   616→          </div>
+   617→          <div>
+   618→            <h1 className='text-xl font-bold app-text' style={{ fontFamily: fontClass }}>أدوات الاسترخاء</h1>
+   619→            <p className='app-text-muted text-xs mt-0.5'>تقنيات تنفس وأدوات تقليل التوتر</p>
+   620→          </div>
+   621→        </div>
+   622→      </header>
+   623→
+   624→      <main className='px-4 space-y-5'>
+   625→        {/* Intro card */}
+   626→        <motion.div
+   627→          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+   628→          className='glass-card rounded-2xl p-4 border border-amber-500/10'
+   629→        >
+   630→          <p className='app-text-2 text-sm leading-relaxed' style={{ fontFamily: fontClass }}>
+   631→            قال النبي ﷺ: "عَلَيْكُمْ بِالسَّكِينَةِ". إليك أدوات تساعدك على الاسترخاء وتهدئة النفس مستوحاة من السنة النبوية.
+   632→          </p>
+   633→        </motion.div>
+   634→
+   635→        {/* Breathing Techniques Section */}
+   636→        <div>
+   637→          <div className='flex items-center gap-2 mb-3'>
+   638→            <Wind className='w-4 h-4 text-sky-400' />
+   639→            <h2 className='app-text font-bold text-sm' style={{ fontFamily: fontClass }}>تقنيات التنفس</h2>
+   640→          </div>
+   641→          <div className='space-y-2.5'>
+   642→            {breathingTechniques.map((tech, i) => (
+   643→              <motion.button
+   644→                key={tech.id}
+   645→                initial={{ opacity: 0, x: 20 }}
+   646→                animate={{ opacity: 1, x: 0 }}
+   647→                transition={{ delay: i * 0.05 }}
+   648→                whileTap={{ scale: 0.98 }}
+   649→                onClick={() => { setSelectedTechnique(tech); setActiveView('breathing'); }}
+   650→                className='w-full glass-card rounded-2xl p-4 border border-amber-500/10 text-right'
+   651→              >
+   652→                <div className='flex items-center gap-3'>
+   653→                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${tech.color} flex items-center justify-center shrink-0 shadow-lg`}>
+   654→                    <IslamicIcon name={tech.icon} className='w-6 h-6 text-white' />
+   655→                  </div>
+   656→                  <div className='flex-1 min-w-0'>
+   657→                    <h3 className='app-text font-bold text-sm mb-0.5'>{tech.name}</h3>
+   658→                    <p className='app-text-muted text-[11px] truncate'>{tech.description}</p>
+   659→                  </div>
+   660→                  <ChevronLeft className='w-4 h-4 app-text-muted rotate-180 shrink-0' />
+   661→                </div>
+   662→                <div className='flex items-center gap-2 mt-2'>
+   663→                  <div className='flex gap-1'>
+   664→                    {tech.phases.map((p, j) => (
+   665→                      <span key={j} className='px-1.5 py-0.5 rounded text-[9px] app-surface app-text-muted'>
+   666→                        {p.name} {p.duration}ث
+   667→                      </span>
+   668→                    ))}
+   669→                  </div>
+   670→                  <span className='app-text-muted text-[9px] mr-auto'>{tech.cycles} دورات</span>
+   671→                  <span className='text-amber-400/60 text-[9px]'>{tech.benefit}</span>
+   672→                </div>
+   673→              </motion.button>
+   674→            ))}
+   675→          </div>
+   676→        </div>
+   677→
+   678→        {/* Relaxation Tools Section */}
+   679→        <div>
+   680→          <div className='flex items-center gap-2 mb-3'>
+   681→            <Brain className='w-4 h-4 text-purple-400' />
+   682→            <h2 className='app-text font-bold text-sm' style={{ fontFamily: fontClass }}>أدوات تقليل التوتر</h2>
+   683→          </div>
+   684→          <div className='grid grid-cols-2 gap-2.5'>
+   685→            {relaxationTools.map((tool, i) => (
+   686→              <motion.button
+   687→                key={tool.id}
+   688→                initial={{ opacity: 0, scale: 0.9 }}
+   689→                animate={{ opacity: 1, scale: 1 }}
+   690→                transition={{ delay: 0.2 + i * 0.05 }}
+   691→                whileTap={{ scale: 0.96 }}
+   692→                onClick={() => { setSelectedTool(tool); setActiveView('tool'); }}
+   693→                className='glass-card rounded-2xl p-3.5 border border-amber-500/10 text-center'
+   694→              >
+   695→                <div className={`w-11 h-11 mx-auto rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center mb-2 shadow-lg`}>
+   696→                  <IslamicIcon name={tool.icon} className='w-5 h-5 text-white' />
+   697→                </div>
+   698→                <h3 className='app-text font-bold text-xs mb-0.5'>{tool.name}</h3>
+   699→                <p className='app-text-muted text-[10px] leading-relaxed'>{tool.content.length} خطوة</p>
+   700→              </motion.button>
+   701→            ))}
+   702→          </div>
+   703→        </div>
+   704→
+   705→        {/* Quick Calm Section */}
+   706→        <motion.div
+   707→          initial={{ opacity: 0, y: 10 }}
+   708→          animate={{ opacity: 1, y: 0 }}
+   709→          transition={{ delay: 0.4 }}
+   710→          className='glass-card rounded-2xl p-4 border border-amber-500/10'
+   711→        >
+   712→          <div className='flex items-center gap-2 mb-3'>
+   713→            <Heart className='w-4 h-4 text-rose-400' />
+   714→            <h2 className='app-text font-bold text-sm' style={{ fontFamily: fontClass }}>تهدئة سريعة</h2>
+   715→          </div>
+   716→          <div className='space-y-2'>
+   717→            {[
+   718→              { text: 'استغفر الله العظيم وتب إليه', sub: 'أقلل التوتر بالاستغفار' },
+   719→              { text: 'لا حول ولا قوة إلا بالله', sub: 'تفويض الأمر لله' },
+   720→              { text: 'حسبنا الله ونعم الوكيل', sub: 'التوكل على الله' },
+   721→            ].map((item, i) => (
+   722→              <motion.div
+   723→                key={i}
+   724→                whileTap={{ scale: 0.98 }}
+   725→                className='flex items-center gap-3 p-2.5 rounded-xl app-surface app-surface-h'
+   726→              >
+   727→                <div className='w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0'>
+   728→                  <span className='text-amber-400 text-xs'>{i + 1}</span>
+   729→                </div>
+   730→                <div>
+   731→                  <p className='app-text text-xs font-medium'>{item.text}</p>
+   732→                  <p className='app-text-muted text-[10px]'>{item.sub}</p>
+   733→                </div>
+   734→              </motion.div>
+   735→            ))}
+   736→          </div>
+   737→        </motion.div>
+   738→      </main>
+   739→    </motion.div>
+   740→  );
+   741→}
+   742→

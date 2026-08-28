@@ -90,6 +90,12 @@ interface DhikrState {
   setSelectedCity: (city: SelectedCity | null) => void;
   prayerTimes: {[key: string]: string};
   setPrayerTimes: (t: {[key: string]: string}) => void;
+
+  // Breathing FAB
+  breathingFabVisible: boolean;
+  setBreathingFabVisible: (v: boolean) => void;
+  breathingOverlayOpen: boolean;
+  setBreathingOverlayOpen: (v: boolean) => void;
 }
 
 function load<T>(key: string, def: T): T {
@@ -209,4 +215,9 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
   setSelectedCity: (city) => { save('dz_selectedCity', city); set({ selectedCity: city }); },
   prayerTimes: load<{[key: string]: string}>('dz_prayerTimes', {}),
   setPrayerTimes: (t) => { save('dz_prayerTimes', t); set({ prayerTimes: t }); },
+
+  breathingFabVisible: load<boolean>('dz_breathFab', true),
+  setBreathingFabVisible: (v) => { save('dz_breathFab', v); set({ breathingFabVisible: v }); },
+  breathingOverlayOpen: false,
+  setBreathingOverlayOpen: (v) => set({ breathingOverlayOpen: v }),
 }));

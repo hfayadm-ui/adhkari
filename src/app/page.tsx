@@ -10,6 +10,7 @@ import CompletionScreen from '@/components/dhikr/completion-screen';
 import StatsScreen from '@/components/dhikr/stats-screen';
 import SettingsScreen from '@/components/dhikr/settings-screen';
 import RelaxationScreen from '@/components/dhikr/relaxation-screen';
+import BreathingFab from '@/components/dhikr/breathing-fab';
 import BottomNav from '@/components/dhikr/bottom-nav';
 import { useEffect } from 'react';
 
@@ -59,6 +60,7 @@ export default function Home() {
         </motion.div>
       </AnimatePresence>
       {showNav && <BottomNav />}
+      <BreathingFab />
     </div>
   );
 }

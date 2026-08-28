@@ -2,9 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { IslamicIcon, Star, TreePine, Sparkles, ChevronLeft, Clock, Bell, Hand } from '@/components/dhikr/islamic-icons';
+import { IslamicIcon, Star, TreePine, Sparkles, ChevronLeft, Clock, Bell } from '@/components/dhikr/islamic-icons';
 import { prayerDhikrGroups, prayerTimesList, getCurrentPrayerIndex, getSimpleHijriDate, dailyVerses, smartNotifications, treeIcons, fetchPrayerTimes } from '@/lib/dhikr-data';
-import { Wind } from '@/components/dhikr/islamic-icons';
 import { useDhikrStore, ArabicFont } from '@/lib/store';
 
 function getFontClass(font: ArabicFont): string {
@@ -105,35 +104,9 @@ export default function HomeScreen() {
           <p className='text-amber-400 text-xs'>{verse.ref}</p>
         </motion.div>
 
-        {/* Quick Relaxation Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
-          className='glass-card rounded-2xl p-4 border border-amber-500/10'
-        >
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-3'>
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setCurrentScreen('relaxation')}
-                className='w-14 h-14 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/20'
-              >
-                <Wind className='w-7 h-7 text-white' />
-              </motion.button>
-              <div>
-                <p className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>أدوات الاسترخاء</p>
-                <p className='app-text-2 text-xs mt-0.5'>تقنيات تنفس وتهدئة</p>
-              </div>
-            </div>
-            <div className='text-left'>
-              <p className='app-text-muted text-xs'>4 تقنيات</p>
-              <ChevronLeft className='w-4 h-4 app-text-muted rotate-180' />
-            </div>
-          </div>
-        </motion.div>
-
         {/* Quick Free Counter */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }}
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
           className='glass-card rounded-2xl p-4 border border-amber-500/10'
         >
           <div className='flex items-center justify-between'>
@@ -159,7 +132,7 @@ export default function HomeScreen() {
 
         {/* Next Prayer Card */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28 }}
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }}
           className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${clr.bg} border ${clr.border} p-5`}
         >
           <div className='islamic-shimmer absolute inset-0 pointer-events-none' />
@@ -197,7 +170,7 @@ export default function HomeScreen() {
 
         {/* Streak + Tree Row */}
         <div className='grid grid-cols-2 gap-3'>
-          <motion.div initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.33 }}
+          <motion.div initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.27 }}
             className='glass-card rounded-2xl p-3.5 border border-amber-500/10'
           >
             <div className='flex items-center gap-1.5 mb-2'>
@@ -215,7 +188,7 @@ export default function HomeScreen() {
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.38 }}
+          <motion.div initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.32 }}
             className='glass-card rounded-2xl p-3.5 border border-emerald-500/10'
           >
             <div className='flex items-center gap-1.5 mb-2'>
@@ -238,7 +211,7 @@ export default function HomeScreen() {
         </div>
 
         {/* Today's Prayers */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.43 }}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.37 }}
           className='glass-card rounded-2xl p-4 border border-amber-500/10'
         >
           <div className='flex items-center justify-between mb-3'>
