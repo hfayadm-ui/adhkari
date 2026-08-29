@@ -23,10 +23,10 @@ export default function BottomNav() {
           className='mx-3 mb-3 rounded-[1.25rem]'
           style={{
             background: 'var(--app-nav-bg)',
-            backdropFilter: 'blur(40px) saturate(1.5)',
-            WebkitBackdropFilter: 'blur(40px) saturate(1.5)',
+            backdropFilter: 'blur(20px) saturate(1.5)',
+            WebkitBackdropFilter: 'blur(20px) saturate(1.5)',
             border: '1px solid var(--gold-border)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.03)',
           }}
         >
           {/* Gold top highlight line */}
@@ -38,25 +38,25 @@ export default function BottomNav() {
                 <button
                   key={tab.id}
                   onClick={() => setCurrentScreen(tab.id)}
-                  className='relative flex flex-col items-center gap-1 px-4 py-1.5 rounded-2xl transition-all duration-200 min-w-[56px]'
+                  className='relative flex flex-col items-center gap-1 px-4 py-1.5 rounded-2xl transition-all duration-200 min-w-[56px] active:scale-95'
                 >
                   {active && (
                     <motion.div
                       layoutId='activeTab'
                       className='absolute inset-0 rounded-2xl'
                       style={{
-                        background: 'var(--gold-accent)',
-                        boxShadow: '0 2px 12px var(--gold-glow), 0 0 0 1px var(--gold-border-glow)',
+                        background: 'var(--gold-glow)',
+                        border: '1px solid var(--gold-border)',
                       }}
                       transition={{ type: 'spring', stiffness: 380, damping: 28 }}
                     />
                   )}
-                  <span className='relative z-10 transition-colors duration-200' style={{ color: active ? '#FFFFFF' : 'var(--app-text-muted)' }}>
+                  <span className='relative z-10 transition-colors duration-200' style={{ color: active ? 'var(--gold-accent)' : 'var(--app-text-muted)' }}>
                     {tab.icon}
                   </span>
                   <span
                     className='relative z-10 text-[10px] font-medium transition-colors duration-200'
-                    style={{ color: active ? '#FFFFFF' : 'var(--app-text-muted)' }}
+                    style={{ color: active ? 'var(--gold-accent)' : 'var(--app-text-muted)' }}
                   >
                     {tab.label}
                   </span>
