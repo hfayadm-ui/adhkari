@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { IslamicIcon, Star, TreePine, Sparkles, ChevronLeft, Clock, Bell } from '@/components/dhikr/islamic-icons';
 import { prayerDhikrGroups, prayerTimesList, getCurrentPrayerIndex, getSimpleHijriDate, dailyVerses, smartNotifications, treeIcons, fetchPrayerTimes } from '@/lib/dhikr-data';
 import { useDhikrStore, ArabicFont } from '@/lib/store';
+import BreathingCard from '@/components/dhikr/breathing-card';
 
 function getFontClass(font: ArabicFont): string {
   const map: Record<ArabicFont, string> = {
@@ -139,6 +140,9 @@ export default function HomeScreen() {
             </div>
           </div>
         </motion.div>
+
+        {/* Breathing Card */}
+        <BreathingCard fontClass={fontClass} />
 
         {/* Next Prayer Card */}
         <motion.div
