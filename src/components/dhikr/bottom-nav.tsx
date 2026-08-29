@@ -19,7 +19,7 @@ export default function BottomNav() {
   return (
     <nav className='fixed bottom-0 left-0 right-0 z-50'>
       <div className='max-w-md mx-auto'>
-        <div className='glass-nav mx-3 mb-3 rounded-[1.25rem] shadow-lg'>
+        <div className='mx-3 mb-3 rounded-[1.25rem] shadow-lg' style={{ background: 'var(--app-bg)', border: '1px solid var(--gold-border)' }}>
           {/* Gold top highlight line */}
           <div className='h-px' style={{ background: 'linear-gradient(90deg, transparent, var(--gold-border), transparent)' }} />
           <div className='flex items-center justify-around pt-1 pb-1.5'>
