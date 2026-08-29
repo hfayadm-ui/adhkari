@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { useDhikrStore, ArabicFont } from '@/lib/store';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
-import { Volume2, VolumeX, Type, RotateCcw, MapPin, ChevronDown, Search, Check, Sun, Moon, Wind } from '@/components/dhikr/islamic-icons';
+import { Volume2, VolumeX, Type, RotateCcw, MapPin, ChevronDown, Search, Check, Sun, Moon } from '@/components/dhikr/islamic-icons';
 import { countries, CityData, fetchPrayerTimes } from '@/lib/dhikr-data';
 import { useState, useEffect, useMemo } from 'react';
 
@@ -51,7 +51,7 @@ export default function SettingsScreen() {
     arabicFont, setArabicFont,
     selectedCity, setSelectedCity, setPrayerTimes,
     streak, setStreak, treeLevel, setTreeLevel, resetDaily,
-    appMode, setAppMode, breathingFabVisible, setBreathingFabVisible,
+    appMode, setAppMode,
   } = useDhikrStore();
   const fontVar = getFontClass(arabicFont);
 
@@ -160,19 +160,6 @@ export default function SettingsScreen() {
               <div><p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>الاهتزاز</p><p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>اهتزاز خفيف عند الضغط</p></div>
             </div>
             <Toggle value={vibrationEnabled} onChange={toggleVibration} />
-          </div>
-        </SettingRow>
-
-        {/* Breathing FAB */}
-        <SettingRow delay={0.22}>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-3'>
-              <div className='w-9 h-9 rounded-xl app-surface flex items-center justify-center'>
-                <Wind className='w-4 h-4 app-text-muted' />
-              </div>
-              <div><p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>زر التنفس الجانبي</p><p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>زر عائم سريع للتنفس</p></div>
-            </div>
-            <Toggle value={breathingFabVisible} onChange={() => setBreathingFabVisible(!breathingFabVisible)} />
           </div>
         </SettingRow>
 
