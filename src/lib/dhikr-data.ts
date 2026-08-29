@@ -235,7 +235,7 @@ export function getCategoryName(categoryId: string): string {
 
 // ==================== شجرة الأذكار ====================
 export const treeIcons = ['seedling', 'sprout', 'tree-pine', 'tree', 'palm-tree', 'landmark', 'mosque'];
-export const treeNames = ['بذرة', 'نبتة صغيرة', 'شجرة صغيرة', 'شجرة عادية', 'نخلة', 'حديقة', 'جنة صغيرة'];
+export const treeNames = ['بذرة', 'نبتة صغيرة', 'شجرة صغيرة', 'شجرة عادية', 'نخلة', 'حديقة', 'بستان'];
 
 // ==================== مواقيت الصلاة ====================
 export const prayerTimesList = [
