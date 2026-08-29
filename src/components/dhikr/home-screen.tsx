@@ -81,7 +81,7 @@ export default function HomeScreen() {
         {/* Smart Notification Card */}
         <motion.div
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
-          className='glass-card rounded-2xl p-4'
+          className='glass-card rounded-2xl p-4 transition-all duration-200'
         >
           <div className='flex items-center gap-3'>
             <div
@@ -100,10 +100,10 @@ export default function HomeScreen() {
           className='glass-card-elevated rounded-2xl p-5 relative overflow-hidden'
         >
           {/* Corner ornaments */}
-          <div className='absolute top-0 right-0 w-10 h-10 border-t border-r rounded-tr-2xl' style={{ borderColor: 'var(--gold-border)' }} />
-          <div className='absolute top-0 left-0 w-10 h-10 border-t border-l rounded-tl-2xl' style={{ borderColor: 'var(--gold-border)' }} />
-          <div className='absolute bottom-0 right-0 w-10 h-10 border-b border-r rounded-br-2xl' style={{ borderColor: 'var(--gold-border)' }} />
-          <div className='absolute bottom-0 left-0 w-10 h-10 border-b border-l rounded-bl-2xl' style={{ borderColor: 'var(--gold-border)' }} />
+          <div className='absolute top-0 right-0 w-10 h-10 border-t border-r rounded-tr-2xl' style={{ borderColor: 'var(--gold-border-glow)' }} />
+          <div className='absolute top-0 left-0 w-10 h-10 border-t border-l rounded-tl-2xl' style={{ borderColor: 'var(--gold-border-glow)' }} />
+          <div className='absolute bottom-0 right-0 w-10 h-10 border-b border-r rounded-br-2xl' style={{ borderColor: 'var(--gold-border-glow)' }} />
+          <div className='absolute bottom-0 left-0 w-10 h-10 border-b border-l rounded-bl-2xl' style={{ borderColor: 'var(--gold-border-glow)' }} />
 
           <div className='flex items-center gap-2 mb-3'>
             <IslamicIcon name='book' className='w-5 h-5' color='var(--gold-accent)' />
@@ -116,6 +116,7 @@ export default function HomeScreen() {
         {/* Quick Free Counter */}
         <motion.div
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
+          whileHover={{ scale: 1.03 }}
           className='glass-card rounded-2xl p-4'
         >
           <div className='flex items-center justify-between'>
@@ -129,7 +130,7 @@ export default function HomeScreen() {
               </motion.button>
               <div>
                 <p className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>العداد السريع</p>
-                <p className='text-2xl font-bold' color='var(--gold-accent)'>{freeCounter}</p>
+                <p className='text-2xl font-bold' style={{ color: 'var(--gold-accent)' }}>{freeCounter}</p>
               </div>
             </div>
             <div className='text-left'>
@@ -142,17 +143,17 @@ export default function HomeScreen() {
         {/* Next Prayer Card */}
         <motion.div
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }}
-          className='glass-card-elevated rounded-2xl p-5 relative overflow-hidden'
+          className='glass-glow rounded-2xl p-5 relative overflow-hidden'
         >
           <div className='islamic-shimmer absolute inset-0 pointer-events-none' />
           <div className='absolute top-0 left-0 right-0 h-px' style={{ background: 'linear-gradient(90deg, transparent, var(--gold-border), transparent)' }} />
           <div className='relative z-10'>
             <div className='flex items-center justify-between mb-3'>
               <div className='flex items-center gap-2'>
-                <Clock className='w-4 h-4' color='var(--gold-accent)' />
+                <Clock className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
                 <span className='app-text-muted text-xs'>الصلاة القادمة</span>
               </div>
-              <span className='text-xs font-medium' color='var(--gold-accent)'>
+              <span className='text-xs font-medium' style={{ color: 'var(--gold-accent)' }}>
                 {prayerTimeDisplay(currentPrayerTime.id, currentPrayerTime?.time || '--:--')}
               </span>
             </div>
@@ -180,14 +181,14 @@ export default function HomeScreen() {
         {/* Streak + Tree Row */}
         <div className='grid grid-cols-2 gap-3'>
           <motion.div initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.27 }}
-            className='glass-card rounded-2xl p-3.5'
+            className='glass-card glass-glow rounded-2xl p-3.5'
           >
             <div className='flex items-center gap-1.5 mb-2'>
-              <Star className='w-4 h-4' color='var(--gold-accent)' />
+              <Star className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
               <span className='app-text-muted text-[11px]' style={{ fontFamily: fontClass }}>السلسلة</span>
             </div>
             <div className='flex items-baseline gap-1'>
-              <span className='text-3xl font-bold' color='var(--gold-accent)'>{streak}</span>
+              <span className='text-3xl font-bold' style={{ color: 'var(--gold-accent)' }}>{streak}</span>
               <span className='app-text-muted text-[11px]' style={{ fontFamily: fontClass }}>يوم</span>
             </div>
             <div className='mt-2 flex gap-0.5'>
@@ -234,7 +235,7 @@ export default function HomeScreen() {
               const idx = prayerDhikrGroups.findIndex(g => g.prayerId === p.id);
               return (
                 <button key={p.id} onClick={() => { setSelectedPrayerIndex(idx); setReadingSource('prayer'); setCurrentScreen('reading'); }}
-                  className='flex-1 flex flex-col items-center py-2.5 rounded-xl transition-all duration-300 glass-card'
+                  className={`flex-1 flex flex-col items-center py-2.5 rounded-xl transition-all duration-300 ${done ? '' : 'btn-glass'}`}
                   style={done ? { background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' } : {}}
                 >
                   {done ? (

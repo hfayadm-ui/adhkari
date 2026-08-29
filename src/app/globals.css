@@ -44,27 +44,28 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* ================================ */
-/*   LIGHT MODE — Creamy White + Matte Gold   */
-/* ================================ */
+/* ================================================ */
+/*   LIGHT MODE — Creamy White + Matte Gold          */
+/*   Modern Glassmorphism Islamic Design System      */
+/* ================================================ */
 :root {
   --radius: 0.75rem;
   --background: #FDFBF7;
   --foreground: #2C2825;
-  --card: rgba(255,255,255,0.60);
+  --card: rgba(255,255,255,0.58);
   --card-foreground: #2C2825;
   --popover: rgba(255,255,255,0.82);
   --popover-foreground: #2C2825;
   --primary: #C5A059;
   --primary-foreground: #FFFFFF;
-  --secondary: rgba(197,160,89,0.07);
+  --secondary: rgba(197,160,89,0.06);
   --secondary-foreground: #5C5651;
   --muted: #F3EDE2;
   --muted-foreground: #8A8279;
   --accent: #F0EBE3;
   --accent-foreground: #2C2825;
   --destructive: #DC2626;
-  --border: rgba(197,160,89,0.14);
+  --border: rgba(197,160,89,0.12);
   --input: #F0EBE3;
   --ring: #C5A059;
   --gold: #C5A059;
@@ -79,59 +80,85 @@
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: rgba(197,160,89,0.08);
   --sidebar-accent-foreground: #5C5651;
-  --sidebar-border: rgba(197,160,89,0.12);
+  --sidebar-border: rgba(197,160,89,0.10);
   --sidebar-ring: #C5A059;
 
-  /* ---- App Tokens — LIGHT ---- */
+  /* ---- App Design Tokens — LIGHT ---- */
   --app-bg: #FDFBF7;
+  --app-bg-warm: #FAF6F0;
   --app-text: #2C2825;
   --app-text-2: #5C5651;
   --app-text-3: #8A8279;
   --app-text-muted: #8A8279;
-  --app-surface: rgba(0,0,0,0.028);
-  --app-surface-hover: rgba(0,0,0,0.055);
-  --app-card-bg: rgba(255,255,255,0.55);
-  --app-card-border: rgba(197,160,89,0.13);
-  --app-nav-bg: rgba(253,251,247,0.78);
-  --app-modal-bg: #FFFFFF;
-  --app-shimmer: rgba(197,160,89,0.05);
-  --app-pattern-1: rgba(197,160,89,0.035);
-  --app-pattern-2: rgba(139,114,9,0.025);
-  --app-ring-track: rgba(0,0,0,0.055);
-  --app-chart-bar: rgba(197,160,89,0.14);
-  --app-scrollbar: rgba(197,160,89,0.18);
-  --app-input-bg: rgba(0,0,0,0.028);
-  --app-input-border: rgba(0,0,0,0.08);
+  --app-surface: rgba(0,0,0,0.025);
+  --app-surface-hover: rgba(0,0,0,0.048);
 
-  /* Gold shades */
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(255,255,255,0.52);
+  --glass-bg-elevated: rgba(255,255,255,0.65);
+  --glass-bg-subtle: rgba(255,255,255,0.35);
+  --glass-border: rgba(197,160,89,0.10);
+  --glass-border-subtle: rgba(197,160,89,0.06);
+  --glass-blur: 24px;
+  --glass-blur-elevated: 36px;
+  --glass-saturate: 1.4;
+  --glass-inset-top: rgba(255,255,255,0.35);
+  --glass-inset-bottom: rgba(0,0,0,0.02);
+
+  /* Shadow System — Soft Ambient */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.01);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.03), 0 1px 4px rgba(0,0,0,0.015), inset 0 1px 0 rgba(255,255,255,0.25);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02), inset 0 1px 0 rgba(255,255,255,0.3);
+  --shadow-xl: 0 12px 48px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.025), inset 0 1px 0 rgba(255,255,255,0.35);
+  --shadow-float: 0 16px 56px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255,255,255,0.4);
+
+  /* App-specific tokens */
+  --app-card-bg: var(--glass-bg);
+  --app-card-border: var(--glass-border);
+  --app-nav-bg: rgba(253,251,247,0.72);
+  --app-modal-bg: #FFFFFF;
+  --app-shimmer: rgba(197,160,89,0.04);
+  --app-pattern-1: rgba(197,160,89,0.03);
+  --app-pattern-2: rgba(139,114,9,0.02);
+  --app-ring-track: rgba(0,0,0,0.05);
+  --app-chart-bar: rgba(197,160,89,0.12);
+  --app-scrollbar: rgba(197,160,89,0.15);
+  --app-input-bg: rgba(0,0,0,0.025);
+  --app-input-border: rgba(0,0,0,0.07);
+
+  /* Gold Palette — Matte Gold System */
   --gold-accent: #C5A059;
   --gold-bright: #D4AF37;
   --gold-soft: #B8960C;
-  --gold-glow: rgba(197,160,89,0.15);
-  --gold-border: rgba(197,160,89,0.18);
+  --gold-pale: #E8D5A8;
+  --gold-glow: rgba(197,160,89,0.12);
+  --gold-glow-strong: rgba(197,160,89,0.20);
+  --gold-border: rgba(197,160,89,0.16);
+  --gold-border-glow: rgba(197,160,89,0.25);
+  --gold-shadow: 0 0 20px rgba(197,160,89,0.08), 0 0 40px rgba(197,160,89,0.03);
 }
 
-/* ================================ */
-/*   DARK MODE — Warm Dark + Gold     */
-/* ================================ */
+/* ================================================ */
+/*   DARK MODE — Warm Dark + Matte Gold              */
+/* ================================================ */
 .dark {
-  --background: #111010;
+  --background: #0F0E0D;
   --foreground: #F0EBE3;
-  --card: rgba(255,255,255,0.04);
+  --card: rgba(255,255,255,0.035);
   --card-foreground: #F0EBE3;
-  --popover: rgba(255,255,255,0.06);
+  --popover: rgba(255,255,255,0.055);
   --popover-foreground: #F0EBE3;
   --primary: #D4AF37;
-  --primary-foreground: #111010;
-  --secondary: rgba(212,175,55,0.10);
+  --primary-foreground: #0F0E0D;
+  --secondary: rgba(212,175,55,0.08);
   --secondary-foreground: #A69E94;
-  --muted: #1C1B19;
+  --muted: #1A1918;
   --muted-foreground: #6B6560;
-  --accent: rgba(212,175,55,0.08);
+  --accent: rgba(212,175,55,0.06);
   --accent-foreground: #F0EBE3;
   --destructive: #EF4444;
-  --border: rgba(212,175,55,0.10);
-  --input: #1C1B19;
+  --border: rgba(212,175,55,0.08);
+  --input: #1A1918;
   --ring: #D4AF37;
   --gold: #D4AF37;
   --chart-1: #D4AF37;
@@ -139,44 +166,73 @@
   --chart-3: #B8960C;
   --chart-4: #C5A059;
   --chart-5: #8B7209;
-  --sidebar: #161514;
+  --sidebar: #141312;
   --sidebar-foreground: #F0EBE3;
   --sidebar-primary: #D4AF37;
-  --sidebar-primary-foreground: #111010;
-  --sidebar-accent: rgba(212,175,55,0.08);
+  --sidebar-primary-foreground: #0F0E0D;
+  --sidebar-accent: rgba(212,175,55,0.06);
   --sidebar-accent-foreground: #A69E94;
-  --sidebar-border: rgba(212,175,55,0.08);
+  --sidebar-border: rgba(212,175,55,0.06);
   --sidebar-ring: #D4AF37;
 
-  /* ---- App Tokens — DARK ---- */
-  --app-bg: #111010;
+  /* ---- App Design Tokens — DARK ---- */
+  --app-bg: #0F0E0D;
+  --app-bg-warm: #141312;
   --app-text: #F0EBE3;
   --app-text-2: #A69E94;
   --app-text-3: #6B6560;
   --app-text-muted: #6B6560;
-  --app-surface: rgba(255,255,255,0.04);
-  --app-surface-hover: rgba(255,255,255,0.075);
-  --app-card-bg: rgba(255,255,255,0.035);
-  --app-card-border: rgba(212,175,55,0.09);
-  --app-nav-bg: rgba(17,16,16,0.82);
-  --app-modal-bg: #1A1918;
-  --app-shimmer: rgba(212,175,55,0.05);
-  --app-pattern-1: rgba(212,175,55,0.025);
-  --app-pattern-2: rgba(197,160,89,0.018);
-  --app-ring-track: rgba(255,255,255,0.055);
-  --app-chart-bar: rgba(212,175,55,0.12);
-  --app-scrollbar: rgba(212,175,55,0.15);
-  --app-input-bg: rgba(255,255,255,0.04);
-  --app-input-border: rgba(255,255,255,0.08);
+  --app-surface: rgba(255,255,255,0.035);
+  --app-surface-hover: rgba(255,255,255,0.065);
 
-  /* Gold shades */
+  /* Glassmorphism Tokens — Dark */
+  --glass-bg: rgba(255,255,255,0.03);
+  --glass-bg-elevated: rgba(255,255,255,0.045);
+  --glass-bg-subtle: rgba(255,255,255,0.02);
+  --glass-border: rgba(212,175,55,0.07);
+  --glass-border-subtle: rgba(212,175,55,0.04);
+  --glass-blur: 20px;
+  --glass-blur-elevated: 32px;
+  --glass-saturate: 1.2;
+  --glass-inset-top: rgba(255,255,255,0.03);
+  --glass-inset-bottom: rgba(0,0,0,0.15);
+
+  /* Shadow System — Dark Ambient */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.10);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.2), 0 1px 4px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.03);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.04);
+  --shadow-xl: 0 12px 48px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.05);
+  --shadow-float: 0 16px 56px rgba(0,0,0,0.35), 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
+
+  /* App-specific tokens */
+  --app-card-bg: var(--glass-bg);
+  --app-card-border: var(--glass-border);
+  --app-nav-bg: rgba(15,14,13,0.78);
+  --app-modal-bg: #1A1918;
+  --app-shimmer: rgba(212,175,55,0.04);
+  --app-pattern-1: rgba(212,175,55,0.02);
+  --app-pattern-2: rgba(197,160,89,0.015);
+  --app-ring-track: rgba(255,255,255,0.05);
+  --app-chart-bar: rgba(212,175,55,0.10);
+  --app-scrollbar: rgba(212,175,55,0.12);
+  --app-input-bg: rgba(255,255,255,0.03);
+  --app-input-border: rgba(255,255,255,0.07);
+
+  /* Gold Palette — Dark Mode */
   --gold-accent: #D4AF37;
   --gold-bright: #E5C054;
   --gold-soft: #B8960C;
-  --gold-glow: rgba(212,175,55,0.12);
-  --gold-border: rgba(212,175,55,0.14);
+  --gold-pale: #3D3420;
+  --gold-glow: rgba(212,175,55,0.10);
+  --gold-glow-strong: rgba(212,175,55,0.18);
+  --gold-border: rgba(212,175,55,0.12);
+  --gold-border-glow: rgba(212,175,55,0.20);
+  --gold-shadow: 0 0 20px rgba(212,175,55,0.06), 0 0 40px rgba(212,175,55,0.02);
 }
 
+/* ================================================ */
+/*   Base Layer                                       */
+/* ================================================ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -189,15 +245,15 @@
   }
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--app-scrollbar); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: var(--app-scrollbar); filter: brightness(1.3); }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-accent); opacity: 0.5; }
 
-/* ================================ */
-/*   App Theme Utility Classes       */
-/* ================================ */
+/* ================================================ */
+/*   App Theme Utility Classes                       */
+/* ================================================ */
 .app-text { color: var(--app-text); }
 .app-text-2 { color: var(--app-text-2); }
 .app-text-muted { color: var(--app-text-muted); }
@@ -213,20 +269,20 @@
 .bg-gold { background: var(--gold-accent); }
 .bg-gold-glow { background: var(--gold-glow); }
 .border-gold { border-color: var(--gold-border); }
-.shadow-gold { box-shadow: 0 0 24px var(--gold-glow); }
+.shadow-gold { box-shadow: var(--gold-shadow); }
 
-/* ================================ */
-/*   Animations                      */
-/* ================================ */
+/* ================================================ */
+/*   Animations                                      */
+/* ================================================ */
 @keyframes gentle-pulse {
   0%, 100% { box-shadow: 0 0 0 0 var(--gold-glow); }
-  50% { box-shadow: 0 0 0 18px transparent; }
+  50% { box-shadow: 0 0 0 14px transparent; }
 }
-.pulse-gentle { animation: gentle-pulse 2.5s ease-in-out infinite; }
+.pulse-gentle { animation: gentle-pulse 2.8s ease-in-out infinite; }
 
 @keyframes text-reveal {
   from { background-position: 0% 50%; }
-  to { background-position: 200% 50%; }
+   to { background-position: 200% 50%; }
 }
 .text-karaoke {
   background: linear-gradient(90deg, var(--gold-accent) 0%, var(--gold-bright) 40%, var(--gold-accent) 80%);
@@ -237,9 +293,16 @@
   animation: text-reveal 4s linear infinite;
 }
 
-/* ================================ */
-/*   Islamic Utilities                */
-/* ================================ */
+/* Subtle float animation for FABs */
+@keyframes gentle-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.float-gentle { animation: gentle-float 3s ease-in-out infinite; }
+
+/* ================================================ */
+/*   Islamic Utilities                                */
+/* ================================================ */
 @keyframes islamic-shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -247,116 +310,164 @@
 .islamic-shimmer {
   background: linear-gradient(90deg, transparent 0%, var(--app-shimmer) 50%, transparent 100%);
   background-size: 200% 100%;
-  animation: islamic-shimmer 3.5s ease-in-out infinite;
+  animation: islamic-shimmer 4s ease-in-out infinite;
 }
 
 .islamic-border {
-  border-image: linear-gradient(135deg, var(--gold-border), rgba(197,160,89,0.04), var(--gold-border)) 1;
+  border-image: linear-gradient(135deg, var(--gold-border), rgba(197,160,89,0.03), var(--gold-border)) 1;
 }
 
-/* ---- Glassmorphism Card ---- */
+/* ================================================ */
+/*   GLASSMORPHISM SYSTEM — 3 Tiers                  */
+/* ================================================ */
+
+/* Tier 1: Subtle Glass — for small elements, chips, tags */
+.glass-subtle {
+  background: var(--glass-bg-subtle);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.6)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.6)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border-subtle);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Tier 2: Standard Glass Card — default for most cards */
 .glass-card {
-  background: var(--app-card-bg);
-  backdrop-filter: blur(28px) saturate(1.5);
-  -webkit-backdrop-filter: blur(28px) saturate(1.5);
-  border: 1px solid var(--app-card-border);
-  box-shadow:
-    0 4px 24px rgba(0,0,0,0.025),
-    0 1px 3px rgba(0,0,0,0.015),
-    inset 0 1px 0 rgba(255,255,255,0.04);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
 }
 
-/* Enhanced glass with stronger effect */
+/* Tier 3: Elevated Glass — hero cards, important sections */
 .glass-card-elevated {
-  background: var(--app-card-bg);
-  backdrop-filter: blur(32px) saturate(1.6);
-  -webkit-backdrop-filter: blur(32px) saturate(1.6);
-  border: 1px solid var(--app-card-border);
-  box-shadow:
-    0 8px 40px rgba(0,0,0,0.04),
-    0 2px 8px rgba(0,0,0,0.02),
-    inset 0 1px 0 rgba(255,255,255,0.06);
+  background: var(--glass-bg-elevated);
+  backdrop-filter: blur(var(--glass-blur-elevated)) saturate(calc(var(--glass-saturate) + 0.2));
+  -webkit-backdrop-filter: blur(var(--glass-blur-elevated)) saturate(calc(var(--glass-saturate) + 0.2));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-lg);
 }
 
+/* Tier 4: Floating Glass — modals, overlays, FAB panels */
+.glass-float {
+  background: var(--glass-bg-elevated);
+  backdrop-filter: blur(var(--glass-blur-elevated)) saturate(calc(var(--glass-saturate) + 0.3));
+  -webkit-backdrop-filter: blur(var(--glass-blur-elevated)) saturate(calc(var(--glass-saturate) + 0.3));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-float);
+}
+
+/* Glass with gold glow border — for active/featured cards */
+.glass-glow {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--gold-border-glow);
+  box-shadow: var(--shadow-md), var(--gold-shadow);
+}
+
+/* Navigation glass bar */
+.glass-nav {
+  background: var(--app-nav-bg);
+  backdrop-filter: blur(calc(var(--glass-blur-elevated) * 1.2)) saturate(calc(var(--glass-saturate) + 0.4));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur-elevated) * 1.2)) saturate(calc(var(--glass-saturate) + 0.4));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 -2px 24px rgba(0,0,0,0.04), 0 -1px 4px rgba(0,0,0,0.02), inset 0 1px 0 var(--glass-inset-top);
+}
+
+/* Gold glow effect */
 .gold-glow {
-  box-shadow: 0 0 28px var(--gold-glow), 0 0 56px rgba(197,160,89,0.04);
+  box-shadow: var(--gold-shadow);
 }
 
-/* ---- Subtle Islamic Geometric Pattern ---- */
+/* ================================================ */
+/*   Islamic Geometric Pattern — Background          */
+/* ================================================ */
 .islamic-pattern-bg {
   background-image:
-    radial-gradient(ellipse at 18% 22%, var(--app-pattern-1) 0%, transparent 55%),
-    radial-gradient(ellipse at 82% 78%, var(--app-pattern-2) 0%, transparent 55%),
-    radial-gradient(ellipse at 50% 50%, var(--app-pattern-1) 0%, transparent 70%);
+    radial-gradient(ellipse at 15% 15%, var(--app-pattern-1) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 20%, var(--app-pattern-2) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 80%, var(--app-pattern-1) 0%, transparent 55%),
+    radial-gradient(ellipse at 20% 70%, var(--app-pattern-2) 0%, transparent 40%),
+    radial-gradient(ellipse at 75% 85%, var(--app-pattern-1) 0%, transparent 35%);
 }
 
-/* Subtle geometric overlay for enhanced screens */
-.geometric-overlay {
-  position: relative;
-}
-.geometric-overlay::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.35;
-  background-image:
-    repeating-conic-gradient(var(--app-pattern-1) 0% 25%, transparent 0% 50%);
-  background-size: 48px 48px;
-  border-radius: inherit;
-  z-index: 0;
-}
+/* ================================================ */
+/*   Buttons System                                  */
+/* ================================================ */
 
-/* ---- Gold CTA Button ---- */
+/* Primary Gold CTA — gradient with glow */
 .btn-gold {
-  background: linear-gradient(135deg, var(--gold-accent), var(--gold-bright));
+  background: linear-gradient(135deg, var(--gold-accent) 0%, var(--gold-bright) 50%, var(--gold-accent) 100%);
+  background-size: 200% 200%;
   color: #FFFFFF;
   font-weight: 700;
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.10);
   box-shadow:
     0 4px 20px var(--gold-glow),
-    0 1px 3px rgba(0,0,0,0.08),
+    0 1px 3px rgba(0,0,0,0.06),
     inset 0 1px 0 rgba(255,255,255,0.15);
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-gold:hover {
+  background-position: 100% 100%;
   box-shadow:
-    0 6px 28px rgba(197,160,89,0.25),
-    0 2px 6px rgba(0,0,0,0.1),
-    inset 0 1px 0 rgba(255,255,255,0.18);
-  filter: brightness(1.04);
+    0 6px 28px var(--gold-glow-strong),
+    0 2px 6px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.20);
 }
 .btn-gold:active {
   transform: scale(0.97);
   box-shadow:
-    0 2px 12px var(--gold-glow),
-    0 1px 2px rgba(0,0,0,0.06);
+    0 2px 10px var(--gold-glow),
+    0 1px 2px rgba(0,0,0,0.04);
 }
 
-/* ---- Glass outline button ---- */
+/* Glass outline button — subtle glass with hover glow */
 .btn-glass {
-  background: var(--app-card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--app-card-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.7));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.7));
+  border: 1px solid var(--glass-border);
   color: var(--app-text);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-glass:hover {
-  background: var(--app-surface-hover);
+  background: var(--glass-bg-elevated);
   border-color: var(--gold-border);
+  box-shadow: var(--shadow-md), var(--gold-shadow);
+}
+.btn-glass:active {
+  transform: scale(0.97);
 }
 
-/* ---- Gold metallic border highlight ---- */
+/* Glass button with gold glow border — for active states */
+.btn-glass-gold {
+  background: var(--gold-glow);
+  backdrop-filter: blur(calc(var(--glass-blur) * 0.7));
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.7));
+  border: 1px solid var(--gold-border);
+  color: var(--gold-accent);
+  box-shadow: var(--shadow-sm), var(--gold-shadow);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-glass-gold:hover {
+  background: var(--gold-glow-strong);
+  border-color: var(--gold-border-glow);
+}
+
+/* Gold metallic border highlight */
 .border-gold-shine {
-  border: 1px solid var(--app-card-border);
+  border: 1px solid var(--glass-border);
   box-shadow:
-    inset 0 0 0 1px rgba(197,160,89,0.06),
-    0 0 0 1px rgba(197,160,89,0.03);
+    inset 0 0 0 1px rgba(197,160,89,0.04),
+    0 0 0 1px rgba(197,160,89,0.02);
 }
 
-/* Arabic font classes */
+/* ================================================ */
+/*   Arabic Font Classes                             */
+/* ================================================ */
 .font-arabic-amiri { font-family: 'Amiri', serif; }
 .font-arabic-naskh { font-family: 'Noto Naskh Arabic', serif; }
 .font-arabic-tajawal { font-family: 'Tajawal', sans-serif; }

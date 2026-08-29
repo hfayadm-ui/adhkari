@@ -19,19 +19,10 @@ export default function BottomNav() {
   return (
     <nav className='fixed bottom-0 left-0 right-0 z-50'>
       <div className='max-w-md mx-auto'>
-        <div
-          className='mx-3 mb-3 rounded-2xl'
-          style={{
-            background: 'var(--app-nav-bg)',
-            backdropFilter: 'blur(28px) saturate(1.5)',
-            WebkitBackdropFilter: 'blur(28px) saturate(1.5)',
-            border: '1px solid var(--app-card-border)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255,255,255,0.05)',
-          }}
-        >
+        <div className='glass-nav mx-3 mb-3 rounded-[1.25rem] shadow-lg'>
           {/* Gold top highlight line */}
           <div className='h-px' style={{ background: 'linear-gradient(90deg, transparent, var(--gold-border), transparent)' }} />
-          <div className='flex items-center justify-around py-2'>
+          <div className='flex items-center justify-around pt-1 pb-1.5'>
             {tabs.map((tab) => {
               const active = isActive(tab.id);
               return (
@@ -45,13 +36,12 @@ export default function BottomNav() {
                   {active && (
                     <motion.div
                       layoutId='activeTab'
-                      className='absolute inset-0 rounded-xl'
+                      className='glass-glow absolute inset-0 rounded-xl'
                       style={{
-                        background: 'var(--gold-glow)',
-                        border: '1px solid var(--gold-border)',
-                        boxShadow: '0 0 16px var(--gold-glow)',
+                        border: '1px solid var(--gold-border-glow)',
+                        boxShadow: '0 0 20px var(--gold-glow), 0 0 6px var(--gold-border-glow)',
                       }}
-                      transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                     />
                   )}
                   <span className='relative z-10' style={{ color: active ? 'var(--gold-accent)' : 'var(--app-text-muted)' }}>

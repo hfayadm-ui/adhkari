@@ -82,7 +82,7 @@ export default function BreathingFab() {
               whileTap={{ scale: 0.85 }}
               whileHover={{ scale: 1.08 }}
               onClick={() => setBreathingOverlayOpen(true)}
-              className='w-12 h-12 rounded-full flex items-center justify-center gold-glow pulse-gentle'
+              className='w-12 h-12 rounded-full flex items-center justify-center gold-glow pulse-gentle float-gentle shadow-lg'
               style={{
                 background: 'linear-gradient(135deg, var(--gold-accent), var(--gold-bright))',
                 border: '1px solid rgba(255,255,255,0.15)',
@@ -95,7 +95,7 @@ export default function BreathingFab() {
             <motion.button
               whileTap={{ scale: 0.8 }}
               onClick={() => setBreathingFabVisible(false)}
-              className='w-6 h-6 rounded-full glass-card flex items-center justify-center opacity-40 hover:opacity-80 transition-opacity'
+              className='w-6 h-6 rounded-full glass-subtle flex items-center justify-center opacity-40 hover:opacity-80 transition-opacity'
             >
               <X className='w-3 h-3 app-text-muted' />
             </motion.button>
@@ -111,7 +111,7 @@ export default function BreathingFab() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className='fixed inset-0 z-[60] flex items-center justify-center'
-            style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
+            style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
             onClick={closeOverlay}
           >
             <motion.div
@@ -119,11 +119,11 @@ export default function BreathingFab() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.85, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className='w-[85vw] max-w-sm rounded-3xl p-6 glass-card-elevated'
+              className='w-[85vw] max-w-sm rounded-3xl p-7 glass-float'
               onClick={(e) => e.stopPropagation()}
             >
               {/* Gold top highlight */}
-              <div className='h-px mb-4 -mx-6 -mt-6 mb-5' style={{ background: 'linear-gradient(90deg, transparent, var(--gold-border), transparent)' }} />
+              <div className='h-px -mx-7 -mt-7 mb-5' style={{ background: 'linear-gradient(90deg, transparent, var(--gold-border), transparent)' }} />
 
               {/* Header */}
               <div className='flex items-center justify-between mb-4'>
@@ -137,17 +137,13 @@ export default function BreathingFab() {
                       <button
                         key={t.id}
                         onClick={() => { setTechIdx(i); reset(); }}
-                        className='px-2.5 py-1 rounded-lg text-[10px] font-medium transition-all'
-                        style={i === techIdx
-                          ? { background: 'var(--gold-glow)', border: '1px solid var(--gold-border)', color: 'var(--gold-accent)' }
-                          : { background: 'var(--app-surface)', border: '1px solid var(--app-card-border)', color: 'var(--app-text-muted)' }
-                        }
+                        className={`px-2.5 py-1 rounded-lg text-[10px] font-medium transition-all ${i === techIdx ? 'btn-glass-gold' : 'glass-subtle'}`}
                       >
                         {t.name}
                       </button>
                     ))}
                   </div>
-                  <button onClick={closeOverlay} className='w-8 h-8 rounded-full glass-card flex items-center justify-center app-surface-h'>
+                  <button onClick={closeOverlay} className='w-8 h-8 glass-subtle rounded-xl flex items-center justify-center app-surface-h'>
                     <X className='w-4 h-4 app-text-2' />
                   </button>
                 </div>
@@ -171,13 +167,13 @@ export default function BreathingFab() {
                       opacity: [0.15, 0.3],
                     } : { scale: 1, opacity: 0.1 }}
                     transition={{ duration: phase.d || 4, repeat: active ? Infinity : 0, ease: 'easeInOut' }}
-                    style={{ background: `radial-gradient(circle, ${glowColor}, transparent)` }}
+                    style={{ background: `radial-gradient(circle, ${glowColor}, transparent)`, filter: 'blur(40px)' }}
                   />
                   <motion.div
                     className='w-32 h-32 rounded-full flex flex-col items-center justify-center relative'
                     style={{
                       background: 'var(--app-surface)',
-                      border: '2px solid var(--gold-border)',
+                      border: '1.5px solid var(--gold-border-glow)',
                       boxShadow: active ? `0 0 30px ${glowColor}` : 'none',
                       backdropFilter: 'blur(20px)',
                     }}
@@ -203,7 +199,7 @@ export default function BreathingFab() {
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   onClick={reset}
-                  className='w-11 h-11 rounded-full glass-card flex items-center justify-center'
+                  className='w-11 h-11 rounded-full glass-subtle flex items-center justify-center'
                 >
                   <RotateCcw className='w-4 h-4 app-text-2' />
                 </motion.button>
@@ -211,12 +207,18 @@ export default function BreathingFab() {
                 <motion.button
                   whileTap={{ scale: 0.92 }}
                   onClick={() => !finished && setActive(!active)}
-                  className='w-14 h-14 rounded-full flex items-center justify-center transition-all'
+                  className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${
+                    finished
+                      ? ''
+                      : active
+                        ? 'glass-glow'
+                        : ''
+                  }`}
                   style={finished
                     ? { background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.25)' }
                     : active
-                    ? { background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }
-                    : { background: 'linear-gradient(135deg, var(--gold-accent), var(--gold-bright))', border: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 4px 20px var(--gold-glow)' }
+                      ? undefined
+                      : { background: 'linear-gradient(135deg, var(--gold-accent), var(--gold-bright))', border: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 4px 20px var(--gold-glow)' }
                   }
                 >
                   {finished ? (

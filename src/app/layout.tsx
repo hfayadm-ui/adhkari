@@ -28,7 +28,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
       </head>
       <body
-        className={`${cairo.variable} ${amiri.variable} ${noto.variable} ${tajawal.variable} ${ibmPlex.variable} ${scheherazade.variable} antialiased islamic-pattern-bg`}
+        className={`${cairo.variable} ${amiri.variable} ${noto.variable} ${tajawal.variable} ${ibmPlex.variable} ${scheherazade.variable} antialiased`}
         style={{
           background: 'var(--app-bg)',
           color: 'var(--app-text)',
@@ -39,14 +39,41 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <div 
           className='fixed inset-0 pointer-events-none z-0'
           style={{
-            opacity: 0.5,
+            opacity: 0.6,
             backgroundImage: `
-              radial-gradient(circle at 15% 20%, var(--app-pattern-1) 0%, transparent 50%),
-              radial-gradient(circle at 85% 80%, var(--app-pattern-2) 0%, transparent 50%),
-              radial-gradient(circle at 50% 10%, var(--app-pattern-1) 0%, transparent 40%),
-              repeating-linear-gradient(45deg, transparent, transparent 80px, var(--app-pattern-1) 80px, var(--app-pattern-1) 81px),
-              repeating-linear-gradient(-45deg, transparent, transparent 80px, var(--app-pattern-2) 80px, var(--app-pattern-2) 81px)
+              radial-gradient(circle at 12% 18%, var(--app-pattern-1) 0%, transparent 45%),
+              radial-gradient(circle at 88% 12%, var(--app-pattern-2) 0%, transparent 40%),
+              radial-gradient(circle at 50% 50%, var(--app-pattern-1) 0%, transparent 60%),
+              radial-gradient(circle at 8% 75%, var(--app-pattern-2) 0%, transparent 35%),
+              radial-gradient(circle at 92% 82%, var(--app-pattern-1) 0%, transparent 38%)
             `,
+          }}
+        />
+        {/* Decorative gold accent orbs — ambient light effect */}
+        <div
+          className='fixed pointer-events-none z-0'
+          style={{
+            top: '-15%',
+            right: '-10%',
+            width: '50vw',
+            height: '50vw',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, var(--gold-glow) 0%, transparent 70%)',
+            filter: 'blur(60px)',
+            opacity: 0.5,
+          }}
+        />
+        <div
+          className='fixed pointer-events-none z-0'
+          style={{
+            bottom: '-20%',
+            left: '-15%',
+            width: '60vw',
+            height: '60vw',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, var(--app-pattern-1) 0%, transparent 65%)',
+            filter: 'blur(80px)',
+            opacity: 0.4,
           }}
         />
         <ThemeSync />
