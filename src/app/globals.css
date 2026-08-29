@@ -115,7 +115,7 @@
   /* App-specific tokens */
   --app-card-bg: var(--glass-bg);
   --app-card-border: var(--glass-border);
-  --app-nav-bg: rgba(253,251,247,0.82);
+  --app-nav-bg: rgba(253,251,247,0.72);
   --app-modal-bg: #FFFFFF;
   --app-shimmer: rgba(197,160,89,0.04);
   --app-pattern-1: rgba(197,160,89,0.03);
@@ -207,7 +207,7 @@
   /* App-specific tokens */
   --app-card-bg: var(--glass-bg);
   --app-card-border: var(--glass-border);
-  --app-nav-bg: rgba(15,14,13,0.82);
+  --app-nav-bg: rgba(15,14,13,0.78);
   --app-modal-bg: #1A1918;
   --app-shimmer: rgba(212,175,55,0.04);
   --app-pattern-1: rgba(212,175,55,0.02);
