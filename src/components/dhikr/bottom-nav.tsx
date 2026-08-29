@@ -19,37 +19,44 @@ export default function BottomNav() {
   return (
     <nav className='fixed bottom-0 left-0 right-0 z-50'>
       <div className='max-w-md mx-auto'>
-        <div className='mx-3 mb-3 rounded-[1.25rem] shadow-lg' style={{ background: 'var(--app-bg)', border: '1px solid var(--gold-border)' }}>
+        <div
+          className='mx-3 mb-3 rounded-[1.25rem]'
+          style={{
+            background: 'var(--app-nav-bg)',
+            backdropFilter: 'blur(40px) saturate(1.5)',
+            WebkitBackdropFilter: 'blur(40px) saturate(1.5)',
+            border: '1px solid var(--gold-border)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)',
+          }}
+        >
           {/* Gold top highlight line */}
           <div className='h-px' style={{ background: 'linear-gradient(90deg, transparent, var(--gold-border), transparent)' }} />
-          <div className='flex items-center justify-around pt-1 pb-1.5'>
+          <div className='flex items-center justify-around py-2'>
             {tabs.map((tab) => {
               const active = isActive(tab.id);
               return (
                 <button
                   key={tab.id}
                   onClick={() => setCurrentScreen(tab.id)}
-                  className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all duration-200 min-w-[56px] ${
-                    active ? '' : 'hover:opacity-80'
-                  }`}
+                  className='relative flex flex-col items-center gap-1 px-4 py-1.5 rounded-2xl transition-all duration-200 min-w-[56px]'
                 >
                   {active && (
                     <motion.div
                       layoutId='activeTab'
-                      className='glass-glow absolute inset-0 rounded-xl'
+                      className='absolute inset-0 rounded-2xl'
                       style={{
-                        border: '1px solid var(--gold-border-glow)',
-                        boxShadow: '0 0 20px var(--gold-glow), 0 0 6px var(--gold-border-glow)',
+                        background: 'var(--gold-accent)',
+                        boxShadow: '0 2px 12px var(--gold-glow), 0 0 0 1px var(--gold-border-glow)',
                       }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      transition={{ type: 'spring', stiffness: 380, damping: 28 }}
                     />
                   )}
-                  <span className='relative z-10' style={{ color: active ? 'var(--gold-accent)' : 'var(--app-text-muted)' }}>
+                  <span className='relative z-10 transition-colors duration-200' style={{ color: active ? '#FFFFFF' : 'var(--app-text-muted)' }}>
                     {tab.icon}
                   </span>
                   <span
-                    className='relative z-10 text-[10px] font-medium transition-colors'
-                    style={{ color: active ? 'var(--gold-accent)' : 'var(--app-text-muted)' }}
+                    className='relative z-10 text-[10px] font-medium transition-colors duration-200'
+                    style={{ color: active ? '#FFFFFF' : 'var(--app-text-muted)' }}
                   >
                     {tab.label}
                   </span>
