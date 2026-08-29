@@ -40,7 +40,7 @@ export default function BreathingFab() {
   const isInhale = phase.n === 'شهيق';
   const isExhale = phase.n === 'زفير';
   const scaleVal = active ? (isInhale ? 1.4 : isExhale ? 0.8 : 1.1) : 1;
-  const glowColor = isInhale ? 'rgba(56,189,248,0.35)' : isExhale ? 'rgba(168,85,247,0.35)' : 'rgba(16,185,129,0.25)';
+  const glowColor = isInhale ? 'var(--gold-glow)' : isExhale ? 'rgba(16,185,129,0.2)' : 'var(--gold-glow)';
 
   useEffect(() => {
     if (active) {
@@ -82,7 +82,12 @@ export default function BreathingFab() {
               whileTap={{ scale: 0.85 }}
               whileHover={{ scale: 1.08 }}
               onClick={() => setBreathingOverlayOpen(true)}
-              className='w-12 h-12 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/25 border border-sky-400/20'
+              className='w-12 h-12 rounded-full flex items-center justify-center gold-glow pulse-gentle'
+              style={{
+                background: 'linear-gradient(135deg, var(--gold-accent), var(--gold-bright))',
+                border: '1px solid rgba(255,255,255,0.15)',
+                boxShadow: '0 4px 20px var(--gold-glow), 0 0 0 1px var(--gold-border)',
+              }}
             >
               <Wind className='w-5 h-5 text-white' />
             </motion.button>
@@ -90,7 +95,7 @@ export default function BreathingFab() {
             <motion.button
               whileTap={{ scale: 0.8 }}
               onClick={() => setBreathingFabVisible(false)}
-              className='w-7 h-7 rounded-full app-surface border app-border-c flex items-center justify-center opacity-50 hover:opacity-100 transition-opacity'
+              className='w-6 h-6 rounded-full glass-card flex items-center justify-center opacity-40 hover:opacity-80 transition-opacity'
             >
               <X className='w-3 h-3 app-text-muted' />
             </motion.button>
@@ -106,7 +111,7 @@ export default function BreathingFab() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className='fixed inset-0 z-[60] flex items-center justify-center'
-            style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)' }}
+            style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
             onClick={closeOverlay}
           >
             <motion.div
@@ -114,14 +119,16 @@ export default function BreathingFab() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.85, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className='w-[85vw] max-w-sm rounded-3xl p-6 border border-amber-500/10'
-              style={{ background: 'var(--app-bg)' }}
+              className='w-[85vw] max-w-sm rounded-3xl p-6 glass-card-elevated'
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Gold top highlight */}
+              <div className='h-px mb-4 -mx-6 -mt-6 mb-5' style={{ background: 'linear-gradient(90deg, transparent, var(--gold-border), transparent)' }} />
+
               {/* Header */}
               <div className='flex items-center justify-between mb-4'>
                 <div className='flex items-center gap-2'>
-                  <Wind className='w-5 h-5 text-sky-400' />
+                  <Wind className='w-5 h-5' style={{ color: 'var(--gold-accent)' }} />
                   <span className='app-text font-bold text-sm'>تنفس</span>
                 </div>
                 <div className='flex items-center gap-2'>
@@ -130,27 +137,27 @@ export default function BreathingFab() {
                       <button
                         key={t.id}
                         onClick={() => { setTechIdx(i); reset(); }}
-                        className={`px-2.5 py-1 rounded-lg text-[10px] font-medium transition-all ${
-                          i === techIdx
-                            ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
-                            : 'app-surface app-text-muted border app-border-c'
-                        }`}
+                        className='px-2.5 py-1 rounded-lg text-[10px] font-medium transition-all'
+                        style={i === techIdx
+                          ? { background: 'var(--gold-glow)', border: '1px solid var(--gold-border)', color: 'var(--gold-accent)' }
+                          : { background: 'var(--app-surface)', border: '1px solid var(--app-card-border)', color: 'var(--app-text-muted)' }
+                        }
                       >
                         {t.name}
                       </button>
                     ))}
                   </div>
-                  <button onClick={closeOverlay} className='w-8 h-8 rounded-full app-surface flex items-center justify-center app-surface-h'>
+                  <button onClick={closeOverlay} className='w-8 h-8 rounded-full glass-card flex items-center justify-center app-surface-h'>
                     <X className='w-4 h-4 app-text-2' />
                   </button>
                 </div>
               </div>
 
               {/* Progress bar */}
-              <div className='h-1 rounded-full app-surface overflow-hidden mb-4'>
+              <div className='h-1 rounded-full overflow-hidden mb-4' style={{ background: 'var(--app-ring-track)' }}>
                 <div
-                  className='h-full rounded-full bg-gradient-to-l from-sky-400 to-blue-500 transition-all duration-200'
-                  style={{ width: `${Math.min((elapsed / totalSession) * 100, 100)}%` }}
+                  className='h-full rounded-full transition-all duration-200'
+                  style={{ width: `${Math.min((elapsed / totalSession) * 100, 100)}%`, background: 'linear-gradient(90deg, var(--gold-accent), var(--gold-bright))' }}
                 />
               </div>
 
@@ -170,15 +177,16 @@ export default function BreathingFab() {
                     className='w-32 h-32 rounded-full flex flex-col items-center justify-center relative'
                     style={{
                       background: 'var(--app-surface)',
-                      border: '2px solid var(--app-border)',
+                      border: '2px solid var(--gold-border)',
                       boxShadow: active ? `0 0 30px ${glowColor}` : 'none',
+                      backdropFilter: 'blur(20px)',
                     }}
                     animate={active ? { scale: [1, scaleVal] } : { scale: 1 }}
                     transition={{ duration: phase.d || 4, repeat: active ? Infinity : 0, ease: 'easeInOut' }}
                   >
                     <span className='text-xl font-bold app-text'>{finished ? 'تم!' : phase.n}</span>
                     {active && !finished && (
-                      <span className='text-xs app-text-muted mt-0.5'>{Math.ceil(phase.d - phase.elapsed)}ث</span>
+                      <span className='app-text-muted text-xs mt-0.5'>{Math.ceil(phase.d - phase.elapsed)}ث</span>
                     )}
                   </motion.div>
                 </div>
@@ -195,7 +203,7 @@ export default function BreathingFab() {
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   onClick={reset}
-                  className='w-11 h-11 rounded-full app-surface border app-border-c flex items-center justify-center'
+                  className='w-11 h-11 rounded-full glass-card flex items-center justify-center'
                 >
                   <RotateCcw className='w-4 h-4 app-text-2' />
                 </motion.button>
@@ -203,18 +211,18 @@ export default function BreathingFab() {
                 <motion.button
                   whileTap={{ scale: 0.92 }}
                   onClick={() => !finished && setActive(!active)}
-                  className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all ${
-                    finished
-                      ? 'bg-emerald-500/20 border border-emerald-500/30'
-                      : active
-                      ? 'bg-sky-500/20 border border-sky-500/30'
-                      : 'bg-gradient-to-br from-sky-500 to-blue-600 shadow-sky-500/25'
-                  }`}
+                  className='w-14 h-14 rounded-full flex items-center justify-center transition-all'
+                  style={finished
+                    ? { background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.25)' }
+                    : active
+                    ? { background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }
+                    : { background: 'linear-gradient(135deg, var(--gold-accent), var(--gold-bright))', border: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 4px 20px var(--gold-glow)' }
+                  }
                 >
                   {finished ? (
-                    <span className='text-emerald-400 text-xs font-bold'>تم</span>
+                    <span className='text-emerald-500 text-xs font-bold'>تم</span>
                   ) : active ? (
-                    <Pause className='w-6 h-6 text-sky-300' />
+                    <Pause className='w-6 h-6' style={{ color: 'var(--gold-accent)' }} />
                   ) : (
                     <Play className='w-6 h-6 text-white' style={{ marginLeft: '-2px' }} />
                   )}

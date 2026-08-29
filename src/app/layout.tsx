@@ -35,8 +35,22 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           minHeight: '100vh',
         }}
       >
+        {/* Subtle Islamic geometric pattern overlay */}
+        <div 
+          className='fixed inset-0 pointer-events-none z-0'
+          style={{
+            opacity: 0.5,
+            backgroundImage: `
+              radial-gradient(circle at 15% 20%, var(--app-pattern-1) 0%, transparent 50%),
+              radial-gradient(circle at 85% 80%, var(--app-pattern-2) 0%, transparent 50%),
+              radial-gradient(circle at 50% 10%, var(--app-pattern-1) 0%, transparent 40%),
+              repeating-linear-gradient(45deg, transparent, transparent 80px, var(--app-pattern-1) 80px, var(--app-pattern-1) 81px),
+              repeating-linear-gradient(-45deg, transparent, transparent 80px, var(--app-pattern-2) 80px, var(--app-pattern-2) 81px)
+            `,
+          }}
+        />
         <ThemeSync />
-        {children}
+        <div className='relative z-10'>{children}</div>
       </body>
     </html>
   );

@@ -25,8 +25,6 @@ const tools: RelaxTool[] = [
       'حسبي الله لا إله إلا هو عليه توكلت',
       'اللهم إني أعوذ بك من الهم والحزن',
       'لا إله إلا أنت سبحانك إني كنت من الظالمين',
-      'حسبنا الله ونعم الوكيل',
-      'رب اشرح لي صدري ويسّر لي أمري',
     ],
   },
   {
@@ -36,13 +34,8 @@ const tools: RelaxTool[] = [
     color: 'from-blue-500 to-indigo-600',
     steps: [
       'اجلس مريحاً وأغلق عينيك',
-      'خذ 3 أنفاس عميقة',
       'شدّ قدميك 5 ثوانٍ ثم أرخِ',
-      'شدّ ساقيك ثم أرخِ',
-      'شدّ بطنك ثم أرخِ',
       'شدّ كتفيك للأعلى ثم أرخِ',
-      'شدّ يديك بقوة ثم أرخِ',
-      'توتّر وجهك ثم أرخِ بالكامل',
       'تنفّس بعمق واشعر بالراحة',
     ],
   },
@@ -53,13 +46,8 @@ const tools: RelaxTool[] = [
     color: 'from-amber-500 to-orange-600',
     steps: [
       'استلقِ مريحاً وأغلق عينيك',
-      'تنفّس 3 أنفاس عميقة',
       'انتبه لرأسك ووجهك: هل فيه توتر؟ أرخِ',
-      'انتقل لرقبتك وكتفيك: أرخِ أي شدّ',
-      'تحسّس ذراعيك ويديك: دعها ترتاح',
-      'انتبه لصدرك: شعر بحركة التنفس',
       'انتقل لبطنك: أرخِ مع كل زفير',
-      'تحسّس ساقيك وقدميك: أرخِ تماماً',
       'قل: اللهم أنت السلام ومنك السلام',
     ],
   },
@@ -71,11 +59,7 @@ const tools: RelaxTool[] = [
     steps: [
       'خذ نفساً عميقاً وابدأ',
       'فكّر في 3 نعم صحية تشعر بها الآن',
-      'تأمّل نعمة البصر والسمع',
       'اشكر نعمة الإيمان',
-      'فكّر في شخص تحب واشكر وجوده',
-      'تذكّر نعمة الأمن والأمان',
-      'فكّر في لحظة سعيدة مرّت هذا الأسبوع',
       'قل: الحمد لله الذي بنعمته تتم الصالحات',
     ],
   },
@@ -121,7 +105,7 @@ function ToolViewer({ tool, onBack }: { tool: RelaxTool; onBack: () => void }) {
       {/* شريط تقدم */}
       <div className='mx-4 mb-3'>
         <div className='h-1 rounded-full app-surface overflow-hidden'>
-          <div className='h-full rounded-full bg-gradient-to-l from-amber-400 to-amber-500 transition-all' style={{ width: `${progress * 100}%` }} />
+          <div className='h-full rounded-full transition-all' style={{ width: `${progress * 100}%`, background: 'linear-gradient(90deg, var(--gold-accent), var(--gold-bright))' }} />
         </div>
       </div>
 
@@ -142,8 +126,8 @@ function ToolViewer({ tool, onBack }: { tool: RelaxTool; onBack: () => void }) {
             animate={{ opacity: 1, x: 0 }}
             className='text-center w-full'
           >
-            <div className='w-10 h-10 mx-auto mb-5 rounded-full bg-amber-500/15 border border-amber-500/20 flex items-center justify-center'>
-              <span className='text-amber-400 font-bold text-sm'>{step + 1}</span>
+            <div className='w-10 h-10 mx-auto mb-5 rounded-full flex items-center justify-center' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
+              <span className='font-bold text-sm' color='var(--gold-accent)'>{step + 1}</span>
             </div>
             <p className='app-text text-lg leading-loose' style={{ fontFamily: 'var(--font-arabic)' }}>
               {tool.steps[step]}
@@ -158,7 +142,7 @@ function ToolViewer({ tool, onBack }: { tool: RelaxTool; onBack: () => void }) {
           <motion.button
             whileTap={{ scale: 0.96 }}
             onClick={next}
-            className='w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold text-sm shadow-lg shadow-amber-500/20'
+            className='w-full py-3 rounded-xl btn-gold font-bold text-sm'
           >
             {step < tool.steps.length - 1 ? 'التالي' : 'تم'}
           </motion.button>
@@ -184,8 +168,8 @@ export default function RelaxationScreen() {
       {/* رأس */}
       <header className='px-4 pt-4 pb-3'>
         <div className='flex items-center gap-3'>
-          <div className='w-9 h-9 rounded-full bg-sky-500/15 border border-sky-500/20 flex items-center justify-center'>
-            <IslamicIcon name='wind' className='w-4 h-4 text-sky-400' />
+          <div className='w-9 h-9 rounded-full flex items-center justify-center' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
+            <IslamicIcon name='wind' className='w-4 h-4' color='var(--gold-accent)' />
           </div>
           <div>
             <h1 className='app-text font-bold text-base' style={{ fontFamily: fontClass }}>أدوات الاسترخاء</h1>
@@ -203,7 +187,7 @@ export default function RelaxationScreen() {
             transition={{ delay: i * 0.05 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setActiveTool(tool)}
-            className='w-full glass-card rounded-2xl p-3.5 border border-amber-500/10 flex items-center gap-3 text-right'
+            className='w-full glass-card rounded-2xl p-3.5 flex items-center gap-3 text-right'
           >
             <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center shrink-0 shadow-lg`}>
               <IslamicIcon name={tool.icon} className='w-5 h-5 text-white' />
@@ -219,7 +203,7 @@ export default function RelaxationScreen() {
         {/* تهدئة سريعة */}
         <motion.div
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
-          className='glass-card rounded-2xl p-3.5 border border-amber-500/10 mt-3'
+          className='glass-card rounded-2xl p-3.5 mt-3'
         >
           <p className='app-text-2 text-[11px] mb-2'>تهدئة سريعة</p>
           <div className='space-y-1.5'>
@@ -230,7 +214,7 @@ export default function RelaxationScreen() {
             ].map((item, i) => (
               <div key={i} className='flex items-center justify-between py-1.5 px-2.5 rounded-lg app-surface'>
                 <span className='app-text text-xs'>{item.t}</span>
-                <span className='text-amber-400 text-[10px]'>{item.s}</span>
+                <span className='text-[10px]' color='var(--gold-accent)'>{item.s}</span>
               </div>
             ))}
           </div>

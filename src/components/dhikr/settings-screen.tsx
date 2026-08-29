@@ -1,9 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useDhikrStore, ThemeColor, ArabicFont } from '@/lib/store';
+import { useDhikrStore, ArabicFont } from '@/lib/store';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
-import { Volume2, VolumeX, Palette, Type, RotateCcw, MapPin, ChevronDown, Search, Check, Sun, Moon, Wind } from '@/components/dhikr/islamic-icons';
+import { Volume2, VolumeX, Type, RotateCcw, MapPin, ChevronDown, Search, Check, Sun, Moon, Wind } from '@/components/dhikr/islamic-icons';
 import { countries, CityData, fetchPrayerTimes } from '@/lib/dhikr-data';
 import { useState, useEffect, useMemo } from 'react';
 
@@ -15,14 +15,6 @@ function getFontClass(font: ArabicFont): string {
   };
   return map[font] || 'var(--font-arabic)';
 }
-
-const themes: { id: ThemeColor; name: string; dot: string }[] = [
-  { id: 'emerald', name: 'أخضر زمردي', dot: 'bg-emerald-400' },
-  { id: 'blue', name: 'أزرق سماوي', dot: 'bg-blue-400' },
-  { id: 'purple', name: 'بنفسجي', dot: 'bg-purple-400' },
-  { id: 'amber', name: 'ذهبي', dot: 'bg-amber-400' },
-  { id: 'rose', name: 'وردي', dot: 'bg-rose-400' },
-];
 
 const fontOptions: { id: ArabicFont; name: string; desc: string; fontVar: string }[] = [
   { id: 'cairo', name: 'القاهرة', desc: 'خط عصري واضح', fontVar: 'var(--font-arabic)' },
@@ -44,7 +36,9 @@ function SettingRow({ children, delay = 0 }: { children: React.ReactNode; delay?
 
 function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
   return (
-    <button onClick={onChange} className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${value ? 'bg-gradient-to-r from-amber-500 to-emerald-500' : 'bg-slate-300 dark:bg-slate-700'}`}>
+    <button onClick={onChange}
+      className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${!value ? 'bg-slate-300 dark:bg-slate-700' : ''}`}
+      style={value ? { background: 'linear-gradient(90deg, var(--gold-accent), var(--gold-bright))' } : undefined}>
       <motion.div className='absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md'
         animate={{ left: value ? 'calc(100% - 22px)' : '2px' }} transition={{ type: 'spring', stiffness: 500, damping: 30 }} />
     </button>
@@ -54,7 +48,7 @@ function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
 export default function SettingsScreen() {
   const {
     soundEnabled, toggleSound, vibrationEnabled, toggleVibration,
-    themeColor, setThemeColor, arabicFont, setArabicFont,
+    arabicFont, setArabicFont,
     selectedCity, setSelectedCity, setPrayerTimes,
     streak, setStreak, treeLevel, setTreeLevel, resetDaily,
     appMode, setAppMode, breathingFabVisible, setBreathingFabVisible,
@@ -93,7 +87,7 @@ export default function SettingsScreen() {
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='flex flex-col min-h-screen pb-24'>
       <header className='px-4 pt-4 pb-2'>
         <div className='flex items-center gap-2.5'>
-          <IslamicIcon name='settings' className='w-7 h-7 text-amber-400' />
+          <IslamicIcon name='settings' className='w-7 h-7' color='var(--gold-accent)' />
           <h1 className='text-2xl font-bold app-text' style={{ fontFamily: fontVar }}>الإعدادات</h1>
         </div>
       </header>
@@ -103,8 +97,8 @@ export default function SettingsScreen() {
         <SettingRow delay={0.01}>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-3'>
-              <div className='w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center'>
-                {appMode === 'dark' ? <Moon className='w-4 h-4 text-amber-400' /> : <Sun className='w-4 h-4 text-amber-500' />}
+              <div className='w-9 h-9 rounded-xl flex items-center justify-center' style={{ background: 'var(--gold-glow)' }}>
+                {appMode === 'dark' ? <Moon className='w-4 h-4' color='var(--gold-accent)' /> : <Sun className='w-4 h-4' color='var(--gold-accent)' />}
               </div>
               <div>
                 <p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>المظهر</p>
@@ -115,46 +109,23 @@ export default function SettingsScreen() {
           </div>
         </SettingRow>
 
-        {/* Theme Colors */}
-        <SettingRow delay={0.05}>
-          <div className='flex items-center gap-3 mb-3'>
-            <div className='w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center'><Palette className='w-4 h-4 text-amber-400' /></div>
-            <div><p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>لون التطبيق</p><p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>اختر الثيم المفضل</p></div>
-          </div>
-          <div className='flex gap-2 flex-wrap'>
-            {themes.map(t => (
-              <button key={t.id} onClick={() => setThemeColor(t.id)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all ${themeColor === t.id ? 'app-surface-h border app-border-c' : 'app-surface border app-border-c'}`}>
-                <div className='relative'>
-                  <div className={`w-4 h-4 rounded-full ${t.dot}`} />
-                  {themeColor === t.id && <Check className='w-2.5 h-2.5 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2' />}
-                </div>
-                <span className='app-text-2 text-xs' style={{ fontFamily: fontVar }}>{t.name}</span>
-              </button>
-            ))}
-          </div>
-        </SettingRow>
-
         {/* Arabic Font Selection */}
         <SettingRow delay={0.1}>
           <div className='flex items-center gap-3 mb-3'>
-            <div className='w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center'><Type className='w-4 h-4 text-amber-400' /></div>
+            <div className='w-9 h-9 rounded-xl flex items-center justify-center' style={{ background: 'var(--gold-glow)' }}><Type className='w-4 h-4' color='var(--gold-accent)' /></div>
             <div><p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>خط الأذكار</p><p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>اختر الخط العربي لعرض الأذكار</p></div>
           </div>
           <div className='space-y-2'>
             {fontOptions.map(f => (
               <button key={f.id} onClick={() => setArabicFont(f.id)}
-                className={`w-full text-right rounded-xl p-3 transition-all border ${
-                  arabicFont === f.id
-                    ? 'bg-amber-500/10 border-amber-500/20'
-                    : 'app-surface app-border-c app-surface-h'
-                }`}>
+                className={`w-full text-right rounded-xl p-3 transition-all border ${arabicFont === f.id ? '' : 'app-surface app-border-c app-surface-h'}`}
+                style={arabicFont === f.id ? { background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' } : undefined}>
                 <div className='flex items-center justify-between'>
                   <div className='relative w-5 h-5 flex items-center justify-center'>
-                    {arabicFont === f.id && <Check className='w-4 h-4 text-amber-400' />}
+                    {arabicFont === f.id && <Check className='w-4 h-4' color='var(--gold-accent)' />}
                   </div>
                   <div className='text-right'>
-                    <p className={`text-sm font-medium ${arabicFont === f.id ? 'text-amber-200' : 'app-text-2'}`}>{f.name}</p>
+                    <p className={`text-sm font-medium ${arabicFont === f.id ? 'app-text' : 'app-text-2'}`}>{f.name}</p>
                     <p className='text-[10px] app-text-2'>{f.desc}</p>
                   </div>
                 </div>
@@ -171,7 +142,7 @@ export default function SettingsScreen() {
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-3'>
               <div className='w-9 h-9 rounded-xl app-surface flex items-center justify-center'>
-                {soundEnabled ? <Volume2 className='w-4 h-4 text-amber-400' /> : <VolumeX className='w-4 h-4 app-text-muted' />}
+                {soundEnabled ? <Volume2 className='w-4 h-4' color='var(--gold-accent)' /> : <VolumeX className='w-4 h-4 app-text-muted' />}
               </div>
               <div><p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>الأصوات</p><p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>صوت خفيف عند الضغط</p></div>
             </div>
@@ -184,7 +155,7 @@ export default function SettingsScreen() {
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-3'>
               <div className='w-9 h-9 rounded-xl app-surface flex items-center justify-center'>
-                <IslamicIcon name={vibrationEnabled ? 'sparkles' : 'x'} className={`w-4 h-4 ${vibrationEnabled ? 'text-amber-400' : 'app-text-muted'}`} />
+                <IslamicIcon name={vibrationEnabled ? 'sparkles' : 'x'} className='w-4 h-4' color={vibrationEnabled ? 'var(--gold-accent)' : undefined} />
               </div>
               <div><p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>الاهتزاز</p><p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>اهتزاز خفيف عند الضغط</p></div>
             </div>
@@ -197,7 +168,7 @@ export default function SettingsScreen() {
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-3'>
               <div className='w-9 h-9 rounded-xl app-surface flex items-center justify-center'>
-                <Wind className={`w-4 h-4 ${breathingFabVisible ? 'text-sky-400' : 'app-text-muted'}`} />
+                <Wind className='w-4 h-4 app-text-muted' />
               </div>
               <div><p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>زر التنفس الجانبي</p><p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>زر عائم سريع للتنفس</p></div>
             </div>
@@ -208,29 +179,29 @@ export default function SettingsScreen() {
         {/* City / Prayer Times */}
         <SettingRow delay={0.25}>
           <div className='flex items-center gap-3 mb-3'>
-            <div className='w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center'><MapPin className='w-4 h-4 text-amber-400' /></div>
+            <div className='w-9 h-9 rounded-xl flex items-center justify-center' style={{ background: 'var(--gold-glow)' }}><MapPin className='w-4 h-4' color='var(--gold-accent)' /></div>
             <div><p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>الموقع - مواقيت الصلاة</p><p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>اختر مدينتك لعرض المواقيت الصحيحة</p></div>
           </div>
           {selectedCity ? (
-            <div className='flex items-center justify-between p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-2'>
+            <div className='flex items-center justify-between p-3 rounded-xl mb-2' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
               <div>
-                <p className='text-amber-200 text-sm font-medium' style={{ fontFamily: fontVar }}>{selectedCity.name}</p>
+                <p className='app-text text-sm font-medium' style={{ fontFamily: fontVar }}>{selectedCity.name}</p>
                 <p className='app-text-2 text-[11px]'>{selectedCity.country}</p>
               </div>
-              <button onClick={() => setShowCityPicker(true)} className='text-amber-300 text-xs px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 transition-colors' style={{ fontFamily: fontVar }}>
+              <button onClick={() => setShowCityPicker(true)} className='text-xs px-3 py-1.5 rounded-lg transition-colors' style={{ color: 'var(--gold-accent)', background: 'var(--gold-glow)' }}>
                 تغيير
               </button>
             </div>
           ) : null}
           <button onClick={() => setShowCityPicker(true)}
             className='w-full flex items-center justify-between p-3 rounded-xl glass-card app-border-c app-surface-h transition-colors'>
-            <span className='text-amber-300 text-sm' style={{ fontFamily: fontVar }}>{selectedCity ? selectedCity.name : 'اختر المدينة'}</span>
-            <MapPin className='w-4 h-4 text-amber-400' />
+            <span className='text-sm' style={{ fontFamily: fontVar, color: selectedCity ? 'var(--gold-accent)' : 'var(--gold-accent)' }}>{selectedCity ? selectedCity.name : 'اختر المدينة'}</span>
+            <MapPin className='w-4 h-4' color='var(--gold-accent)' />
           </button>
           {loadingCity && (
             <div className='mt-2 flex items-center gap-2 justify-center'>
-              <div className='w-4 h-4 border-2 border-amber-400/30 border-t-amber-400 rounded-full animate-spin' />
-              <span className='text-amber-300 text-xs' style={{ fontFamily: fontVar }}>جارٍ جلب المواقيت...</span>
+              <div className='w-4 h-4 rounded-full animate-spin' style={{ border: '2px solid var(--gold-border)', borderTopColor: 'var(--gold-accent)' }} />
+              <span className='text-xs' style={{ fontFamily: fontVar, color: 'var(--gold-accent)' }}>جارٍ جلب المواقيت...</span>
             </div>
           )}
         </SettingRow>
@@ -241,8 +212,8 @@ export default function SettingsScreen() {
             className='fixed inset-0 z-[100] bg-black/50 dark:bg-black/70 backdrop-blur-sm flex items-end justify-center'
             onClick={() => { setShowCityPicker(false); setCitySearch(''); }}>
             <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className='w-full max-w-md rounded-t-3xl max-h-[80vh] flex flex-col border-t border-amber-500/20'
-              style={{ background: 'var(--app-modal-bg)' }}
+              className='w-full max-w-md rounded-t-3xl max-h-[80vh] flex flex-col'
+              style={{ background: 'var(--app-modal-bg)', borderTopColor: 'var(--gold-border)' }}
               onClick={e => e.stopPropagation()}>
               <div className='p-4 border-b app-border-c'>
                 <div className='flex items-center justify-between mb-3'>
@@ -271,11 +242,14 @@ export default function SettingsScreen() {
                       <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className='pr-4 space-y-1'>
                         {country.cities.map(city => (
                           <button key={city.name} onClick={() => selectCity(city)}
-                            className={`w-full text-right p-2.5 rounded-lg transition-all text-sm ${selectedCity?.name === city.name ? 'bg-amber-500/15 text-amber-200 border border-amber-500/20' : 'app-text-2 app-surface-h'}`}
-                            style={{ fontFamily: fontVar }}>
+                            className={`w-full text-right p-2.5 rounded-lg transition-all text-sm ${selectedCity?.name === city.name ? '' : 'app-text-2 app-surface-h'}`}
+                            style={selectedCity?.name === city.name
+                              ? { background: 'var(--gold-glow)', color: 'var(--app-text)', border: '1px solid var(--gold-border)', fontFamily: fontVar }
+                              : { fontFamily: fontVar }
+                            }>
                             <div className='flex items-center justify-between'>
                               <span>{city.name}</span>
-                              {selectedCity?.name === city.name && <Check className='w-4 h-4 text-amber-400' />}
+                              {selectedCity?.name === city.name && <Check className='w-4 h-4' color='var(--gold-accent)' />}
                             </div>
                           </button>
                         ))}
@@ -307,12 +281,12 @@ export default function SettingsScreen() {
         {/* About */}
         <SettingRow delay={0.35}>
           <div className='text-center'>
-            <div className='w-14 h-14 mx-auto mb-2 rounded-full bg-gradient-to-br from-amber-500/20 via-emerald-500/10 to-teal-500/20 flex items-center justify-center border border-amber-500/15 gold-glow'>
-              <IslamicIcon name='mosque' className='w-7 h-7 text-amber-300' />
+            <div className='w-14 h-14 mx-auto mb-2 rounded-full flex items-center justify-center gold-glow' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
+              <IslamicIcon name='mosque' className='w-7 h-7' color='var(--gold-accent)' />
             </div>
             <h3 className='app-text font-bold text-base mb-0.5' style={{ fontFamily: fontVar }}>أذكاري</h3>
             <p className='app-text-2 text-xs' style={{ fontFamily: fontVar }}>تطبيق أذكار شامل</p>
-            <p className='text-amber-300/30 text-[10px] mt-2'>الإصدار 3.0.0</p>
+            <p className='app-text-muted text-[10px] mt-2'>الإصدار 3.0.0</p>
             <p className='app-text-muted text-[10px] mt-1' style={{ fontFamily: fontVar }}>بسم الله، جعلنا هذا التطبيق في ميزان حسناتكم</p>
           </div>
         </SettingRow>

@@ -42,9 +42,10 @@ export default function CompletionScreen() {
       {/* Gold Particles */}
       <div className='absolute inset-0 pointer-events-none'>
         {[...Array(12)].map((_, i) => (
-          <motion.div key={i} className='absolute w-1.5 h-1.5 rounded-full bg-amber-400/20'
+          <motion.div key={i} className='absolute w-1.5 h-1.5 rounded-full'
+            style={{ background: 'var(--gold-glow)' }}
             initial={{ x: `${10 + Math.random() * 80}%`, y: '110%', scale: 0 }}
-            animate={{ y: '-5%', scale: [0, 1, 0.5, 0], opacity: [0, 0.8, 0.4, 0] }}
+            animate={{ y: '-5%', scale: [0, 1, 0.5, 0], opacity: [0, 0.6, 0.3, 0] }}
             transition={{ duration: 3 + Math.random() * 2, delay: i * 0.2, repeat: Infinity, repeatDelay: 1.5 }}
           />
         ))}
@@ -53,9 +54,10 @@ export default function CompletionScreen() {
       <main className='flex-1 flex flex-col items-center justify-center px-6 relative z-10'>
         {/* Main Icon */}
         <motion.div initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className='relative w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 via-emerald-400 to-teal-500 flex items-center justify-center mb-6 shadow-2xl shadow-amber-500/30 gold-glow'>
-          <Heart className='w-10 h-10 app-text' />
-          <div className='absolute inset-0 rounded-full border border-amber-300/30 animate-pulse' />
+          className='relative w-20 h-20 rounded-full flex items-center justify-center mb-6 gold-glow'
+          style={{ background: 'linear-gradient(135deg, var(--gold-accent), var(--gold-bright))', border: '1px solid rgba(255,255,255,0.15)' }}>
+          <Heart className='w-10 h-10 text-white' />
+          <div className='absolute inset-0 rounded-full animate-pulse' style={{ border: '1px solid var(--gold-border)' }} />
         </motion.div>
 
         {/* Title */}
@@ -63,57 +65,57 @@ export default function CompletionScreen() {
           className='text-2xl font-bold app-text mb-3 text-center' style={{ fontFamily: fontVar }}>
           {allDone ? (
             <span className='flex items-center justify-center gap-2'>
-              <Star className='w-5 h-5 text-amber-300' />
+              <Star className='w-5 h-5' style={{ color: 'var(--gold-accent)' }} />
               أحسنت! أتممت أذكار اليوم كاملاً
-              <Star className='w-5 h-5 text-amber-300' />
+              <Star className='w-5 h-5' style={{ color: 'var(--gold-accent)' }} />
             </span>
           ) : 'بارك الله فيك'}
         </motion.h1>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
           className='w-full max-w-xs mb-2'>
-          <div className='h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent' />
+          <div className='h-px' style={{ background: 'linear-gradient(90deg, transparent, var(--gold-border), transparent)' }} />
         </motion.div>
 
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-          className='text-emerald-200/70 text-base text-center leading-relaxed mb-6 max-w-sm' style={{ fontFamily: fontVar }}>
+          className='app-text-2 text-base text-center leading-relaxed mb-6 max-w-sm' style={{ fontFamily: fontVar }}>
           {closingMsg}
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
           className='w-full max-w-xs mb-6'>
-          <div className='h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent' />
+          <div className='h-px' style={{ background: 'linear-gradient(90deg, transparent, var(--gold-border), transparent)' }} />
         </motion.div>
 
         {/* Stats Summary */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className='w-full max-w-sm space-y-2 mb-6'>
           <div className='glass-card rounded-xl p-3 flex items-center justify-between'>
             <div className='flex items-center gap-2.5'>
-              <Trophy className='w-4 h-4 text-amber-400' />
-              <span className='text-slate-200 text-sm' style={{ fontFamily: fontVar }}>أذكار اليوم</span>
+              <Trophy className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
+              <span className='app-text-2 text-sm' style={{ fontFamily: fontVar }}>أذكار اليوم</span>
             </div>
-            <span className='text-amber-300 font-bold'>{completedPrayers.length}/5</span>
+            <span className='font-bold' style={{ color: 'var(--gold-accent)' }}>{completedPrayers.length}/5</span>
           </div>
           <div className='glass-card rounded-xl p-3 flex items-center justify-between'>
             <div className='flex items-center gap-2.5'>
-              <Flame className='w-4 h-4 text-amber-400' />
-              <span className='text-slate-200 text-sm' style={{ fontFamily: fontVar }}>السلسلة</span>
+              <Flame className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
+              <span className='app-text-2 text-sm' style={{ fontFamily: fontVar }}>السلسلة</span>
             </div>
-            <span className='text-amber-300 font-bold flex items-center gap-1'>{streak} يوم <Flame className='w-3 h-3' /></span>
+            <span className='font-bold flex items-center gap-1' style={{ color: 'var(--gold-accent)' }}>{streak} يوم <Flame className='w-3 h-3' /></span>
           </div>
           <div className='glass-card rounded-xl p-3 flex items-center justify-between'>
             <div className='flex items-center gap-2.5'>
-              <IslamicIcon name={treeIcons[Math.min(treeLevel, 6)]} className='w-5 h-5 text-green-400' />
-              <span className='text-slate-200 text-sm' style={{ fontFamily: fontVar }}>الشجرة</span>
+              <IslamicIcon name={treeIcons[Math.min(treeLevel, 6)]} className='w-5 h-5 text-emerald-500' />
+              <span className='app-text-2 text-sm' style={{ fontFamily: fontVar }}>الشجرة</span>
             </div>
-            <span className='text-green-300 font-bold'>المستوى {treeLevel} - {treeNames[Math.min(treeLevel, 6)]}</span>
+            <span className='text-emerald-500 font-bold'>المستوى {treeLevel} - {treeNames[Math.min(treeLevel, 6)]}</span>
           </div>
         </motion.div>
 
         {/* Actions */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65 }} className='w-full max-w-sm space-y-2.5'>
           <motion.button whileTap={{ scale: 0.97 }} onClick={() => setCurrentScreen('home')}
-            className='w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-emerald-500 to-teal-500 app-text font-bold text-base shadow-lg shadow-emerald-500/25'
+            className='btn-gold w-full py-3.5 rounded-xl text-base'
             style={{ fontFamily: fontVar }}>العودة للرئيسية</motion.button>
           <div className='grid grid-cols-3 gap-2'>
             <motion.button whileTap={{ scale: 0.97 }} onClick={() => setCurrentScreen('reading')}

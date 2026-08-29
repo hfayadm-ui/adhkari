@@ -45,122 +45,136 @@
 }
 
 /* ================================ */
-/*   LIGHT MODE (default :root)      */
+/*   LIGHT MODE — Creamy White + Matte Gold   */
 /* ================================ */
 :root {
-  --radius: 0.625rem;
-  --background: oklch(0.985 0.005 85);
-  --foreground: oklch(0.20 0.02 260);
-  --card: oklch(0.995 0.002 85);
-  --card-foreground: oklch(0.20 0.02 260);
-  --popover: oklch(0.995 0.002 85);
-  --popover-foreground: oklch(0.20 0.02 260);
-  --primary: oklch(0.55 0.15 160);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.94 0.008 85);
-  --secondary-foreground: oklch(0.30 0.02 260);
-  --muted: oklch(0.94 0.008 85);
-  --muted-foreground: oklch(0.50 0.02 260);
-  --accent: oklch(0.92 0.03 85);
-  --accent-foreground: oklch(0.25 0.02 260);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.88 0.01 85);
-  --input: oklch(0.88 0.01 85);
-  --ring: oklch(0.55 0.15 160);
-  --gold: oklch(0.75 0.16 85);
-  --chart-1: oklch(0.55 0.15 160);
-  --chart-2: oklch(0.55 0.10 200);
-  --chart-3: oklch(0.50 0.08 230);
-  --chart-4: oklch(0.75 0.16 85);
-  --chart-5: oklch(0.70 0.18 70);
-  --sidebar: oklch(0.97 0.005 85);
-  --sidebar-foreground: oklch(0.20 0.02 260);
-  --sidebar-primary: oklch(0.55 0.15 160);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.93 0.02 85);
-  --sidebar-accent-foreground: oklch(0.25 0.02 260);
-  --sidebar-border: oklch(0.90 0.01 85);
-  --sidebar-ring: oklch(0.55 0.15 160);
+  --radius: 0.75rem;
+  --background: #FDFBF7;
+  --foreground: #2C2825;
+  --card: rgba(255,255,255,0.60);
+  --card-foreground: #2C2825;
+  --popover: rgba(255,255,255,0.82);
+  --popover-foreground: #2C2825;
+  --primary: #C5A059;
+  --primary-foreground: #FFFFFF;
+  --secondary: rgba(197,160,89,0.07);
+  --secondary-foreground: #5C5651;
+  --muted: #F3EDE2;
+  --muted-foreground: #8A8279;
+  --accent: #F0EBE3;
+  --accent-foreground: #2C2825;
+  --destructive: #DC2626;
+  --border: rgba(197,160,89,0.14);
+  --input: #F0EBE3;
+  --ring: #C5A059;
+  --gold: #C5A059;
+  --chart-1: #C5A059;
+  --chart-2: #D4AF37;
+  --chart-3: #8B7209;
+  --chart-4: #B8960C;
+  --chart-5: #E5C054;
+  --sidebar: #FAF7F2;
+  --sidebar-foreground: #2C2825;
+  --sidebar-primary: #C5A059;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: rgba(197,160,89,0.08);
+  --sidebar-accent-foreground: #5C5651;
+  --sidebar-border: rgba(197,160,89,0.12);
+  --sidebar-ring: #C5A059;
 
-  /* App tokens - LIGHT */
-  --app-bg: linear-gradient(180deg, #faf8f4 0%, #f5f0e8 40%, #f0ebe0 100%);
-  --app-text: #1e293b;
-  --app-text-2: #475569;
-  --app-text-3: #94a3b8;
-  --app-text-muted: #64748b;
-  --app-surface: rgba(0,0,0,0.04);
-  --app-surface-hover: rgba(0,0,0,0.07);
-  --app-card-bg: rgba(255,255,255,0.75);
-  --app-card-border: rgba(0,0,0,0.08);
-  --app-nav-bg: rgba(255,255,255,0.92);
-  --app-modal-bg: #ffffff;
-  --app-shimmer: rgba(180,140,20,0.06);
-  --app-pattern-1: rgba(180,140,20,0.04);
-  --app-pattern-2: rgba(16,150,100,0.03);
-  --app-ring-track: rgba(0,0,0,0.06);
-  --app-chart-bar: rgba(0,0,0,0.08);
-  --app-scrollbar: rgba(180,140,20,0.25);
-  --app-input-bg: rgba(0,0,0,0.04);
-  --app-input-border: rgba(0,0,0,0.10);
+  /* ---- App Tokens — LIGHT ---- */
+  --app-bg: #FDFBF7;
+  --app-text: #2C2825;
+  --app-text-2: #5C5651;
+  --app-text-3: #8A8279;
+  --app-text-muted: #8A8279;
+  --app-surface: rgba(0,0,0,0.028);
+  --app-surface-hover: rgba(0,0,0,0.055);
+  --app-card-bg: rgba(255,255,255,0.55);
+  --app-card-border: rgba(197,160,89,0.13);
+  --app-nav-bg: rgba(253,251,247,0.78);
+  --app-modal-bg: #FFFFFF;
+  --app-shimmer: rgba(197,160,89,0.05);
+  --app-pattern-1: rgba(197,160,89,0.035);
+  --app-pattern-2: rgba(139,114,9,0.025);
+  --app-ring-track: rgba(0,0,0,0.055);
+  --app-chart-bar: rgba(197,160,89,0.14);
+  --app-scrollbar: rgba(197,160,89,0.18);
+  --app-input-bg: rgba(0,0,0,0.028);
+  --app-input-border: rgba(0,0,0,0.08);
+
+  /* Gold shades */
+  --gold-accent: #C5A059;
+  --gold-bright: #D4AF37;
+  --gold-soft: #B8960C;
+  --gold-glow: rgba(197,160,89,0.15);
+  --gold-border: rgba(197,160,89,0.18);
 }
 
 /* ================================ */
-/*   DARK MODE (.dark)               */
+/*   DARK MODE — Warm Dark + Gold     */
 /* ================================ */
 .dark {
-  --background: oklch(0.09 0.015 260);
-  --foreground: oklch(0.93 0.01 250);
-  --card: oklch(0.13 0.018 260);
-  --card-foreground: oklch(0.93 0.01 250);
-  --popover: oklch(0.13 0.018 260);
-  --popover-foreground: oklch(0.93 0.01 250);
-  --primary: oklch(0.62 0.17 160);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.22 0.02 260);
-  --secondary-foreground: oklch(0.85 0.01 250);
-  --muted: oklch(0.22 0.02 260);
-  --muted-foreground: oklch(0.65 0.02 250);
-  --accent: oklch(0.18 0.025 160);
-  --accent-foreground: oklch(0.93 0.01 250);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(0.25 0.02 260);
-  --input: oklch(0.25 0.02 260);
-  --ring: oklch(0.62 0.17 160);
-  --gold: oklch(0.78 0.15 85);
-  --chart-1: oklch(0.62 0.17 160);
-  --chart-2: oklch(0.60 0.12 180);
-  --chart-3: oklch(0.55 0.10 200);
-  --chart-4: oklch(0.78 0.15 85);
-  --chart-5: oklch(0.75 0.18 70);
-  --sidebar: oklch(0.13 0.018 260);
-  --sidebar-foreground: oklch(0.93 0.01 250);
-  --sidebar-primary: oklch(0.62 0.17 160);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.18 0.025 160);
-  --sidebar-accent-foreground: oklch(0.93 0.01 250);
-  --sidebar-border: oklch(0.25 0.02 260);
-  --sidebar-ring: oklch(0.62 0.17 160);
+  --background: #111010;
+  --foreground: #F0EBE3;
+  --card: rgba(255,255,255,0.04);
+  --card-foreground: #F0EBE3;
+  --popover: rgba(255,255,255,0.06);
+  --popover-foreground: #F0EBE3;
+  --primary: #D4AF37;
+  --primary-foreground: #111010;
+  --secondary: rgba(212,175,55,0.10);
+  --secondary-foreground: #A69E94;
+  --muted: #1C1B19;
+  --muted-foreground: #6B6560;
+  --accent: rgba(212,175,55,0.08);
+  --accent-foreground: #F0EBE3;
+  --destructive: #EF4444;
+  --border: rgba(212,175,55,0.10);
+  --input: #1C1B19;
+  --ring: #D4AF37;
+  --gold: #D4AF37;
+  --chart-1: #D4AF37;
+  --chart-2: #E5C054;
+  --chart-3: #B8960C;
+  --chart-4: #C5A059;
+  --chart-5: #8B7209;
+  --sidebar: #161514;
+  --sidebar-foreground: #F0EBE3;
+  --sidebar-primary: #D4AF37;
+  --sidebar-primary-foreground: #111010;
+  --sidebar-accent: rgba(212,175,55,0.08);
+  --sidebar-accent-foreground: #A69E94;
+  --sidebar-border: rgba(212,175,55,0.08);
+  --sidebar-ring: #D4AF37;
 
-  /* App tokens - DARK */
-  --app-bg: linear-gradient(180deg, #060b18 0%, #0a0f1a 40%, #0d1117 100%);
-  --app-text: #f1f5f9;
-  --app-text-2: #94a3b8;
-  --app-text-3: #64748b;
-  --app-text-muted: #475569;
-  --app-surface: rgba(255,255,255,0.05);
-  --app-surface-hover: rgba(255,255,255,0.10);
-  --app-card-bg: rgba(255,255,255,0.03);
-  --app-card-border: rgba(255,255,255,0.06);
-  --app-nav-bg: rgba(10,15,26,0.94);
-  --app-modal-bg: #0d1220;
-  --app-shimmer: rgba(212,175,55,0.08);
-  --app-pattern-1: rgba(212,175,55,0.03);
-  --app-pattern-2: rgba(52,211,153,0.03);
-  --app-ring-track: rgba(255,255,255,0.05);
-  --app-chart-bar: rgba(255,255,255,0.08);
-  --app-scrollbar: rgba(212,175,55,0.2);
-  --app-input-bg: rgba(255,255,255,0.05);
-  --app-input-border: rgba(255,255,255,0.10);
+  /* ---- App Tokens — DARK ---- */
+  --app-bg: #111010;
+  --app-text: #F0EBE3;
+  --app-text-2: #A69E94;
+  --app-text-3: #6B6560;
+  --app-text-muted: #6B6560;
+  --app-surface: rgba(255,255,255,0.04);
+  --app-surface-hover: rgba(255,255,255,0.075);
+  --app-card-bg: rgba(255,255,255,0.035);
+  --app-card-border: rgba(212,175,55,0.09);
+  --app-nav-bg: rgba(17,16,16,0.82);
+  --app-modal-bg: #1A1918;
+  --app-shimmer: rgba(212,175,55,0.05);
+  --app-pattern-1: rgba(212,175,55,0.025);
+  --app-pattern-2: rgba(197,160,89,0.018);
+  --app-ring-track: rgba(255,255,255,0.055);
+  --app-chart-bar: rgba(212,175,55,0.12);
+  --app-scrollbar: rgba(212,175,55,0.15);
+  --app-input-bg: rgba(255,255,255,0.04);
+  --app-input-border: rgba(255,255,255,0.08);
+
+  /* Gold shades */
+  --gold-accent: #D4AF37;
+  --gold-bright: #E5C054;
+  --gold-soft: #B8960C;
+  --gold-glow: rgba(212,175,55,0.12);
+  --gold-border: rgba(212,175,55,0.14);
 }
 
 @layer base {
@@ -179,7 +193,7 @@
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--app-scrollbar); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: var(--app-scrollbar); filter: brightness(1.4); }
+::-webkit-scrollbar-thumb:hover { background: var(--app-scrollbar); filter: brightness(1.3); }
 
 /* ================================ */
 /*   App Theme Utility Classes       */
@@ -192,26 +206,35 @@
 .app-border-c { border-color: var(--app-card-border); }
 .app-input { background: var(--app-input-bg); border-color: var(--app-input-border); }
 
+/* Gold accent utilities */
+.text-gold { color: var(--gold-accent); }
+.text-gold-bright { color: var(--gold-bright); }
+.text-gold-soft { color: var(--gold-soft); }
+.bg-gold { background: var(--gold-accent); }
+.bg-gold-glow { background: var(--gold-glow); }
+.border-gold { border-color: var(--gold-border); }
+.shadow-gold { box-shadow: 0 0 24px var(--gold-glow); }
+
 /* ================================ */
 /*   Animations                      */
 /* ================================ */
 @keyframes gentle-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.3); }
-  50% { box-shadow: 0 0 0 20px rgba(212, 175, 55, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 var(--gold-glow); }
+  50% { box-shadow: 0 0 0 18px transparent; }
 }
-.pulse-gentle { animation: gentle-pulse 2s infinite; }
+.pulse-gentle { animation: gentle-pulse 2.5s ease-in-out infinite; }
 
 @keyframes text-reveal {
   from { background-position: 0% 50%; }
-  to { background-position: 100% 50%; }
+  to { background-position: 200% 50%; }
 }
 .text-karaoke {
-  background: linear-gradient(90deg, #d4af37 0%, #f0d060 50%, #d4af37 100%);
+  background: linear-gradient(90deg, var(--gold-accent) 0%, var(--gold-bright) 40%, var(--gold-accent) 80%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: text-reveal 3s linear infinite;
+  animation: text-reveal 4s linear infinite;
 }
 
 /* ================================ */
@@ -224,28 +247,113 @@
 .islamic-shimmer {
   background: linear-gradient(90deg, transparent 0%, var(--app-shimmer) 50%, transparent 100%);
   background-size: 200% 100%;
-  animation: islamic-shimmer 3s ease-in-out infinite;
+  animation: islamic-shimmer 3.5s ease-in-out infinite;
 }
 
 .islamic-border {
-  border-image: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(52, 211, 153, 0.1), rgba(212, 175, 55, 0.3)) 1;
+  border-image: linear-gradient(135deg, var(--gold-border), rgba(197,160,89,0.04), var(--gold-border)) 1;
 }
 
+/* ---- Glassmorphism Card ---- */
 .glass-card {
   background: var(--app-card-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(28px) saturate(1.5);
+  -webkit-backdrop-filter: blur(28px) saturate(1.5);
   border: 1px solid var(--app-card-border);
+  box-shadow:
+    0 4px 24px rgba(0,0,0,0.025),
+    0 1px 3px rgba(0,0,0,0.015),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+/* Enhanced glass with stronger effect */
+.glass-card-elevated {
+  background: var(--app-card-bg);
+  backdrop-filter: blur(32px) saturate(1.6);
+  -webkit-backdrop-filter: blur(32px) saturate(1.6);
+  border: 1px solid var(--app-card-border);
+  box-shadow:
+    0 8px 40px rgba(0,0,0,0.04),
+    0 2px 8px rgba(0,0,0,0.02),
+    inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
 .gold-glow {
-  box-shadow: 0 0 30px rgba(212, 175, 55, 0.15), 0 0 60px rgba(212, 175, 55, 0.05);
+  box-shadow: 0 0 28px var(--gold-glow), 0 0 56px rgba(197,160,89,0.04);
 }
 
+/* ---- Subtle Islamic Geometric Pattern ---- */
 .islamic-pattern-bg {
-  background-image: 
-    radial-gradient(circle at 25% 25%, var(--app-pattern-1) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, var(--app-pattern-2) 0%, transparent 50%);
+  background-image:
+    radial-gradient(ellipse at 18% 22%, var(--app-pattern-1) 0%, transparent 55%),
+    radial-gradient(ellipse at 82% 78%, var(--app-pattern-2) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 50%, var(--app-pattern-1) 0%, transparent 70%);
+}
+
+/* Subtle geometric overlay for enhanced screens */
+.geometric-overlay {
+  position: relative;
+}
+.geometric-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image:
+    repeating-conic-gradient(var(--app-pattern-1) 0% 25%, transparent 0% 50%);
+  background-size: 48px 48px;
+  border-radius: inherit;
+  z-index: 0;
+}
+
+/* ---- Gold CTA Button ---- */
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-accent), var(--gold-bright));
+  color: #FFFFFF;
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow:
+    0 4px 20px var(--gold-glow),
+    0 1px 3px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+  transition: all 0.2s ease;
+}
+.btn-gold:hover {
+  box-shadow:
+    0 6px 28px rgba(197,160,89,0.25),
+    0 2px 6px rgba(0,0,0,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+  filter: brightness(1.04);
+}
+.btn-gold:active {
+  transform: scale(0.97);
+  box-shadow:
+    0 2px 12px var(--gold-glow),
+    0 1px 2px rgba(0,0,0,0.06);
+}
+
+/* ---- Glass outline button ---- */
+.btn-glass {
+  background: var(--app-card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--app-card-border);
+  color: var(--app-text);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  transition: all 0.2s ease;
+}
+.btn-glass:hover {
+  background: var(--app-surface-hover);
+  border-color: var(--gold-border);
+}
+
+/* ---- Gold metallic border highlight ---- */
+.border-gold-shine {
+  border: 1px solid var(--app-card-border);
+  box-shadow:
+    inset 0 0 0 1px rgba(197,160,89,0.06),
+    0 0 0 1px rgba(197,160,89,0.03);
 }
 
 /* Arabic font classes */

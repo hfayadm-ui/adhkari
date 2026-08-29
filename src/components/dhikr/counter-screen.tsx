@@ -17,16 +17,8 @@ function getFontClass(font: ArabicFont): string {
 
 const targetOptions = [33, 34, 100, 500, 1000];
 
-const colorMap: Record<string, { ring: string; glow: string; text: string; btn: string; btnBorder: string }> = {
-  emerald: { ring: 'from-emerald-400 to-teal-400', glow: 'shadow-emerald-500/30', text: 'text-emerald-400', btn: 'from-emerald-500 to-teal-600', btnBorder: 'border-emerald-400/20' },
-  blue: { ring: 'from-blue-400 to-cyan-400', glow: 'shadow-blue-500/30', text: 'text-blue-400', btn: 'from-blue-500 to-cyan-600', btnBorder: 'border-blue-400/20' },
-  purple: { ring: 'from-purple-400 to-violet-400', glow: 'shadow-purple-500/30', text: 'text-purple-400', btn: 'from-purple-500 to-violet-600', btnBorder: 'border-purple-400/20' },
-  amber: { ring: 'from-amber-400 to-orange-400', glow: 'shadow-amber-500/30', text: 'text-amber-400', btn: 'from-amber-500 to-orange-600', btnBorder: 'border-amber-400/20' },
-  rose: { ring: 'from-rose-400 to-pink-400', glow: 'shadow-rose-500/30', text: 'text-rose-400', btn: 'from-rose-500 to-pink-600', btnBorder: 'border-rose-400/20' },
-};
-
 export default function CounterScreen() {
-  const { freeCounter, incrementFreeCounter, resetFreeCounter, setFreeCounter, counterPresets, updatePreset, soundEnabled, vibrationEnabled, themeColor, arabicFont } = useDhikrStore();
+  const { freeCounter, incrementFreeCounter, resetFreeCounter, setFreeCounter, counterPresets, updatePreset, soundEnabled, vibrationEnabled, arabicFont } = useDhikrStore();
   const [showPresets, setShowPresets] = useState(false);
   const [activePreset, setActivePreset] = useState<string | null>(null);
   const [tapAnim, setTapAnim] = useState(false);
@@ -76,13 +68,12 @@ export default function CounterScreen() {
   const currentTarget = activePreset ? (counterPresets.find(p => p.id === activePreset)?.target || 33) : customTarget;
   const currentProgress = activePreset ? (counterPresets.find(p => p.id === activePreset)?.current || 0) : (freeCounter % currentTarget);
   const isComplete = currentProgress >= currentTarget;
-  const clr = colorMap[themeColor] || colorMap.emerald;
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='flex flex-col min-h-screen pb-24'>
       <header className='px-4 pt-4 pb-2 flex items-center justify-between'>
         <div className='flex items-center gap-2.5'>
-          <IslamicIcon name='hand' className='w-6 h-6 text-amber-400' />
+          <IslamicIcon name='hand' className='w-6 h-6' color='var(--gold-accent)' />
           <div>
             <h1 className='text-2xl font-bold app-text' style={{ fontFamily: fontVar }}>المسبحة</h1>
             <p className='app-text-2 text-xs' style={{ fontFamily: fontVar }}>العداد الحر / اضغط طويلاً للتصفير</p>
@@ -97,9 +88,9 @@ export default function CounterScreen() {
         {/* Target display */}
         <div className='mb-6 text-center'>
           <div className='flex items-center justify-center gap-2 mb-2'>
-            <Target className={`w-4 h-4 ${clr.text}`} />
+            <Target className='w-4 h-4' color='var(--gold-accent)' />
             <span className='app-text-2 text-xs' style={{ fontFamily: fontVar }}>الهدف</span>
-            <button onClick={() => setShowTargetPicker(!showTargetPicker)} className='text-amber-300 text-xs flex items-center gap-0.5'>
+            <button onClick={() => setShowTargetPicker(!showTargetPicker)} className='text-xs flex items-center gap-0.5' style={{ color: 'var(--gold-bright)' }}>
               {currentTarget} {showTargetPicker ? <ChevronUp className='w-3 h-3' /> : <ChevronDown className='w-3 h-3' />}
             </button>
           </div>
@@ -109,7 +100,9 @@ export default function CounterScreen() {
                 <div className='flex gap-2 justify-center flex-wrap'>
                   {targetOptions.map(t => (
                     <button key={t} onClick={() => { setCustomTarget(t); setShowTargetPicker(false); setActivePreset(null); }}
-                      className={`px-3 py-1 rounded-lg text-xs transition-all ${customTarget === t && !activePreset ? 'bg-amber-500/20 border border-amber-500/30 text-amber-300' : 'glass-card border app-border-c app-text-2'}`}>
+                      className={`px-3 py-1 rounded-lg text-xs transition-all ${customTarget === t && !activePreset ? '' : 'glass-card border app-border-c app-text-2'}`}
+                      style={customTarget === t && !activePreset ? { background: 'var(--gold-glow)', border: '1px solid var(--gold-border)', color: 'var(--gold-bright)' } : undefined}
+                    >
                       {t}
                     </button>
                   ))}
@@ -130,15 +123,16 @@ export default function CounterScreen() {
               transition={{ duration: 0.3, ease: 'easeOut' }}
             />
             <defs><linearGradient id='counterGrad' x1='0%' y1='0%' x2='100%' y2='0%'>
-              <stop offset='0%' stopColor={themeColor === 'amber' ? '#fbbf24' : themeColor === 'rose' ? '#fb7185' : '#34d399'} />
-              <stop offset='100%' stopColor={themeColor === 'amber' ? '#f59e0b' : themeColor === 'rose' ? '#ec4899' : '#14b8a6'} />
+              <stop offset='0%' stopColor='#C5A059' />
+              <stop offset='100%' stopColor='#D4AF37' />
             </linearGradient></defs>
           </svg>
           <div className='absolute inset-0 flex flex-col items-center justify-center'>
             <AnimatePresence mode='wait'>
               <motion.span key={activePreset ? currentProgress : freeCounter}
                 initial={{ scale: 1.2, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
-                className={`text-6xl font-bold ${clr.text}`}
+                className='text-6xl font-bold'
+                color='var(--gold-accent)'
               >
                 {activePreset ? currentProgress : freeCounter}
               </motion.span>
@@ -147,7 +141,7 @@ export default function CounterScreen() {
           </div>
           {isComplete && (
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className='absolute -top-2 -right-2'>
-              <div className='w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center gold-glow'>
+              <div className='w-10 h-10 rounded-full flex items-center justify-center gold-glow' style={{ background: 'linear-gradient(to bottom right, #C5A059, #D4AF37)' }}>
                 <IslamicIcon name='star' className='w-5 h-5 app-text' />
               </div>
             </motion.div>
@@ -160,7 +154,7 @@ export default function CounterScreen() {
           onTouchStart={handleLongPressStart} onTouchEnd={handleLongPressEnd}
           onMouseDown={handleLongPressStart} onMouseUp={handleLongPressEnd} onMouseLeave={handleLongPressEnd}
           onClick={handleTap}
-          className={`w-32 h-32 rounded-full bg-gradient-to-br ${clr.btn} shadow-2xl ${clr.glow} ${clr.btnBorder} border-2 flex items-center justify-center active:shadow-inner transition-shadow mb-6 gold-glow`}
+          className='w-32 h-32 rounded-full btn-gold shadow-2xl border-2 flex items-center justify-center active:shadow-inner transition-shadow mb-6 gold-glow'
         >
           <motion.span animate={{ scale: tapAnim ? 0.9 : 1 }}>
             <IslamicIcon name='hand-tap' className='w-12 h-12 app-text' color='#ffffff' />
@@ -171,7 +165,7 @@ export default function CounterScreen() {
 
         {/* Presets */}
         <div className='w-full max-w-sm'>
-          <button onClick={() => setShowPresets(!showPresets)} className='flex items-center gap-2 text-amber-300 text-sm mb-3'>
+          <button onClick={() => setShowPresets(!showPresets)} className='flex items-center gap-2 text-sm mb-3' style={{ color: 'var(--gold-bright)' }}>
             <span style={{ fontFamily: fontVar }}>أذكار سريعة</span>
             {showPresets ? <ChevronUp className='w-4 h-4' /> : <ChevronDown className='w-4 h-4' />}
           </button>
@@ -182,13 +176,15 @@ export default function CounterScreen() {
                   const pct = Math.min(preset.current / preset.target * 100, 100);
                   return (
                     <button key={preset.id} onClick={() => { setActivePreset(preset.id === activePreset ? null : preset.id); }}
-                      className={`w-full glass-card rounded-xl p-3 transition-all border ${activePreset === preset.id ? 'border-amber-500/20' : 'app-border-c app-surface-h'}`}>
+                      className={`w-full glass-card rounded-xl p-3 transition-all border ${activePreset === preset.id ? '' : 'app-surface-h'}`}
+                      style={activePreset === preset.id ? { border: '1px solid var(--gold-border)' } : undefined}
+                    >
                       <div className='flex items-center justify-between mb-1.5'>
                         <span className={`text-sm ${activePreset === preset.id ? 'app-text' : 'app-text-2'}`} style={{ fontFamily: fontVar }}>{preset.name}</span>
                         <span className='text-xs app-text-2'>{preset.current}/{preset.target}</span>
                       </div>
                       <div className='w-full app-surface rounded-full h-1.5'>
-                        <div className={`h-1.5 rounded-full transition-all bg-gradient-to-r ${clr.ring}`} style={{ width: `${pct}%` }} />
+                        <div className='h-1.5 rounded-full transition-all' style={{ width: `${pct}%`, background: 'linear-gradient(to right, #C5A059, #D4AF37)' }} />
                       </div>
                     </button>
                   );

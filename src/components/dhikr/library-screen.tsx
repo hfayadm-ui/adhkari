@@ -17,11 +17,9 @@ function getFontClass(font: ArabicFont): string {
 }
 
 export default function LibraryScreen() {
-  const { setCurrentScreen, setSelectedCategoryId, setReadingSource, setSelectedPrayerIndex, completedPrayers, themeColor, arabicFont } = useDhikrStore();
+  const { setCurrentScreen, setSelectedCategoryId, setReadingSource, setSelectedPrayerIndex, completedPrayers, arabicFont } = useDhikrStore();
   const [search, setSearch] = useState('');
   const fontVar = getFontClass(arabicFont);
-
-  const colorBorder: Record<string, string> = { emerald: 'border-emerald-500/20', blue: 'border-blue-500/20', purple: 'border-purple-500/20', amber: 'border-amber-500/20', rose: 'border-rose-500/20' };
 
   const getCategoryCount = (id: string) => {
     if (id === 'prayer') return prayerDhikrGroups.reduce((a, g) => a + g.dhikrList.length, 0);
@@ -56,7 +54,7 @@ export default function LibraryScreen() {
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='flex flex-col min-h-screen pb-24'>
       <header className='px-4 pt-4 pb-3'>
         <div className='flex items-center gap-2.5 mb-3'>
-          <IslamicIcon name='book' className='w-7 h-7 text-amber-400' />
+          <IslamicIcon name='book' className='w-7 h-7' color='var(--gold-accent)' />
           <h1 className='text-2xl font-bold app-text' style={{ fontFamily: fontVar }}>مكتبة الأذكار</h1>
         </div>
         <div className='relative'>
@@ -74,7 +72,6 @@ export default function LibraryScreen() {
         {filtered.map((cat, i) => {
           const count = getCategoryCount(cat.id);
           const done = getCategoryDone(cat.id);
-          const cBorder = colorBorder[themeColor] || colorBorder.emerald;
           return (
             <motion.button
               key={cat.id}
@@ -83,10 +80,10 @@ export default function LibraryScreen() {
               transition={{ delay: i * 0.05 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => openCategory(cat.id)}
-              className={`w-full glass-card rounded-2xl p-4 flex items-center gap-4 app-surface-h transition-colors text-right border ${cBorder}`}
+              className='w-full glass-card rounded-2xl p-4 flex items-center gap-4 app-surface-h transition-colors text-right'
             >
-              <div className='w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/10 to-emerald-500/5 flex items-center justify-center flex-shrink-0 border border-amber-500/10'>
-                <IslamicIcon name={cat.icon} className='w-6 h-6 text-amber-300' />
+              <div className='w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
+                <IslamicIcon name={cat.icon} className='w-6 h-6' color='var(--gold-accent)' />
               </div>
               <div className='flex-1 min-w-0'>
                 <h3 className='app-text font-bold text-sm mb-0.5' style={{ fontFamily: fontVar }}>{cat.name}</h3>
@@ -104,16 +101,16 @@ export default function LibraryScreen() {
         {/* Favorites Section */}
         <motion.div
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-          className='glass-card rounded-2xl bg-gradient-to-br from-amber-900/20 to-emerald-900/10 border border-amber-700/15 p-4'
+          className='glass-card rounded-2xl p-4'
         >
           <div className='flex items-center gap-2 mb-3'>
-            <Star className='w-5 h-5 text-amber-400' />
-            <h3 className='text-amber-200 font-bold text-sm' style={{ fontFamily: fontVar }}>الأذكار المفضلة</h3>
+            <Star className='w-5 h-5' color='var(--gold-accent)' />
+            <h3 className='app-text font-bold text-sm' style={{ fontFamily: fontVar }}>الأذكار المفضلة</h3>
           </div>
           <p className='app-text-2 text-xs' style={{ fontFamily: fontVar }}>قريباً.. يمكنك حفظ أذكارك المفضلة للوصول السريع</p>
           <div className='flex gap-2 mt-3 flex-wrap'>
             {['سبحان الله', 'الحمد لله', 'الله أكبر', 'أستغفر الله', 'لا إله إلا الله'].map(d => (
-              <span key={d} className='px-2.5 py-1 rounded-full glass-card text-[10px] app-text-2 border-amber-500/10' style={{ fontFamily: fontVar }}>{d}</span>
+              <span key={d} className='px-2.5 py-1 rounded-full glass-card text-[10px] app-text-2' style={{ fontFamily: fontVar }}>{d}</span>
             ))}
           </div>
         </motion.div>
