@@ -3,43 +3,21 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDhikrStore } from '@/lib/store';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
-import { RotateCcw, Target, ChevronDown, ChevronUp, Pencil, Check, X } from '@/components/dhikr/islamic-icons';
+import { RotateCcw, Target, ChevronDown, ChevronUp } from '@/components/dhikr/islamic-icons';
 import { getFontClass } from '@/lib/font-utils';
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 const targetOptions = [33, 34, 100, 500, 1000];
 
 export default function CounterScreen() {
-  const { freeCounter, incrementFreeCounter, resetFreeCounter, setFreeCounter, counterPresets, updatePreset, soundEnabled, vibrationEnabled, arabicFont, counterAlertEnabled, counterAlertInterval } = useDhikrStore();
+  const { freeCounter, incrementFreeCounter, resetFreeCounter, counterPresets, updatePreset, soundEnabled, vibrationEnabled, arabicFont, counterAlertEnabled, counterAlertInterval } = useDhikrStore();
   const [showPresets, setShowPresets] = useState(false);
   const [activePreset, setActivePreset] = useState<string | null>(null);
   const [tapAnim, setTapAnim] = useState(false);
   const [customTarget, setCustomTarget] = useState(33);
   const [showTargetPicker, setShowTargetPicker] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState('');
   const longPressRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const editInputRef = useRef<HTMLInputElement>(null);
   const fontVar = getFontClass(arabicFont);
-
-  useEffect(() => {
-    if (isEditing && editInputRef.current) {
-      editInputRef.current.focus();
-    }
-  }, [isEditing]);
-
-  const confirmEdit = useCallback(() => {
-    const val = parseInt(editValue);
-    if (!isNaN(val) && val >= 0) {
-      setFreeCounter(val);
-      if (activePreset) updatePreset(activePreset, Math.min(val, counterPresets.find(p => p.id === activePreset)?.target || val));
-    }
-    setIsEditing(false);
-  }, [editValue, setFreeCounter, activePreset, updatePreset, counterPresets]);
-
-  const cancelEdit = useCallback(() => {
-    setIsEditing(false);
-  }, []);
 
   const playTap = useCallback(() => {
     if (!soundEnabled) return;
@@ -158,42 +136,16 @@ export default function CounterScreen() {
             </linearGradient></defs>
           </svg>
           <div className='absolute inset-0 flex flex-col items-center justify-center'>
-            <AnimatePresence mode='wait'>
-              {isEditing ? (
-                <motion.div key='editing' initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className='flex items-center gap-2'>
-                  <input
-                    ref={editInputRef}
-                    type='number'
-                    value={editValue}
-                    onChange={e => setEditValue(e.target.value)}
-                    onKeyDown={e => { if (e.key === 'Enter') confirmEdit(); if (e.key === 'Escape') cancelEdit(); }}
-                    className='w-32 text-center text-5xl font-bold rounded-xl py-2 app-surface focus:outline-none'
-                    style={{ fontFamily: fontVar, color: 'var(--gold-accent)', border: '1.5px solid var(--gold-border)' }}
-                    dir='ltr'
-                  />
-                  <div className='flex flex-col gap-1'>
-                    <button onClick={confirmEdit} className='w-8 h-8 rounded-lg flex items-center justify-center' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
-                      <Check className='w-4 h-4' style={{ color: 'var(--gold-bright)' }} />
-                    </button>
-                    <button onClick={cancelEdit} className='w-8 h-8 rounded-lg flex items-center justify-center app-surface-h' style={{ border: '1px solid var(--gold-border)' }}>
-                      <X className='w-4 h-4 app-text-muted' />
-                    </button>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.button
-                  key={activePreset ? `p-${currentProgress}` : `f-${freeCounter}`}
-                  initial={{ scale: 1.2, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
-                  onClick={() => { setIsEditing(true); setEditValue(String(activePreset ? currentProgress : freeCounter)); }}
-                  className='flex flex-col items-center gap-1'
-                >
-                  <span className='text-6xl font-bold' style={{ color: 'var(--gold-accent)' }}>
-                    {activePreset ? currentProgress : freeCounter}
-                  </span>
-                  <Pencil className='w-3 h-3 app-text-muted opacity-50' />
-                </motion.button>
-              )}
-            </AnimatePresence>
+            <motion.span
+              key={activePreset ? `p-${currentProgress}` : `f-${freeCounter}`}
+              initial={{ scale: 1.15, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.15, ease: 'easeOut' }}
+              className='text-6xl font-bold'
+              style={{ color: 'var(--gold-accent)' }}
+            >
+              {activePreset ? currentProgress : freeCounter}
+            </motion.span>
             <span className='app-text-2 text-sm' style={{ fontFamily: fontVar }}>/ {currentTarget}</span>
           </div>
           {isComplete && (
