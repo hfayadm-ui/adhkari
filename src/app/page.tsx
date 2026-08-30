@@ -10,6 +10,7 @@ import CompletionScreen from '@/components/dhikr/completion-screen';
 import StatsScreen from '@/components/dhikr/stats-screen';
 import SettingsScreen from '@/components/dhikr/settings-screen';
 import RelaxationScreen from '@/components/dhikr/relaxation-screen';
+import ChallengesScreen from '@/components/dhikr/challenges-screen';
 import BottomNav from '@/components/dhikr/bottom-nav';
 import SplashScreen from '@/components/pwa/splash-screen';
 import InstallPrompt from '@/components/pwa/install-prompt';
@@ -81,6 +82,7 @@ export default function Home() {
             {currentScreen === 'stats' && <StatsScreen />}
             {currentScreen === 'settings' && <SettingsScreen />}
             {currentScreen === 'relaxation' && <RelaxationScreen />}
+            {currentScreen === 'challenges' && <ChallengesScreen />}
           </motion.div>
         </AnimatePresence>
         {showNav && <BottomNav />}

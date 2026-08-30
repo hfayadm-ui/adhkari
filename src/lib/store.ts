@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type Screen = 'home' | 'reading' | 'completion' | 'stats' | 'settings' | 'library' | 'counter' | 'category-reading' | 'relaxation';
+export type Screen = 'home' | 'reading' | 'completion' | 'stats' | 'settings' | 'library' | 'counter' | 'category-reading' | 'relaxation' | 'challenges';
 export type ThemeColor = 'emerald' | 'blue' | 'purple' | 'amber' | 'rose';
 export type AppMode = 'dark' | 'light';
 export type ArabicFont = 'cairo' | 'amiri' | 'noto-naskh' | 'tajawal' | 'ibm-plex' | 'scheherazade';

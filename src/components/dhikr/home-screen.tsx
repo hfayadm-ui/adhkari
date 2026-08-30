@@ -2,8 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { useState, useEffect, useCallback } from 'react';
-import { IslamicIcon, Star, TreePine, Sparkles, ChevronLeft, Clock, Bell, Moon, Share2, Heart, Trophy, Flame, Plus, X } from '@/components/dhikr/islamic-icons';
-import { prayerDhikrGroups, prayerTimesList, getCurrentPrayerIndex, getSimpleHijriDate, dailyVerses, smartNotifications, treeIcons, fetchPrayerTimes, dailyHadiths, getTodayHadithIndex, suggestedChallenges } from '@/lib/dhikr-data';
+import { IslamicIcon, Star, TreePine, Sparkles, ChevronLeft, Clock, Bell, Moon, Share2, Heart, Trophy, Flame } from '@/components/dhikr/islamic-icons';
+import { prayerDhikrGroups, prayerTimesList, getCurrentPrayerIndex, getSimpleHijriDate, dailyVerses, smartNotifications, treeIcons, fetchPrayerTimes, dailyHadiths, getTodayHadithIndex } from '@/lib/dhikr-data';
 import { useDhikrStore } from '@/lib/store';
 import { getFontClass } from '@/lib/font-utils';
 import BreathingCard from '@/components/dhikr/breathing-card';
@@ -14,7 +14,7 @@ export default function HomeScreen() {
     setCurrentScreen, setSelectedPrayerIndex, setReadingSource,
     streak, treeLevel, completedPrayers, freeCounter,
     arabicFont, selectedCity, prayerTimes, setPrayerTimes,
-    totalAllTime, challenges, addChallenge,
+    totalAllTime, challenges,
   } = useDhikrStore();
 
   const [hijriDate] = useState(() => getSimpleHijriDate());
@@ -22,8 +22,9 @@ export default function HomeScreen() {
   const [verse] = useState(() => dailyVerses[Math.floor(new Date().getDay() % dailyVerses.length)]);
   const [notif] = useState(() => smartNotifications[Math.floor(Math.random() * smartNotifications.length)]);
   const [hadith] = useState(() => dailyHadiths[getTodayHadithIndex()]);
-  const [showChallengePicker, setShowChallengePicker] = useState(false);
   const [sharing, setSharing] = useState<string | null>(null);
+
+  const activeChallenges = challenges.filter(c => !c.completed);
 
   const fontClass = getFontClass(arabicFont);
 
@@ -74,9 +75,6 @@ export default function HomeScreen() {
     if (fetched && fetched !== '--:--') return fetched;
     return defaultTime;
   };
-
-  const activeChallenges = challenges.filter(c => !c.completed);
-  const completedToday = challenges.filter(c => c.completed).slice(0, 2);
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='flex flex-col min-h-screen pb-24'>
@@ -209,26 +207,25 @@ export default function HomeScreen() {
         {/* Breathing Card */}
         <BreathingCard fontClass={fontClass} />
 
-        {/* Active Challenges — NEW */}
-        {activeChallenges.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-            className='glass-card rounded-2xl p-4'
-          >
-            <div className='flex items-center justify-between mb-3'>
-              <div className='flex items-center gap-2'>
-                <Flame className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
-                <span className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>تحدياتي</span>
-                <span className='text-[10px] app-text-muted'>({activeChallenges.length})</span>
-              </div>
-              <button onClick={() => setShowChallengePicker(!showChallengePicker)} className='w-7 h-7 rounded-lg glass-subtle flex items-center justify-center'>
-                <Plus className='w-3.5 h-3.5' style={{ color: 'var(--gold-accent)' }} />
-              </button>
+        {/* Challenges Card — navigates to full screen */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => setCurrentScreen('challenges')}
+          className='glass-card rounded-2xl p-4 app-surface-h cursor-pointer'
+        >
+          <div className='flex items-center justify-between mb-3'>
+            <div className='flex items-center gap-2'>
+              <Flame className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
+              <span className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>تحدياتي</span>
+              {activeChallenges.length > 0 && <span className='text-[10px] app-text-muted'>({activeChallenges.length})</span>}
             </div>
+            <ChevronLeft className='w-4 h-4 app-text-muted rotate-180' />
+          </div>
+          {activeChallenges.length > 0 ? (
             <div className='space-y-2'>
               {activeChallenges.slice(0, 3).map(ch => {
                 const pct = Math.min((ch.current / ch.target) * 100, 100);
-                const daysLeft = Math.max(0, Math.ceil((new Date(ch.endDate).getTime() - Date.now()) / 86400000));
                 return (
                   <div key={ch.id} className='p-2.5 rounded-xl glass-subtle'>
                     <div className='flex items-center justify-between mb-1.5'>
@@ -238,75 +235,14 @@ export default function HomeScreen() {
                     <div className='w-full rounded-full h-1.5' style={{ background: 'var(--app-ring-track)' }}>
                       <div className='h-1.5 rounded-full transition-all' style={{ width: `${pct}%`, background: 'linear-gradient(90deg, var(--gold-accent), var(--gold-bright))' }} />
                     </div>
-                    <p className='text-[10px] app-text-muted mt-1'>{daysLeft} يوم متبقي</p>
                   </div>
                 );
               })}
             </div>
-          </motion.div>
-        )}
-
-        {/* No challenges yet — show prompt */}
-        {activeChallenges.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-            className='glass-card rounded-2xl p-4'
-          >
-            <div className='flex items-center gap-3'>
-              <div className='w-10 h-10 rounded-xl flex items-center justify-center' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
-                <Trophy className='w-5 h-5' style={{ color: 'var(--gold-accent)' }} />
-              </div>
-              <div className='flex-1'>
-                <p className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>ابدأ تحديك الأول</p>
-                <p className='app-text-muted text-[11px]'>خصص أهداف ذكر وحققها يومياً</p>
-              </div>
-              <motion.button whileTap={{ scale: 0.9 }} onClick={() => setShowChallengePicker(true)} className='btn-gold px-3 py-2 rounded-xl text-xs'>
-                ابدأ
-              </motion.button>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Challenge Picker Modal */}
-        {showChallengePicker && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className='fixed inset-0 z-50 flex items-end justify-center'
-            onClick={() => setShowChallengePicker(false)}
-          >
-            <div className='absolute inset-0 bg-black/60' />
-            <motion.div
-              initial={{ y: 300 }} animate={{ y: 0 }}
-              onClick={e => e.stopPropagation()}
-              className='relative w-full max-w-lg glass-card-elevated rounded-t-3xl p-5 pb-8 max-h-[70vh] overflow-y-auto'
-            >
-              <div className='flex items-center justify-between mb-4'>
-                <h3 className='app-text font-bold text-base' style={{ fontFamily: fontClass }}>اختر تحدياً</h3>
-                <button onClick={() => setShowChallengePicker(false)} className='w-8 h-8 rounded-lg glass-subtle flex items-center justify-center'>
-                  <X className='w-4 h-4 app-text-2' />
-                </button>
-              </div>
-              <div className='space-y-2'>
-                {suggestedChallenges.map((ch) => (
-                  <motion.button
-                    key={ch.name}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => { addChallenge(ch.name, ch.target, ch.unit, ch.days); setShowChallengePicker(false); }}
-                    className='w-full p-3 rounded-xl glass-subtle flex items-center gap-3 text-right'
-                  >
-                    <div className='w-9 h-9 rounded-lg flex items-center justify-center' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
-                      <Flame className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
-                    </div>
-                    <div className='flex-1'>
-                      <p className='app-text text-sm font-medium' style={{ fontFamily: fontClass }}>{ch.name}</p>
-                      <p className='app-text-muted text-[11px]'>{ch.target} {ch.unit} - {ch.days} {ch.days === 1 ? 'يوم' : 'أيام'}</p>
-                    </div>
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
+          ) : (
+            <p className='app-text-muted text-xs'>اضغط لاختيار تحديك الأول</p>
+          )}
+        </motion.div>
 
         {/* Next Prayer Card */}
         <motion.div
