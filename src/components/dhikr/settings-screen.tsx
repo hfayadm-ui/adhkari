@@ -2,20 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { useDhikrStore, ArabicFont } from '@/lib/store';
+import { getFontClass } from '@/lib/font-utils';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
 import { Volume2, VolumeX, Type, RotateCcw, MapPin, ChevronDown, Search, Check, Sun, Moon, Download, Upload, Bell } from '@/components/dhikr/islamic-icons';
 import { countries, CityData, fetchPrayerTimes } from '@/lib/dhikr-data';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import GoogleLogin from '@/components/auth/google-login';
-
-function getFontClass(font: ArabicFont): string {
-  const map: Record<ArabicFont, string> = {
-    'cairo': 'var(--font-arabic)', 'amiri': 'var(--font-amiri)',
-    'noto-naskh': 'var(--font-noto-naskh)', 'tajawal': 'var(--font-tajawal)',
-    'ibm-plex': 'var(--font-ibm-plex)', 'scheherazade': 'var(--font-scheherazade)',
-  };
-  return map[font] || 'var(--font-arabic)';
-}
 
 const fontOptions: { id: ArabicFont; name: string; desc: string; fontVar: string }[] = [
   { id: 'cairo', name: 'القاهرة', desc: 'خط عصري واضح', fontVar: 'var(--font-arabic)' },
@@ -49,7 +41,6 @@ function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
 export default function SettingsScreen() {
   const {
     soundEnabled, toggleSound, vibrationEnabled, toggleVibration,
-    notificationsEnabled, toggleNotifications, prayerNotifEnabled, togglePrayerNotif,
     arabicFont, setArabicFont,
     selectedCity, setSelectedCity, setPrayerTimes,
     streak, setStreak, treeLevel, setTreeLevel, resetDaily,
@@ -223,26 +214,27 @@ export default function SettingsScreen() {
               </div>
               <div>
                 <p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>الإشعارات</p>
-                <p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>تذكير بالأذكار وأوقات الصلاة</p>
+                <p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>قريباً - ستتوفر في تحديث لاحق</p>
               </div>
             </div>
-            <Toggle value={notificationsEnabled} onChange={toggleNotifications} />
           </div>
         </SettingRow>
 
-        {/* Prayer Notification */}
+        {/* Legal Links */}
         <SettingRow delay={0.24}>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-3'>
-              <div className='w-9 h-9 rounded-xl flex items-center justify-center' style={{ background: 'var(--gold-glow)' }}>
-                <IslamicIcon name='mosque' className='w-4 h-4' color={!notificationsEnabled ? undefined : 'var(--gold-accent)'} />
-              </div>
-              <div>
-                <p className={`font-medium text-sm ${!notificationsEnabled ? 'app-text-2' : 'app-text'}`} style={{ fontFamily: fontVar }}>إشعار الصلاة</p>
-                <p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>تنبيه عند حلول وقت كل صلاة</p>
-              </div>
-            </div>
-            <Toggle value={prayerNotifEnabled && notificationsEnabled} onChange={togglePrayerNotif} />
+          <div className='flex items-center gap-3 mb-3'>
+            <div className='w-9 h-9 rounded-xl flex items-center justify-center' style={{ background: 'var(--gold-glow)' }}><IslamicIcon name='shield' className='w-4 h-4' color='var(--gold-accent)' /></div>
+            <div><p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>قانوني</p></div>
+          </div>
+          <div className='space-y-2'>
+            <a href='/privacy' className='w-full flex items-center justify-between p-3 rounded-xl glass-card app-border-c app-surface-h transition-colors'>
+              <span className='text-sm app-text-2' style={{ fontFamily: fontVar }}>سياسة الخصوصية</span>
+              <ChevronDown className='w-4 h-4 app-text-muted rotate-[-90deg]' />
+            </a>
+            <a href='/terms' className='w-full flex items-center justify-between p-3 rounded-xl glass-card app-border-c app-surface-h transition-colors'>
+              <span className='text-sm app-text-2' style={{ fontFamily: fontVar }}>شروط الخدمة</span>
+              <ChevronDown className='w-4 h-4 app-text-muted rotate-[-90deg]' />
+            </a>
           </div>
         </SettingRow>
 
@@ -372,7 +364,7 @@ export default function SettingsScreen() {
             </div>
             <h3 className='app-text font-bold text-base mb-0.5' style={{ fontFamily: fontVar }}>أذكاري</h3>
             <p className='app-text-2 text-xs' style={{ fontFamily: fontVar }}>تطبيق أذكار شامل</p>
-            <p className='app-text-muted text-[10px] mt-2'>الإصدار 3.0.0</p>
+            <p className='app-text-muted text-[10px] mt-2'>الإصدار 1.0.0</p>
             <p className='app-text-muted text-[10px] mt-1' style={{ fontFamily: fontVar }}>بسم الله، جعلنا هذا التطبيق في ميزان حسناتكم</p>
           </div>
         </SettingRow>

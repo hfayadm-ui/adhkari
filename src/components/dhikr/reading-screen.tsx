@@ -1,20 +1,12 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useDhikrStore, ArabicFont } from '@/lib/store';
+import { useDhikrStore } from '@/lib/store';
 import { prayerDhikrGroups, getAdhkarByCategory, getCategoryName, motivationalQuotes, dhikrCategories } from '@/lib/dhikr-data';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
 import { Home, ChevronRight, Volume2, VolumeX, Bookmark, Info, Star, Sparkles, Hand } from '@/components/dhikr/islamic-icons';
 import { useState } from 'react';
-
-function getFontClass(font: ArabicFont): string {
-  const map: Record<ArabicFont, string> = {
-    'cairo': 'var(--font-arabic)', 'amiri': 'var(--font-amiri)',
-    'noto-naskh': 'var(--font-noto-naskh)', 'tajawal': 'var(--font-tajawal)',
-    'ibm-plex': 'var(--font-ibm-plex)', 'scheherazade': 'var(--font-scheherazade)',
-  };
-  return map[font] || 'var(--font-arabic)';
-}
+import { getFontClass } from '@/lib/font-utils';
 
 const categoryIconMap: Record<string, string> = {
   morning: 'sunrise', evening: 'sunset', sleep: 'moon', waking: 'sun',
@@ -37,10 +29,10 @@ export default function ReadingScreen() {
 
   const prayerGroup = readingSource === 'prayer' ? prayerDhikrGroups[selectedPrayerIndex] : null;
   const categoryDhikrList = readingSource === 'category' ? getAdhkarByCategory(selectedCategoryId) : [];
-  const dhikrList = readingSource === 'prayer' ? prayerGroup.dhikrList : categoryDhikrList;
-  const title = readingSource === 'prayer' ? prayerGroup.prayerName : getCategoryName(selectedCategoryId);
+  const dhikrList = readingSource === 'prayer' ? prayerGroup?.dhikrList ?? [] : categoryDhikrList;
+  const title = readingSource === 'prayer' ? prayerGroup?.prayerName ?? '' : getCategoryName(selectedCategoryId);
   const openingMsg = readingSource === 'prayer'
-    ? prayerGroup.openingMessage
+    ? prayerGroup?.openingMessage ?? ''
     : `بسم الله، ابدأ بتلاوة أذكار ${getCategoryName(selectedCategoryId)}`;
 
   const currentDhikr = dhikrList[currentDhikrIndex];
@@ -85,7 +77,7 @@ export default function ReadingScreen() {
           setCurrentCount(0);
         }, 2200);
       } else {
-        if (readingSource === 'prayer') {
+        if (readingSource === 'prayer' && prayerGroup) {
           const pid = prayerGroup.prayerId;
           completePrayer(pid);
           if (completedPrayers.filter(p => !completedPrayers.includes(p)).length <= 1 || [...completedPrayers, pid].length >= 5) {
@@ -175,8 +167,8 @@ export default function ReadingScreen() {
                     <Info className='w-3.5 h-3.5 app-text-2' />
                   </button>
                 )}
-                <button className='w-7 h-7 rounded-full glass-card flex items-center justify-center'>
-                  <Bookmark className='w-3.5 h-3.5 app-text-2' />
+                <button className='w-7 h-7 rounded-full glass-card flex items-center justify-center' title='قريباً'>
+                  <Bookmark className='w-3.5 h-3.5 app-text-muted' />
                 </button>
               </div>
 

@@ -7,8 +7,8 @@ import {
   Award, Zap, RotateCcw, Target, Plus, Minus, Volume2, VolumeX,
   Search, CheckCircle2, Bookmark, Info, Share2, Copy, Compass, Gem,
   Utensils, Shield, MapPin, Type, Palette, Eye, Heart, Flame,
-  CircleDot, Landmark, PalmTree, Trees, StarOff, X, ArrowRight, Check, Pencil, LogOut, User, Smartphone,
-  Mosque as LucideMosque, Waves, Wind, Brain, Flower2, Cloud, Droplets, Play, Pause, RotateCw, Download, Upload
+  CircleDot, Landmark, Trees, StarOff, X, ArrowRight, Check, Pencil, LogOut, User, Smartphone,
+  Waves, Wind, Brain, Flower2, Cloud, Droplets, Play, Pause, RotateCw, Download, Upload
 } from 'lucide-react';
 import React from 'react';
 
@@ -90,7 +90,6 @@ function HandTapIcon({ className = 'w-6 h-6', color = 'currentColor' }: { classN
       <path d='M14 10V4a2 2 0 0 0-4 0v6' />
       <path d='M10 10.5V6a2 2 0 0 0-4 0v8' />
       <path d='M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15' />
-      <motion />
     </svg>
   );
 }

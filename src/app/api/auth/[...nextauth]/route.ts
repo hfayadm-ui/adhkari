@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, account, profile }) {
       if (account && profile) {
         token.id = profile.sub;
-        token.picture = profile.picture;
+        token.picture = (profile as Record<string, unknown>).picture as string;
         token.name = profile.name;
         token.email = profile.email;
       }

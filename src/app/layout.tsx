@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cairo, Amiri, Noto_Naskh_Arabic, Tajawal, IBM_Plex_Sans_Arabic, Scheherazade_New } from "next/font/google";
 import ThemeSync from "@/components/theme-sync";
 import SessionProvider from "@/components/auth/session-provider";
+import ErrorBoundary from "@/components/error-boundary";
 import "./globals.css";
 
 const cairo = Cairo({ variable: "--font-arabic", subsets: ["arabic", "latin"], weight: ["400", "500", "600", "700", "800"] });
@@ -125,7 +126,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
         <SessionProvider>
         <ThemeSync />
-        <div className='relative z-10'>{children}</div>
+        <div className='relative z-10'><ErrorBoundary>{children}</ErrorBoundary></div>
         </SessionProvider>
       </body>
     </html>

@@ -4,20 +4,9 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { IslamicIcon, Star, TreePine, Sparkles, ChevronLeft, Clock, Bell, Moon, Share2 } from '@/components/dhikr/islamic-icons';
 import { prayerDhikrGroups, prayerTimesList, getCurrentPrayerIndex, getSimpleHijriDate, dailyVerses, smartNotifications, treeIcons, fetchPrayerTimes } from '@/lib/dhikr-data';
-import { useDhikrStore, ArabicFont } from '@/lib/store';
+import { useDhikrStore } from '@/lib/store';
+import { getFontClass } from '@/lib/font-utils';
 import BreathingCard from '@/components/dhikr/breathing-card';
-
-function getFontClass(font: ArabicFont): string {
-  const map: Record<ArabicFont, string> = {
-    'cairo': 'var(--font-arabic)',
-    'amiri': 'var(--font-amiri)',
-    'noto-naskh': 'var(--font-noto-naskh)',
-    'tajawal': 'var(--font-tajawal)',
-    'ibm-plex': 'var(--font-ibm-plex)',
-    'scheherazade': 'var(--font-scheherazade)',
-  };
-  return map[font] || 'var(--font-arabic)';
-}
 
 export default function HomeScreen() {
   const {

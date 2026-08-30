@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
 import { LogOut, User, Shield } from '@/components/dhikr/islamic-icons';
-import { ArabicFont } from '@/lib/store';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -58,7 +57,7 @@ export default function GoogleLogin({ fontVar }: GoogleLoginProps) {
         </div>
         <div>
           <p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>الحساب</p>
-          <p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>{session ? 'متصل بحساب Google' : 'سجّل دخولك لحفظ تقدمك'}</p>
+          <p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>{session ? 'متصل بحساب Google' : 'سجّل دخولك بحساب Google'}</p>
         </div>
       </div>
 
@@ -127,18 +126,9 @@ export default function GoogleLogin({ fontVar }: GoogleLoginProps) {
               exit={{ opacity: 0, y: -10 }}
             >
               {/* Benefits text */}
-              <div className='mb-3 space-y-1.5'>
-                <p className='app-text-2 text-xs flex items-center gap-2' style={{ fontFamily: fontVar }}>
-                  <span className='w-1.5 h-1.5 rounded-full flex-shrink-0' style={{ background: 'var(--gold-accent)' }} />
-                  حفظ تقدمك ومزامنته بين الأجهزة
-                </p>
-                <p className='app-text-2 text-xs flex items-center gap-2' style={{ fontFamily: fontVar }}>
-                  <span className='w-1.5 h-1.5 rounded-full flex-shrink-0' style={{ background: 'var(--gold-accent)' }} />
-                  استعادة بياناتك عند تغيير الجهاز
-                </p>
-                <p className='app-text-2 text-xs flex items-center gap-2' style={{ fontFamily: fontVar }}>
-                  <span className='w-1.5 h-1.5 rounded-full flex-shrink-0' style={{ background: 'var(--gold-accent)' }} />
-                  مشاركة إنجازاتك مع الآخرين
+              <div className='mb-3'>
+                <p className='app-text-2 text-xs' style={{ fontFamily: fontVar }}>
+                  تسجيل الدخول اختياري — جميع ميزات التطبيق متاحة بدون حساب
                 </p>
               </div>
 

@@ -1,20 +1,12 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useDhikrStore, ArabicFont } from '@/lib/store';
+import { useDhikrStore } from '@/lib/store';
 import { dhikrCategories, getAdhkarByCategory, prayerDhikrGroups } from '@/lib/dhikr-data';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
 import { Search, ChevronLeft, CheckCircle2, BookOpen, Star, X, Plus } from '@/components/dhikr/islamic-icons';
 import { useState } from 'react';
-
-function getFontClass(font: ArabicFont): string {
-  const map: Record<ArabicFont, string> = {
-    'cairo': 'var(--font-arabic)', 'amiri': 'var(--font-amiri)',
-    'noto-naskh': 'var(--font-noto-naskh)', 'tajawal': 'var(--font-tajawal)',
-    'ibm-plex': 'var(--font-ibm-plex)', 'scheherazade': 'var(--font-scheherazade)',
-  };
-  return map[font] || 'var(--font-arabic)';
-}
+import { getFontClass } from '@/lib/font-utils';
 
 export default function LibraryScreen() {
   const { setCurrentScreen, setSelectedCategoryId, setReadingSource, setSelectedPrayerIndex, completedPrayers, arabicFont,

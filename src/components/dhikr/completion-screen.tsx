@@ -1,28 +1,21 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useDhikrStore, ArabicFont } from '@/lib/store';
+import { useDhikrStore } from '@/lib/store';
 import { prayerDhikrGroups, getAdhkarByCategory, getCategoryName, treeIcons, treeNames } from '@/lib/dhikr-data';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
 import { Home, Share2, RotateCcw, Trophy, Star, Copy, Heart, Flame } from '@/components/dhikr/islamic-icons';
 import { useState } from 'react';
 
-function getFontClass(font: ArabicFont): string {
-  const map: Record<ArabicFont, string> = {
-    'cairo': 'var(--font-arabic)', 'amiri': 'var(--font-amiri)',
-    'noto-naskh': 'var(--font-noto-naskh)', 'tajawal': 'var(--font-tajawal)',
-    'ibm-plex': 'var(--font-ibm-plex)', 'scheherazade': 'var(--font-scheherazade)',
-  };
-  return map[font] || 'var(--font-arabic)';
-}
+import { getFontClass } from '@/lib/font-utils';
 
 export default function CompletionScreen() {
   const { selectedPrayerIndex, selectedCategoryId, readingSource, setCurrentScreen, streak, treeLevel, totalAllTime, completedPrayers, arabicFont } = useDhikrStore();
   const [copied, setCopied] = useState(false);
 
   const group = readingSource === 'prayer' ? prayerDhikrGroups[selectedPrayerIndex] : null;
-  const title = readingSource === 'prayer' ? group.prayerName : getCategoryName(selectedCategoryId);
-  const closingMsg = readingSource === 'prayer' ? group.closingMessage : 'بارك الله فيك.. وأتم الله أجرك';
+  const title = readingSource === 'prayer' ? group?.prayerName ?? '' : getCategoryName(selectedCategoryId);
+  const closingMsg = readingSource === 'prayer' ? group?.closingMessage ?? '' : 'بارك الله فيك.. وأتم الله أجرك';
 
   const allDone = completedPrayers.length >= 5;
   const fontVar = getFontClass(arabicFont);

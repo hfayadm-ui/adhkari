@@ -4,7 +4,8 @@ import { motion } from 'framer-motion';
 import { useState, useRef, useCallback } from 'react';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
 import { ChevronLeft, RotateCcw, CheckCircle2, Star, Play, Pause } from '@/components/dhikr/islamic-icons';
-import { useDhikrStore, ArabicFont } from '@/lib/store';
+import { useDhikrStore } from '@/lib/store';
+import { getFontClass } from '@/lib/font-utils';
 
 interface AudioTrack {
   id: string;
@@ -144,18 +145,6 @@ const tools: RelaxTool[] = [
     ],
   },
 ];
-
-function getFontClass(font: ArabicFont): string {
-  const map: Record<ArabicFont, string> = {
-    'cairo': 'var(--font-arabic)',
-    'amiri': 'var(--font-amiri)',
-    'noto-naskh': 'var(--font-noto-naskh)',
-    'tajawal': 'var(--font-tajawal)',
-    'ibm-plex': 'var(--font-ibm-plex)',
-    'scheherazade': 'var(--font-scheherazade)',
-  };
-  return map[font] || 'var(--font-arabic)';
-}
 
 // مكون عرض الأداة (بسيط)
 function ToolViewer({ tool, onBack }: { tool: RelaxTool; onBack: () => void }) {
@@ -304,7 +293,7 @@ export default function RelaxationScreen() {
       <header className='px-4 pt-4 pb-3'>
         <div className='flex items-center gap-3'>
           <div className='w-9 h-9 rounded-full flex items-center justify-center' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
-            <IslamicIcon name='wind' className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
+            <IslamicIcon name='wind' className='w-4 h-4' color='var(--gold-accent)' />
           </div>
           <div>
             <h1 className='app-text font-bold text-base' style={{ fontFamily: fontClass }}>أدوات الاسترخاء</h1>
@@ -328,7 +317,7 @@ export default function RelaxationScreen() {
             className='w-full btn-glass rounded-2xl p-3.5 flex items-center gap-3 text-right'
           >
             <div className='w-11 h-11 rounded-xl flex items-center justify-center shrink-0' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
-              <IslamicIcon name={tool.icon} className='w-5 h-5' style={{ color: 'var(--gold-accent)' }} />
+              <IslamicIcon name={tool.icon} className='w-5 h-5' color='var(--gold-accent)' />
             </div>
             <div className='flex-1 min-w-0'>
               <h3 className='app-text font-bold text-sm'>{tool.name}</h3>

@@ -2,19 +2,12 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { useDhikrStore, ArabicFont } from '@/lib/store';
+import { useDhikrStore } from '@/lib/store';
 import { treeIcons, treeNames } from '@/lib/dhikr-data';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
 import { Flame, TrendingUp, Calendar, Award, Zap, Star, TreePine, Trophy, X, Plus } from '@/components/dhikr/islamic-icons';
 
-function getFontClass(font: ArabicFont): string {
-  const map: Record<ArabicFont, string> = {
-    'cairo': 'var(--font-arabic)', 'amiri': 'var(--font-amiri)',
-    'noto-naskh': 'var(--font-noto-naskh)', 'tajawal': 'var(--font-tajawal)',
-    'ibm-plex': 'var(--font-ibm-plex)', 'scheherazade': 'var(--font-scheherazade)',
-  };
-  return map[font] || 'var(--font-arabic)';
-}
+import { getFontClass } from '@/lib/font-utils';
 
 export default function StatsScreen() {
   const { streak, treeLevel, totalAllTime, completedPrayers, freeCounter, weeklyData, arabicFont, challenges, addChallenge, removeChallenge, updateChallengeProgress } = useDhikrStore();
