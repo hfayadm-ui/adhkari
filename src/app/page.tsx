@@ -15,7 +15,7 @@ import GardenScreen from '@/components/dhikr/garden-screen';
 import BottomNav from '@/components/dhikr/bottom-nav';
 import SplashScreen from '@/components/pwa/splash-screen';
 import InstallPrompt from '@/components/pwa/install-prompt';
-import { useSmartNotifications, checkStreakOnOpen } from '@/lib/smart-notifs';
+import { initSmartNotifications, checkStreakOnOpen } from '@/lib/smart-notifs';
 import { useEffect, useState } from 'react';
 
 function OfflineIndicator() {
@@ -62,7 +62,7 @@ export default function Home() {
     }
     // Init smart notifications & check streak
     checkStreakOnOpen();
-    useSmartNotifications();
+    initSmartNotifications();
   }, []);
 
   const showNav = !noNavScreens.includes(currentScreen);

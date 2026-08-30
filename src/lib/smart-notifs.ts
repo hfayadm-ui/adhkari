@@ -1,7 +1,6 @@
 'use client';
 
 import { useDhikrStore } from '@/lib/store';
-import { useEffect, useRef } from 'react';
 
 const NOTIF_COOLDOWN = 30 * 60 * 1000; // 30 minutes
 
@@ -99,72 +98,67 @@ function sendBrowserNotification(title: string, body: string, tag?: string) {
   } catch { /* notification not supported in this context */ }
 }
 
-// Main hook for smart notifications
-export function useSmartNotifications() {
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const lastCheckedDate = useRef<string>('');
+// Module-level interval (not a hook — safe to call from anywhere)
+let _notifInterval: ReturnType<typeof setInterval> | null = null;
+let _lastCheckedDate = '';
 
-  useEffect(() => {
-    const checkAndNotify = () => {
-      const store = useDhikrStore.getState();
-      const now = Date.now();
-      const hour = getCurrentHour();
-      const today = new Date().toDateString();
+export function initSmartNotifications() {
+  // Prevent multiple intervals
+  if (_notifInterval) return;
 
-      // Reset daily flags on new day
-      if (lastCheckedDate.current !== today) {
-        lastCheckedDate.current = today;
+  const checkAndNotify = () => {
+    const store = useDhikrStore.getState();
+    const now = Date.now();
+    const hour = getCurrentHour();
+    const today = new Date().toDateString();
+
+    if (_lastCheckedDate !== today) {
+      _lastCheckedDate = today;
+    }
+
+    if (!store.notificationsEnabled) return;
+
+    const lastNotif = store.lastNotifTime;
+
+    // Morning reminder (5:00-9:00 AM)
+    if (hour >= 5 && hour < 9 && !store.morningDone) {
+      const lastTime = lastNotif['morning'] || 0;
+      if (now - lastTime > NOTIF_COOLDOWN) {
+        sendBrowserNotification(
+          notificationMessages.morningReminder.title,
+          notificationMessages.morningReminder.body,
+          'morning-reminder'
+        );
+        store.markNotifSent('morning');
       }
+    }
 
-      if (!store.notificationsEnabled) return;
-
-      const lastNotif = store.lastNotifTime;
-
-      // Morning reminder (5:00-9:00 AM)
-      if (hour >= 5 && hour < 9 && !store.morningDone) {
-        const lastTime = lastNotif['morning'] || 0;
-        if (now - lastTime > NOTIF_COOLDOWN) {
-          sendBrowserNotification(
-            notificationMessages.morningReminder.title,
-            notificationMessages.morningReminder.body,
-            'morning-reminder'
-          );
-          store.markNotifSent('morning');
-        }
+    // Evening reminder (4:00-8:00 PM)
+    if (hour >= 16 && hour < 20 && !store.eveningDone) {
+      const lastTime = lastNotif['evening'] || 0;
+      if (now - lastTime > NOTIF_COOLDOWN) {
+        sendBrowserNotification(
+          notificationMessages.eveningReminder.title,
+          notificationMessages.eveningReminder.body,
+          'evening-reminder'
+        );
+        store.markNotifSent('evening');
       }
+    }
 
-      // Evening reminder (4:00-8:00 PM)
-      if (hour >= 16 && hour < 20 && !store.eveningDone) {
-        const lastTime = lastNotif['evening'] || 0;
-        if (now - lastTime > NOTIF_COOLDOWN) {
-          sendBrowserNotification(
-            notificationMessages.eveningReminder.title,
-            notificationMessages.eveningReminder.body,
-            'evening-reminder'
-          );
-          store.markNotifSent('evening');
-        }
+    // Streak warning (after 8 PM if no activity today)
+    if (hour >= 20 && store.streak > 0 && store.freeCounter === 0 && store.completedPrayers.length === 0) {
+      const lastTime = lastNotif['streakWarning'] || 0;
+      if (now - lastTime > NOTIF_COOLDOWN * 2) {
+        const msg = notificationMessages.streakWarning(store.streak);
+        sendBrowserNotification(msg.title, msg.body, 'streak-warning');
+        store.markNotifSent('streakWarning');
       }
+    }
+  };
 
-      // Streak warning (after 8 PM if no activity today)
-      if (hour >= 20 && store.streak > 0 && store.freeCounter === 0 && store.completedPrayers.length === 0) {
-        const lastTime = lastNotif['streakWarning'] || 0;
-        if (now - lastTime > NOTIF_COOLDOWN * 2) {
-          const msg = notificationMessages.streakWarning(store.streak);
-          sendBrowserNotification(msg.title, msg.body, 'streak-warning');
-          store.markNotifSent('streakWarning');
-        }
-      }
-    };
-
-    // Check every 5 minutes
-    checkAndNotify();
-    intervalRef.current = setInterval(checkAndNotify, 5 * 60 * 1000);
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, []);
+  checkAndNotify();
+  _notifInterval = setInterval(checkAndNotify, 5 * 60 * 1000);
 }
 
 // Called when user completes a session to handle rewards
