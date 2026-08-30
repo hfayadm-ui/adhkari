@@ -11,9 +11,11 @@ import StatsScreen from '@/components/dhikr/stats-screen';
 import SettingsScreen from '@/components/dhikr/settings-screen';
 import RelaxationScreen from '@/components/dhikr/relaxation-screen';
 import ChallengesScreen from '@/components/dhikr/challenges-screen';
+import GardenScreen from '@/components/dhikr/garden-screen';
 import BottomNav from '@/components/dhikr/bottom-nav';
 import SplashScreen from '@/components/pwa/splash-screen';
 import InstallPrompt from '@/components/pwa/install-prompt';
+import { useSmartNotifications, checkStreakOnOpen } from '@/lib/smart-notifs';
 import { useEffect, useState } from 'react';
 
 function OfflineIndicator() {
@@ -49,14 +51,18 @@ export default function Home() {
     if (last !== today) {
       localStorage.setItem('dz_lastDate', today);
       if (last) {
-        // Previous day existed - check if streak should increment
         const prevDate = new Date(last);
         const diff = Math.floor((new Date(today).getTime() - prevDate.getTime()) / 86400000);
         if (diff === 1) {
           // Consecutive day - streak handled in completion screen
+        } else if (diff >= 2) {
+          // Streak broken — handled by smart-notifs
         }
       }
     }
+    // Init smart notifications & check streak
+    checkStreakOnOpen();
+    useSmartNotifications();
   }, []);
 
   const showNav = !noNavScreens.includes(currentScreen);
@@ -83,6 +89,7 @@ export default function Home() {
             {currentScreen === 'settings' && <SettingsScreen />}
             {currentScreen === 'relaxation' && <RelaxationScreen />}
             {currentScreen === 'challenges' && <ChallengesScreen />}
+            {currentScreen === 'garden' && <GardenScreen />}
           </motion.div>
         </AnimatePresence>
         {showNav && <BottomNav />}

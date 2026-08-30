@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type Screen = 'home' | 'reading' | 'completion' | 'stats' | 'settings' | 'library' | 'counter' | 'relaxation' | 'challenges';
+export type Screen = 'home' | 'reading' | 'completion' | 'stats' | 'settings' | 'library' | 'counter' | 'relaxation' | 'challenges' | 'garden';
 export type ThemeColor = 'emerald' | 'blue' | 'purple' | 'amber' | 'rose';
 export type AppMode = 'dark' | 'light';
 export type ArabicFont = 'cairo' | 'amiri' | 'noto-naskh' | 'tajawal' | 'ibm-plex' | 'scheherazade';
@@ -35,6 +35,18 @@ interface Challenge {
   startDate: string;
   endDate: string;
   completed: boolean;
+}
+
+interface GardenPlant {
+  id: string;
+  type: 'seed' | 'sprout' | 'flower' | 'tree' | 'palm' | 'rose' | 'jasmine' | 'lotus';
+  dayEarned: number; // streak day when earned
+  unlockedAt: string;
+}
+
+interface StreakDay {
+  date: string;
+  count: number; // dhikr count that day
 }
 
 interface SelectedCity {
@@ -76,8 +88,12 @@ interface DhikrState {
   // Streak & gamification
   streak: number;
   streakFreezeAvailable: boolean;
+  streakFreezesLeft: number;
+  lastActiveDate: string | null;
+  streakDays: StreakDay[];
   setStreak: (streak: number) => void;
   useStreakFreeze: () => void;
+  resetStreakFreezeWeekly: () => void;
   treeLevel: number;
   setTreeLevel: (level: number) => void;
   totalAllTime: number;
@@ -138,6 +154,19 @@ interface DhikrState {
   favorites: string[];
   toggleFavorite: (dhikrText: string) => void;
   isFavorite: (dhikrText: string) => boolean;
+
+  // Garden
+  gardenPlants: GardenPlant[];
+  gardenLevel: number;
+  addGardenPlant: (type: GardenPlant['type']) => void;
+
+  // Smart Notifications
+  morningDone: boolean;
+  eveningDone: boolean;
+  setMorningDone: () => void;
+  setEveningDone: () => void;
+  lastNotifTime: Record<string, number>;
+  markNotifSent: (key: string) => void;
 }
 
 function load<T>(key: string, def: T): T {
@@ -196,12 +225,21 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
 
   streak: load<number>('dz_streak', 0),
   streakFreezeAvailable: load<boolean>('dz_freezeAvail', true),
+  streakFreezesLeft: load<number>('dz_freezesLeft', 2),
+  lastActiveDate: load<string | null>('dz_lastActive', null),
+  streakDays: load<StreakDay[]>('dz_streakDays', []),
   setStreak: (streak) => { save('dz_streak', streak); set({ streak }); },
   useStreakFreeze: () => {
-    if (get().streakFreezeAvailable) {
-      set({ streakFreezeAvailable: false });
-      save('dz_freezeAvail', false);
+    const state = get();
+    if (state.streakFreezesLeft > 0) {
+      save('dz_freezesLeft', state.streakFreezesLeft - 1);
+      set({ streakFreezesLeft: state.streakFreezesLeft - 1, streakFreezeAvailable: false });
     }
+  },
+  resetStreakFreezeWeekly: () => {
+    save('dz_freezesLeft', 2);
+    save('dz_freezeAvail', true);
+    set({ streakFreezesLeft: 2, streakFreezeAvailable: true });
   },
   treeLevel: load<number>('dz_treeLevel', 0),
   setTreeLevel: (level) => { save('dz_treeLevel', level); set({ treeLevel: level }); },
@@ -324,4 +362,34 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
     set({ favorites: updated });
   },
   isFavorite: (dhikrText) => get().favorites.includes(dhikrText),
+
+  // Garden
+  gardenPlants: load<GardenPlant[]>('dz_gardenPlants', []),
+  gardenLevel: load<number>('dz_gardenLevel', 0),
+  addGardenPlant: (type) => {
+    const state = get();
+    const plant: GardenPlant = {
+      id: crypto.randomUUID(),
+      type,
+      dayEarned: state.streak,
+      unlockedAt: new Date().toISOString(),
+    };
+    const plants = [...state.gardenPlants, plant];
+    const newLevel = Math.min(Math.floor(plants.length / 3) + 1, 10);
+    save('dz_gardenPlants', plants);
+    save('dz_gardenLevel', newLevel);
+    set({ gardenPlants: plants, gardenLevel: newLevel });
+  },
+
+  // Smart Notifications
+  morningDone: load<boolean>('dz_morningDone', false),
+  eveningDone: load<boolean>('dz_eveningDone', false),
+  setMorningDone: () => { save('dz_morningDone', true); set({ morningDone: true }); },
+  setEveningDone: () => { save('dz_eveningDone', true); set({ eveningDone: true }); },
+  lastNotifTime: load<Record<string, number>>('dz_lastNotif', {}),
+  markNotifSent: (key) => {
+    const times = { ...get().lastNotifTime, [key]: Date.now() };
+    save('dz_lastNotif', times);
+    set({ lastNotifTime: times });
+  },
 }));

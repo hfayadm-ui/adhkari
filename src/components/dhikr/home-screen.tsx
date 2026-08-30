@@ -2,19 +2,20 @@
 
 import { motion } from 'framer-motion';
 import { useState, useEffect, useCallback } from 'react';
-import { IslamicIcon, Star, TreePine, Sparkles, ChevronLeft, Clock, Bell, Moon, Share2, Heart, Trophy, Flame } from '@/components/dhikr/islamic-icons';
+import { IslamicIcon, Star, TreePine, Sparkles, ChevronLeft, Clock, Bell, Moon, Share2, Heart, Trophy, Flame, Trees, Droplets } from '@/components/dhikr/islamic-icons';
 import { prayerDhikrGroups, prayerTimesList, getCurrentPrayerIndex, getSimpleHijriDate, dailyVerses, smartNotifications, treeIcons, fetchPrayerTimes, dailyHadiths, getTodayHadithIndex } from '@/lib/dhikr-data';
 import { useDhikrStore } from '@/lib/store';
 import { getFontClass } from '@/lib/font-utils';
 import BreathingCard from '@/components/dhikr/breathing-card';
 import { shareAsImage } from '@/lib/share-card';
+import { requestNotificationPermission } from '@/lib/smart-notifs';
 
 export default function HomeScreen() {
   const {
     setCurrentScreen, setSelectedPrayerIndex, setReadingSource,
     streak, treeLevel, completedPrayers, freeCounter,
     arabicFont, selectedCity, prayerTimes, setPrayerTimes,
-    totalAllTime, challenges,
+    totalAllTime, challenges, gardenPlants, gardenLevel, streakFreezesLeft,
   } = useDhikrStore();
 
   const [hijriDate] = useState(() => getSimpleHijriDate());
@@ -95,6 +96,11 @@ export default function HomeScreen() {
           </div>
           <button
             className='w-10 h-10 rounded-xl glass-card flex items-center justify-center app-surface-h transition-all'
+            onClick={async () => {
+              const granted = await requestNotificationPermission();
+              const { notificationsEnabled, toggleNotifications } = useDhikrStore.getState();
+              if (granted && !notificationsEnabled) toggleNotifications();
+            }}
           >
             <Bell className='w-5 h-5 app-text-2' />
           </button>
@@ -282,57 +288,83 @@ export default function HomeScreen() {
           </div>
         </motion.div>
 
-        {/* Streak + Tree Row */}
+        {/* Streak Fire + Garden Row */}
         <div className='grid grid-cols-2 gap-3'>
-          <motion.div initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
-            className='glass-card glass-glow rounded-2xl p-3.5'
+          <motion.div
+            initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setCurrentScreen('garden')}
+            className='glass-glow rounded-2xl p-3.5 cursor-pointer relative overflow-hidden'
           >
-            <div className='flex items-center gap-1.5 mb-2'>
-              <Star className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
-              <span className='app-text-muted text-[11px]' style={{ fontFamily: fontClass }}>السلسلة</span>
-            </div>
-            <div className='flex items-center justify-between'>
+            {/* Fire glow background */}
+            {streak > 0 && (
+              <div className='absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 rounded-full opacity-20 blur-2xl pointer-events-none'
+                style={{ background: streak >= 7 ? '#ef4444' : streak >= 3 ? '#f97316' : '#fbbf24' }}
+              />
+            )}
+            <div className='relative z-10'>
+              <div className='flex items-center gap-1.5 mb-2'>
+                <motion.div animate={streak > 0 ? { scale: [1, 1.2, 1], rotate: [-3, 3, -3] } : {}} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}>
+                  <Flame className='w-4 h-4' style={{ color: streak > 0 ? (streak >= 7 ? '#ef4444' : streak >= 3 ? '#f97316' : '#fbbf24') : '#4b5563' }} />
+                </motion.div>
+                <span className='app-text-muted text-[11px]' style={{ fontFamily: fontClass }}>السلسلة</span>
+                <motion.button whileTap={{ scale: 0.9 }} onClick={(e) => { e.stopPropagation(); shareProgress(); }} className='mr-auto w-6 h-6 rounded-md glass-subtle flex items-center justify-center' aria-label='مشاركة'>
+                  <Share2 className='w-3 h-3' style={{ color: 'var(--gold-accent)' }} />
+                </motion.button>
+              </div>
               <div className='flex items-baseline gap-1'>
-                <span className='text-3xl font-bold' style={{ color: 'var(--gold-accent)' }}>{streak}</span>
+                <span className='text-3xl font-bold' style={{ color: streak > 0 ? (streak >= 7 ? '#ef4444' : streak >= 3 ? '#f97316' : 'var(--gold-accent)') : 'var(--gold-border)' }}>{streak}</span>
                 <span className='app-text-muted text-[11px]' style={{ fontFamily: fontClass }}>يوم</span>
               </div>
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={shareProgress}
-                className='w-7 h-7 rounded-lg glass-subtle flex items-center justify-center'
-                aria-label='مشاركة التقدم كصورة'
-              >
-                <Share2 className='w-3.5 h-3.5' style={{ color: 'var(--gold-accent)' }} />
-              </motion.button>
-            </div>
-            <div className='mt-2 flex gap-0.5'>
-              {[...Array(7)].map((_, i) => (
-                <div key={i} className={`flex-1 h-1.5 rounded-full`} style={{
-                  background: i < ((streak - 1) % 7) + 1 || streak >= 7 ? 'var(--gold-accent)' : 'var(--app-ring-track)',
-                }} />
-              ))}
+              {/* Week dots with fire colors */}
+              <div className='mt-2 flex gap-0.5'>
+                {[...Array(7)].map((_, i) => (
+                  <motion.div key={i} className='flex-1 h-1.5 rounded-full' style={{
+                    background: i < Math.min(streak, 7)
+                      ? `linear-gradient(180deg, ${streak >= 7 ? '#ef4444' : '#f97316'}, ${streak >= 7 ? '#f97316' : '#fbbf24'})`
+                      : 'var(--app-ring-track)',
+                    boxShadow: i < Math.min(streak, 7) ? `0 0 4px ${streak >= 7 ? 'rgba(239,68,68,0.5)' : 'rgba(249,115,22,0.4)'}` : 'none',
+                  }} animate={i === Math.min(streak, 7) - 1 && streak > 0 ? { opacity: [1, 0.5, 1] } : {}} transition={{ duration: 1.5, repeat: Infinity }} />
+                ))}
+              </div>
+              <div className='flex items-center gap-1 mt-1.5'>
+                <Droplets className='w-2.5 h-2.5' style={{ color: '#60a5fa' }} />
+                <span className='text-[9px] app-text-muted'>{streakFreezesLeft} تجميد</span>
+              </div>
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.35 }}
-            className='glass-card rounded-2xl p-3.5'
+          <motion.div
+            initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.35 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setCurrentScreen('garden')}
+            className='glass-card rounded-2xl p-3.5 cursor-pointer'
           >
             <div className='flex items-center gap-1.5 mb-2'>
-              <TreePine className='w-4 h-4 text-emerald-500' />
-              <span className='app-text-muted text-[11px]' style={{ fontFamily: fontClass }}>شجرة الأذكار</span>
+              <Trees className='w-4 h-4 text-emerald-500' />
+              <span className='app-text-muted text-[11px]' style={{ fontFamily: fontClass }}>حديقتي</span>
+              <span className='mr-auto text-[9px] app-text-muted'>{gardenPlants.length} نبات</span>
             </div>
             <div className='flex items-center gap-2'>
-              <IslamicIcon
-                name={treeIcons[Math.min(treeLevel, treeIcons.length - 1)]}
-                className='w-8 h-8 text-emerald-500'
-              />
+              <IslamicIcon name={treeIcons[Math.min(treeLevel, treeIcons.length - 1)]} className='w-8 h-8 text-emerald-500' />
               <div>
-                <span className='text-lg font-bold text-emerald-500'>{treeLevel}</span>
+                <span className='text-lg font-bold text-emerald-500'>مستوى {gardenLevel}</span>
                 <div className='w-16 rounded-full h-1.5 mt-0.5' style={{ background: 'var(--app-ring-track)' }}>
-                  <div className='h-1.5 rounded-full bg-emerald-500' style={{ width: `${Math.min(treeLevel * 100 / 7, 100)}%` }} />
+                  <div className='h-1.5 rounded-full bg-emerald-500 transition-all' style={{ width: `${Math.min(gardenLevel * 10, 100)}%` }} />
                 </div>
               </div>
             </div>
+            {gardenPlants.length > 0 ? (
+              <div className='flex gap-1 mt-2'>
+                {gardenPlants.slice(-4).map((p) => (
+                  <div key={p.id} className='w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center'>
+                    <div className='w-2 h-2 rounded-full bg-emerald-500' />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className='text-[9px] app-text-muted mt-2'>اضغط لتأسيس حديقتك</p>
+            )}
           </motion.div>
         </div>
 
