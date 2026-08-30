@@ -38,7 +38,7 @@ export default function BottomNav() {
                 <button
                   key={tab.id}
                   onClick={() => setCurrentScreen(tab.id)}
-                  className='relative flex flex-col items-center gap-1 px-4 py-1.5 rounded-2xl transition-all duration-200 min-w-[56px]'
+                  className='relative flex flex-col items-center gap-1 px-3 py-1.5 rounded-2xl transition-all duration-200 min-w-[52px] sm:min-w-[56px] sm:px-4'
                 >
                   {active && (
                     <motion.div
