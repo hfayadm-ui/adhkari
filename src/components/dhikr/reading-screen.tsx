@@ -227,22 +227,24 @@ export default function ReadingScreen() {
               </div>
 
               {/* Tap Button */}
+              <div className='mx-auto' style={{ width: '160px', height: '160px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <motion.button whileTap={{ scale: 0.92 }} onClick={handleTap}
-                className='relative mx-auto rounded-full flex items-center justify-center gold-glow'
+                className='relative rounded-full flex items-center justify-center gold-glow'
                 style={{ width: '136px', height: '136px', background: 'linear-gradient(135deg, var(--gold-accent), var(--gold-bright))', border: '1px solid rgba(255,255,255,0.15)' }}>
-                <div className='absolute inset-0 rounded-full animate-ping' style={{ border: '1px solid var(--gold-border)' }} />
+                <div className='absolute inset-0 rounded-full animate-ping' style={{ border: '1px solid var(--gold-border)', animationDuration: '2s' }} />
                 <div className='absolute inset-2 rounded-full' style={{ border: '1px solid var(--gold-border)' }} />
                 <div className='relative text-center'>
                   <IslamicIcon name='hand-tap' className='w-10 h-10 mx-auto' color='#ffffff' />
                   <span className='text-white/70 text-[10px] mt-1 block' style={{ fontFamily: fontVar }}>اضغط للتسبيح</span>
                 </div>
               </motion.button>
+              </div>
 
               {/* Skip */}
               {currentCount > 0 && (
                 <button onClick={() => {
                   if (currentDhikrIndex + 1 < totalDhikr) { setCurrentDhikrIndex(currentDhikrIndex + 1); setCurrentCount(0); }
-                }} className='mt-14 app-text-muted text-xs hover:app-text-2 transition-colors flex items-center gap-1 mx-auto glass-card py-2 px-5 rounded-full'>
+                }} className='mt-6 app-text-muted text-xs hover:app-text-2 transition-colors flex items-center gap-1 mx-auto glass-card py-2 px-5 rounded-full'>
                   <span style={{ fontFamily: fontVar }}>تخطي</span> <ChevronRight className='w-3 h-3' />
                 </button>
               )}
