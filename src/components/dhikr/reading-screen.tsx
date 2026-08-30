@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useDhikrStore } from '@/lib/store';
 import { prayerDhikrGroups, getAdhkarByCategory, getCategoryName, motivationalQuotes, dhikrCategories } from '@/lib/dhikr-data';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
-import { Home, ChevronRight, Volume2, VolumeX, Bookmark, Info, Star, Sparkles, Hand, Heart, Share2 } from '@/components/dhikr/islamic-icons';
-import { useState } from 'react';
+import { Home, ChevronRight, Volume2, VolumeX, Info, Star, Sparkles, Heart, Share2 } from '@/components/dhikr/islamic-icons';
+import { useState, useEffect } from 'react';
 import { getFontClass } from '@/lib/font-utils';
 import { shareAsImage } from '@/lib/share-card';
 
@@ -16,12 +16,12 @@ const categoryIconMap: Record<string, string> = {
 
 export default function ReadingScreen() {
   const {
-    selectedPrayerIndex, selectedCategoryId, readingSource,
+    selectedPrayerIndex, selectedCategoryId, readingSource, selectedCustomDhikrId,
     currentDhikrIndex, currentCount, completedSet,
     setCurrentDhikrIndex, setCurrentCount, setCompletedSet, setCurrentScreen,
     completePrayer, addTodayRecord, setTreeLevel, setStreak, setTotalAllTime,
     completedPrayers, soundEnabled, vibrationEnabled, fontSize, themeColor, arabicFont,
-    toggleFavorite, isFavorite,
+    toggleFavorite, isFavorite, customDhikr,
   } = useDhikrStore();
 
   const [showMotivation, setShowMotivation] = useState(false);
@@ -37,24 +37,30 @@ export default function ReadingScreen() {
 
   const prayerGroup = readingSource === 'prayer' ? prayerDhikrGroups[selectedPrayerIndex] : null;
   const categoryDhikrList = readingSource === 'category' ? getAdhkarByCategory(selectedCategoryId) : [];
-  const dhikrList = readingSource === 'prayer' ? prayerGroup?.dhikrList ?? [] : categoryDhikrList;
-  const title = readingSource === 'prayer' ? prayerGroup?.prayerName ?? '' : getCategoryName(selectedCategoryId);
+  const customItem = readingSource === 'custom' ? customDhikr.find(d => d.id === selectedCustomDhikrId) : null;
+  const customDhikrList = customItem ? [{ text: customItem.text, count: customItem.count, category: 'مخصص', reference: '', benefit: '' }] : [];
+  const dhikrList = readingSource === 'prayer' ? prayerGroup?.dhikrList ?? [] : readingSource === 'custom' ? customDhikrList : categoryDhikrList;
+  const title = readingSource === 'prayer' ? prayerGroup?.prayerName ?? '' : readingSource === 'custom' ? (customItem?.text ?? '') : getCategoryName(selectedCategoryId);
   const openingMsg = readingSource === 'prayer'
     ? prayerGroup?.openingMessage ?? ''
-    : `بسم الله، ابدأ بتلاوة أذكار ${getCategoryName(selectedCategoryId)}`;
+    : readingSource === 'custom'
+      ? 'بسم الله، ابدأ بتسبيح ذكرك المخصص'
+      : `بسم الله، ابدأ بتلاوة أذكار ${getCategoryName(selectedCategoryId)}`;
 
   const currentDhikr = dhikrList[currentDhikrIndex];
   const totalDhikr = dhikrList.length;
   const progressPct = ((completedSet.length + (currentCount / (currentDhikr?.count || 1))) / totalDhikr) * 100;
 
   // Sync favorite state when dhikr changes
-  const favStatus = currentDhikr ? isFavorite(currentDhikr.text) : false;
-  if (favStatus !== isFav) setIsFav(favStatus);
+  useEffect(() => {
+    const favStatus = currentDhikr ? isFavorite(currentDhikr.text) : false;
+    setIsFav(favStatus);
+  }, [currentDhikr, isFavorite]);
 
   const fontSizes = { small: 'text-lg', medium: 'text-2xl', large: 'text-3xl' };
   const fontClass = fontSizes[fontSize];
   const fontVar = getFontClass(arabicFont);
-  const openingIcon = readingSource === 'prayer' ? 'mosque' : (categoryIconMap[selectedCategoryId] || 'mosque');
+  const openingIcon = readingSource === 'prayer' ? 'mosque' : readingSource === 'custom' ? 'sparkles' : (categoryIconMap[selectedCategoryId] || 'mosque');
 
   function playTap() {
     if (!soundEnabled) return;

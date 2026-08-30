@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type Screen = 'home' | 'reading' | 'completion' | 'stats' | 'settings' | 'library' | 'counter' | 'category-reading' | 'relaxation' | 'challenges';
+export type Screen = 'home' | 'reading' | 'completion' | 'stats' | 'settings' | 'library' | 'counter' | 'relaxation' | 'challenges';
 export type ThemeColor = 'emerald' | 'blue' | 'purple' | 'amber' | 'rose';
 export type AppMode = 'dark' | 'light';
 export type ArabicFont = 'cairo' | 'amiri' | 'noto-naskh' | 'tajawal' | 'ibm-plex' | 'scheherazade';
@@ -56,8 +56,10 @@ interface DhikrState {
   setSelectedPrayerIndex: (index: number) => void;
   selectedCategoryId: string;
   setSelectedCategoryId: (id: string) => void;
-  readingSource: 'prayer' | 'category';
-  setReadingSource: (s: 'prayer' | 'category') => void;
+  readingSource: 'prayer' | 'category' | 'custom';
+  setReadingSource: (s: 'prayer' | 'category' | 'custom') => void;
+  selectedCustomDhikrId: string | null;
+  setSelectedCustomDhikrId: (id: string | null) => void;
   currentDhikrIndex: number;
   setCurrentDhikrIndex: (index: number) => void;
   currentCount: number;
@@ -167,6 +169,8 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
   setSelectedCategoryId: (id) => set({ selectedCategoryId: id, currentDhikrIndex: 0, currentCount: 0, completedSet: [] }),
   readingSource: 'prayer',
   setReadingSource: (s) => set({ readingSource: s, currentDhikrIndex: 0, currentCount: 0, completedSet: [] }),
+  selectedCustomDhikrId: null,
+  setSelectedCustomDhikrId: (id) => set({ selectedCustomDhikrId: id, currentDhikrIndex: 0, currentCount: 0, completedSet: [] }),
   currentDhikrIndex: 0,
   setCurrentDhikrIndex: (index) => set({ currentDhikrIndex: index, currentCount: 0 }),
   currentCount: 0,

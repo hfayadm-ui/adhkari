@@ -10,7 +10,7 @@ import { getFontClass } from '@/lib/font-utils';
 
 export default function LibraryScreen() {
   const { setCurrentScreen, setSelectedCategoryId, setReadingSource, setSelectedPrayerIndex, completedPrayers, arabicFont,
-    customDhikr, addCustomDhikr, removeCustomDhikr, setCurrentDhikrIndex } = useDhikrStore();
+    customDhikr, addCustomDhikr, removeCustomDhikr, setCurrentDhikrIndex, setSelectedCustomDhikrId } = useDhikrStore();
   const [search, setSearch] = useState('');
   const [showCustomPanel, setShowCustomPanel] = useState(false);
   const [customText, setCustomText] = useState('');
@@ -204,8 +204,8 @@ export default function LibraryScreen() {
                       >
                         <button
                           onClick={() => {
-                            setSelectedCategoryId(item.id);
-                            setReadingSource('category');
+                            setSelectedCustomDhikrId(item.id);
+                            setReadingSource('custom');
                             setCurrentDhikrIndex(0);
                             setCurrentScreen('reading');
                           }}

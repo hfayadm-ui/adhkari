@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { getFontClass } from '@/lib/font-utils';
 
 export default function CompletionScreen() {
-  const { selectedPrayerIndex, selectedCategoryId, readingSource, setCurrentScreen, streak, treeLevel, totalAllTime, completedPrayers, arabicFont } = useDhikrStore();
+  const { selectedPrayerIndex, selectedCategoryId, readingSource, setCurrentScreen, setCurrentDhikrIndex, setCurrentCount, setCompletedSet, streak, treeLevel, totalAllTime, completedPrayers, arabicFont } = useDhikrStore();
   const [copied, setCopied] = useState(false);
 
   const group = readingSource === 'prayer' ? prayerDhikrGroups[selectedPrayerIndex] : null;
@@ -111,7 +111,12 @@ export default function CompletionScreen() {
             className='btn-gold w-full py-3.5 rounded-xl text-base'
             style={{ fontFamily: fontVar }}>العودة للرئيسية</motion.button>
           <div className='grid grid-cols-3 gap-2'>
-            <motion.button whileTap={{ scale: 0.97 }} onClick={() => setCurrentScreen('reading')}
+            <motion.button whileTap={{ scale: 0.97 }} onClick={() => {
+              setCurrentDhikrIndex(0);
+              setCurrentCount(0);
+              setCompletedSet([]);
+              setCurrentScreen('reading');
+            }}
               className='glass-card py-3 rounded-xl app-text text-xs app-surface-h transition-colors'>
               <span className='flex flex-col items-center gap-1'><RotateCcw className='w-4 h-4' /><span style={{ fontFamily: fontVar }}>إعادة</span></span>
             </motion.button>
