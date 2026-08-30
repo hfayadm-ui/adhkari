@@ -8,7 +8,7 @@ import {
   Search, CheckCircle2, Bookmark, Info, Share2, Copy, Compass, Gem,
   Utensils, Shield, MapPin, Type, Palette, Eye, Heart, Flame,
   CircleDot, Landmark, Trees, StarOff, X, ArrowRight, Check, Pencil, LogOut, User, Smartphone,
-  Waves, Wind, Brain, Flower2, Cloud, Droplets, Play, Pause, RotateCw, Download, Upload, Trash2
+  Waves, Wind, Brain, Flower2, Cloud, Droplets, Play, Pause, RotateCw, Download, Upload, Trash2, Lock
 } from 'lucide-react';
 import React from 'react';
 
@@ -171,12 +171,16 @@ interface IconProps {
   name: string;
   className?: string;
   color?: string;
+  style?: React.CSSProperties;
 }
 
-export function IslamicIcon({ name, className = 'w-5 h-5', color }: IconProps) {
+export function IslamicIcon({ name, className = 'w-5 h-5', color, style }: IconProps) {
   const IconComponent = iconMap[name];
   if (!IconComponent) {
-    return <Star className={className} color={color || 'currentColor'} />;
+    return <Star className={className} color={color || 'currentColor'} style={style} />;
+  }
+  if (style) {
+    return <span style={style} className='inline-flex'><IconComponent className={className} color={color} /></span>;
   }
   return <IconComponent className={className} color={color} />;
 }
@@ -191,5 +195,6 @@ export {
   Bookmark, Info, Share2, Copy, Compass, Star, Flame, Sparkles,
   Sun, Moon, Sunrise, Sunset, CloudSun, Bell, Leaf, Gem, Utensils,
   Shield, MapPin, Type, Palette, Heart, Eye, Landmark, X, Plus, Minus, ArrowRight,
-  Wind, Brain, Flower2, Cloud, Droplets, Play, Pause, RotateCw, Download, Upload, Pencil, LogOut, User, Smartphone, Trash2
+  Wind, Brain, Flower2, Cloud, Droplets, Play, Pause, RotateCw, Download, Upload, Pencil, LogOut, User, Smartphone, Trash2,
+  Trees, Lock, CircleDot, StarOff
 };

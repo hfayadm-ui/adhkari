@@ -32,7 +32,7 @@ function GardenPlantSVG({ type, size, color, delay = 0 }: { type: string; size: 
       {/* Glow */}
       <div className='absolute inset-0 rounded-full opacity-30 blur-md' style={{ background: color }} />
       {/* Main icon */}
-      <IslamicIcon name={plantConfig[type]?.icon || 'leaf'} className='relative z-10' style={{ width: size * 0.7, height: size * 0.7, color }} color={color} />
+      <IslamicIcon name={plantConfig[type]?.icon || 'leaf'} className='relative z-10' color={color} />
       {/* Floating particles */}
       {[...Array(3)].map((_, i) => (
         <motion.div
