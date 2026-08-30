@@ -3,9 +3,9 @@
 import { motion } from 'framer-motion';
 import { useDhikrStore, ArabicFont } from '@/lib/store';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
-import { Volume2, VolumeX, Type, RotateCcw, MapPin, ChevronDown, Search, Check, Sun, Moon } from '@/components/dhikr/islamic-icons';
+import { Volume2, VolumeX, Type, RotateCcw, MapPin, ChevronDown, Search, Check, Sun, Moon, Download, Upload, Bell } from '@/components/dhikr/islamic-icons';
 import { countries, CityData, fetchPrayerTimes } from '@/lib/dhikr-data';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 
 function getFontClass(font: ArabicFont): string {
   const map: Record<ArabicFont, string> = {
@@ -48,6 +48,7 @@ function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
 export default function SettingsScreen() {
   const {
     soundEnabled, toggleSound, vibrationEnabled, toggleVibration,
+    notificationsEnabled, toggleNotifications, prayerNotifEnabled, togglePrayerNotif,
     arabicFont, setArabicFont,
     selectedCity, setSelectedCity, setPrayerTimes,
     streak, setStreak, treeLevel, setTreeLevel, resetDaily,
@@ -59,6 +60,8 @@ export default function SettingsScreen() {
   const [citySearch, setCitySearch] = useState('');
   const [expandedCountry, setExpandedCountry] = useState<string | null>(null);
   const [loadingCity, setLoadingCity] = useState(false);
+  const [importMsg, setImportMsg] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filteredCountries = useMemo(() => {
     if (!citySearch) return countries;
@@ -81,6 +84,48 @@ export default function SettingsScreen() {
     setLoadingCity(false);
     setShowCityPicker(false);
     setCitySearch('');
+  };
+
+  const handleExport = () => {
+    try {
+      const data: Record<string, string> = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('dz_')) {
+          data[key] = localStorage.getItem(key)!;
+        }
+      }
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'adhkar-backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch { /* */ }
+  };
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target?.result as string);
+        for (const [key, value] of Object.entries(data)) {
+          if (key.startsWith('dz_')) {
+            localStorage.setItem(key, JSON.stringify(value));
+          }
+        }
+        setImportMsg('تم استيراد البيانات بنجاح ✓');
+        setTimeout(() => setImportMsg(null), 3000);
+      } catch {
+        setImportMsg('حدث خطأ أثناء الاستيراد');
+        setTimeout(() => setImportMsg(null), 3000);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
   };
 
   return (
@@ -160,6 +205,38 @@ export default function SettingsScreen() {
               <div><p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>الاهتزاز</p><p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>اهتزاز خفيف عند الضغط</p></div>
             </div>
             <Toggle value={vibrationEnabled} onChange={toggleVibration} />
+          </div>
+        </SettingRow>
+
+        {/* Notifications */}
+        <SettingRow delay={0.22}>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-3'>
+              <div className='w-9 h-9 rounded-xl flex items-center justify-center' style={{ background: 'var(--gold-glow)' }}>
+                <Bell className='w-4 h-4' color='var(--gold-accent)' />
+              </div>
+              <div>
+                <p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>الإشعارات</p>
+                <p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>تذكير بالأذكار وأوقات الصلاة</p>
+              </div>
+            </div>
+            <Toggle value={notificationsEnabled} onChange={toggleNotifications} />
+          </div>
+        </SettingRow>
+
+        {/* Prayer Notification */}
+        <SettingRow delay={0.24}>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-3'>
+              <div className='w-9 h-9 rounded-xl flex items-center justify-center' style={{ background: 'var(--gold-glow)' }}>
+                <IslamicIcon name='mosque' className='w-4 h-4' color={!notificationsEnabled ? undefined : 'var(--gold-accent)'} />
+              </div>
+              <div>
+                <p className={`font-medium text-sm ${!notificationsEnabled ? 'app-text-2' : 'app-text'}`} style={{ fontFamily: fontVar }}>إشعار الصلاة</p>
+                <p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>تنبيه عند حلول وقت كل صلاة</p>
+              </div>
+            </div>
+            <Toggle value={prayerNotifEnabled && notificationsEnabled} onChange={togglePrayerNotif} />
           </div>
         </SettingRow>
 
@@ -256,6 +333,22 @@ export default function SettingsScreen() {
             <div><p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>إدارة البيانات</p></div>
           </div>
           <div className='space-y-2'>
+            {importMsg && (
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className='text-sm text-center py-2 rounded-xl' style={{ color: 'var(--gold-bright)', background: 'var(--gold-glow)', fontFamily: fontVar }}>{importMsg}</motion.p>
+            )}
+            <button onClick={handleExport}
+              className='w-full py-2.5 rounded-xl glass-card app-border-c app-text-2 text-sm app-surface-h transition-colors flex items-center justify-center gap-2'
+              style={{ fontFamily: fontVar }}>
+              <Download className='w-4 h-4' color='var(--gold-accent)' />
+              تصدير البيانات
+            </button>
+            <button onClick={() => fileInputRef.current?.click()}
+              className='w-full py-2.5 rounded-xl glass-card app-border-c app-text-2 text-sm app-surface-h transition-colors flex items-center justify-center gap-2'
+              style={{ fontFamily: fontVar }}>
+              <Upload className='w-4 h-4' color='var(--gold-accent)' />
+              استيراد البيانات
+            </button>
+            <input ref={fileInputRef} type='file' accept='.json' className='hidden' onChange={handleImport} />
             <button onClick={() => { if (confirm('إعادة تعيين أذكار اليوم؟')) resetDaily(); }}
               className='w-full py-2.5 rounded-xl glass-card app-border-c app-text-2 text-sm app-surface-h transition-colors'
               style={{ fontFamily: fontVar }}>إعادة تعيين أذكار اليوم</button>

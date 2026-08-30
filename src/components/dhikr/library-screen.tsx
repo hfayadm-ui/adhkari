@@ -1,10 +1,10 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useDhikrStore, ArabicFont } from '@/lib/store';
-import { dhikrCategories, getAdhkarByCategory, prayerDhikrGroups } from '@/lib/dhikr-data';
+import { dhikrCategories, getAdhkarByCategory, prayerDhikrGroups, quranAdhkar } from '@/lib/dhikr-data';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
-import { Search, ChevronLeft, CheckCircle2, BookOpen, Star } from '@/components/dhikr/islamic-icons';
+import { Search, ChevronLeft, CheckCircle2, BookOpen, Star, X, Plus } from '@/components/dhikr/islamic-icons';
 import { useState } from 'react';
 
 function getFontClass(font: ArabicFont): string {
@@ -17,8 +17,12 @@ function getFontClass(font: ArabicFont): string {
 }
 
 export default function LibraryScreen() {
-  const { setCurrentScreen, setSelectedCategoryId, setReadingSource, setSelectedPrayerIndex, completedPrayers, arabicFont } = useDhikrStore();
+  const { setCurrentScreen, setSelectedCategoryId, setReadingSource, setSelectedPrayerIndex, completedPrayers, arabicFont,
+    customDhikr, addCustomDhikr, removeCustomDhikr, setCurrentDhikrIndex } = useDhikrStore();
   const [search, setSearch] = useState('');
+  const [showCustomPanel, setShowCustomPanel] = useState(false);
+  const [customText, setCustomText] = useState('');
+  const [customCount, setCustomCount] = useState(33);
   const fontVar = getFontClass(arabicFont);
 
   const getCategoryCount = (id: string) => {
@@ -42,6 +46,10 @@ export default function LibraryScreen() {
     if (id === 'prayer') {
       setSelectedPrayerIndex(0);
       setReadingSource('prayer');
+      setCurrentScreen('reading');
+    } else if (id === 'quran') {
+      setSelectedCategoryId('quran');
+      setReadingSource('category');
       setCurrentScreen('reading');
     } else {
       setSelectedCategoryId(id);
@@ -69,6 +77,122 @@ export default function LibraryScreen() {
       </header>
 
       <main className='flex-1 px-4 space-y-3'>
+        {/* Custom Dhikr Category Card */}
+        <motion.button
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => setShowCustomPanel(!showCustomPanel)}
+          className='w-full glass-card rounded-2xl p-4 flex items-center gap-4 app-surface-h transition-colors text-right'
+          style={{ border: showCustomPanel ? '1px solid var(--gold-border)' : undefined }}
+        >
+          <div className='w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
+            <IslamicIcon name='sparkles' className='w-6 h-6' color='var(--gold-accent)' />
+          </div>
+          <div className='flex-1 min-w-0'>
+            <h3 className='app-text font-bold text-sm mb-0.5' style={{ fontFamily: fontVar }}>أذكار مخصصة</h3>
+            <p className='app-text-2 text-xs truncate' style={{ fontFamily: fontVar }}>أذكار تضيفها بنفسك</p>
+            <div className='flex items-center gap-2 mt-1.5'>
+              <span className='text-[10px] app-text-muted'>{customDhikr.length} ذكر</span>
+            </div>
+          </div>
+          <motion.div animate={{ rotate: showCustomPanel ? 90 : 0 }} transition={{ duration: 0.2 }}>
+            <ChevronLeft className='w-5 h-5 app-text-muted rotate-180 flex-shrink-0' />
+          </motion.div>
+        </motion.button>
+
+        {/* Custom Dhikr Panel */}
+        <AnimatePresence>
+          {showCustomPanel && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className='overflow-hidden'
+            >
+              <div className='glass-card rounded-2xl p-4 space-y-3' style={{ border: '1px solid var(--gold-border)' }}>
+                <div className='flex items-center gap-2 mb-1'>
+                  <Plus className='w-4 h-4' color='var(--gold-accent)' />
+                  <h4 className='app-text font-bold text-sm' style={{ fontFamily: fontVar }}>إضافة ذكر جديد</h4>
+                </div>
+                <input
+                  type='text'
+                  value={customText}
+                  onChange={e => setCustomText(e.target.value)}
+                  placeholder='اكتب الذكر هنا...'
+                  className='w-full px-4 py-3 rounded-xl glass-card app-text text-sm placeholder:app-text-muted focus:outline-none transition-colors'
+                  style={{ fontFamily: fontVar, border: '1px solid var(--gold-border)' }}
+                />
+                <div className='flex items-center gap-3'>
+                  <div className='flex-1'>
+                    <label className='app-text-2 text-[11px] mb-1 block' style={{ fontFamily: fontVar }}>عدد التكرار</label>
+                    <input
+                      type='number'
+                      value={customCount}
+                      onChange={e => setCustomCount(Math.max(1, parseInt(e.target.value) || 1))}
+                      min={1}
+                      className='w-full px-4 py-2.5 rounded-xl glass-card app-text text-sm focus:outline-none transition-colors'
+                      style={{ fontFamily: fontVar, border: '1px solid var(--gold-border)' }}
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (customText.trim()) {
+                        addCustomDhikr(customText.trim(), customCount);
+                        setCustomText('');
+                        setCustomCount(33);
+                      }
+                    }}
+                    disabled={!customText.trim()}
+                    className='btn-gold px-6 py-2.5 rounded-xl app-text font-medium text-sm disabled:opacity-40 transition-opacity mt-4'
+                    style={{ fontFamily: fontVar }}
+                  >
+                    إضافة
+                  </button>
+                </div>
+
+                {/* Existing Custom Dhikr List */}
+                {customDhikr.length > 0 && (
+                  <div className='mt-3 space-y-2 max-h-96 overflow-y-auto'>
+                    <h4 className='app-text-2 text-xs font-medium' style={{ fontFamily: fontVar }}>الأذكار المضافة</h4>
+                    {customDhikr.map((item) => (
+                      <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className='flex items-center gap-3 p-3 rounded-xl app-surface-h transition-colors'
+                        style={{ border: '1px solid var(--gold-border)' }}
+                      >
+                        <button
+                          onClick={() => {
+                            setSelectedCategoryId(item.id);
+                            setReadingSource('category');
+                            setCurrentDhikrIndex(0);
+                            setCurrentScreen('reading');
+                          }}
+                          className='flex-1 text-right'
+                        >
+                          <p className='app-text text-sm font-medium leading-relaxed' style={{ fontFamily: fontVar }}>{item.text}</p>
+                          <p className='app-text-muted text-[11px] mt-0.5'>{item.count} مرة</p>
+                        </button>
+                        <button
+                          onClick={() => removeCustomDhikr(item.id)}
+                          className='w-8 h-8 rounded-lg flex items-center justify-center app-surface-h transition-colors flex-shrink-0'
+                          style={{ border: '1px solid var(--gold-border)' }}
+                        >
+                          <X className='w-4 h-4 app-text-muted' />
+                        </button>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {filtered.map((cat, i) => {
           const count = getCategoryCount(cat.id);
           const done = getCategoryDone(cat.id);
@@ -77,7 +201,7 @@ export default function LibraryScreen() {
               key={cat.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
+              transition={{ delay: (i + 1) * 0.05 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => openCategory(cat.id)}
               className='w-full glass-card rounded-2xl p-4 flex items-center gap-4 app-surface-h transition-colors text-right'
@@ -100,7 +224,7 @@ export default function LibraryScreen() {
 
         {/* Favorites Section */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
           className='glass-card rounded-2xl p-4'
         >
           <div className='flex items-center gap-2 mb-3'>

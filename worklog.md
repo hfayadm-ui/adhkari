@@ -116,3 +116,128 @@ Stage Summary:
 - ملاحظات إسلامية وقرآنيات مع كل تقنية
 - شريط تنقل بـ 6 تبويبات
 - بناء ناجح بدون أخطاء
+
+---
+Task ID: 5
+Agent: Super Z (Main)
+Task: إضافة 4 ميزات: حقول متجر جديدة، تصدير/استيراد بيانات، تنبيه العداد، مؤشر عدم الاتصال
+
+Work Log:
+- أضفت إلى store.ts:
+  - واجهة CustomDhikrItem مع customDhikr, addCustomDhikr, removeCustomDhikr
+  - حقول الإشعارات: notificationsEnabled, toggleNotifications, prayerNotifEnabled, togglePrayerNotif
+  - تنبيه العداد: counterAlertEnabled, toggleCounterAlert, counterAlertInterval, setCounterAlertInterval
+  - التحديات: واجهة Challenge مع challenges, addChallenge, updateChallengeProgress
+  - جميع الحقول تستخدم نمط load/save مع مفاتيح dz_ في localStorage
+- أضفت إلى settings-screen.tsx:
+  - زر "تصدير البيانات" يجمع كل مفاتيح dz_ من localStorage وينشئ ملف JSON للتنزيل
+  - زر "استيراد البيانات" يفتح منتقي ملفات (.json) ويستعيد البيانات
+  - رسالة نجاح/خطأ مؤقتة باللغة العربية
+  - أضفت أيقونات Download وUpload من lucide-react
+- أضفت إلى counter-screen.tsx:
+  - استيراد counterAlertEnabled و counterAlertInterval من المتجر
+  - في handleTap: إذا كان التنبيه مفعّلاً والعداد من مضاعفات الفاصل، يُشغّل صوتاً عالياً (880Hz) واهتزازاً أطول (100ms)
+- أضفت إلى page.tsx:
+  - مكوّن OfflineIndicator يظهر شريط "غير متصل" ذهبي في الأعلى عند فقدان الاتصال
+  - يستخدم useEffect مع مستمعات online/offline
+- البناء نجح بدون أخطاء
+
+Stage Summary:
+- 4 ميزات جديدة مُنفّذة بنجاح
+- المتجر يضم الآن: أذكار مخصصة، إشعارات، تنبيه عداد، تحديات
+- تصدير/استيراد البيانات يعمل عبر ملف JSON
+- تنبيه العداد بصوت 880Hz واهتزاز 100ms عند مضاعفات الفاصل
+- مؤشر عدم الاتصال بشريط ذهبي
+- بناء ناجح بدون أخطاء
+
+---
+Task ID: 6
+Agent: Super Z (Main)
+Task: إضافة واجهة الأذكار المخصصة في المكتبة + إعدادات الإشعارات
+
+Work Log:
+- عدّلت library-screen.tsx:
+  - أضفت بطاقة تصنيف "أذكار مخصصة" بأيقونة sparkles في أعلى شبكة التصنيفات
+  - عند الضغط تظهر/تختفي لوحة إضافية بتأثير AnimatePresence
+  - اللوحة تتضمن: حقل إدخال الذكر، حقل عدد التكرار (افتراضي 33)، زر "إضافة" بتصنيف btn-gold
+  - قائمة الأذكار المخصصة المضافة مع زر حذف (X) لكل عنصر
+  - عند الضغط على ذكر مخصص يبدأ تدفق القراءة مع ذلك الذكر
+  - استخدمت متغيرات CSS: --gold-glow, --gold-border, --gold-accent
+  - كل النصوص بالعربية
+- عدّلت settings-screen.tsx:
+  - أضفت صف إعدادات "الإشعارات" (delay 0.22) مع أيقونة Bell
+  - أضفت صف "إشعار الصلاة" (delay 0.24) مع أيقونة mosque
+  - إشعار الصلاة معطّل بصرياً عندما تكون الإشعارات مقفلة
+  - استوردت Bell من islamic-icons
+  - استوردت notificationsEnabled, toggleNotifications, prayerNotifEnabled, togglePrayerNotif من المتجر
+- البناء نجح بدون أخطاء
+
+Stage Summary:
+- إعدادات إشعارات (عام + صلاة) في شاشة الإعدادات
+- بناء ناجح بدون أخطاء
+
+---
+Task ID: 7
+Agent: Super Z (Main)
+Task: إضافة ميزتين: وضع التركيز (Focus Mode) ومشاركة التقدم (Share Progress)
+
+Work Log:
+- أضفت 'focus' إلى نوع Screen في store.ts
+- أنشأت focus-screen.tsx: شاشة سوداء كاملة بلا تشتت مع:
+  - خلفية سوداء نقية (style={{ background: '#000' }})
+  - نص عربي أبيض كبير (text-3xl) في منتصف الشاشة
+  - أذكار المساء من eveningAdhkar
+  - اضغط في أي مكان للتقدم للذكر التالي
+  - عداد في الأسفل بالتنسيق "2/33" بلون رمادي
+  - شريط ذهبي رفيع في الأسفل مع زر إغلاق (X)
+  - استخدام الخط العربي من المتجر (arabicFont)
+  - رسالة "تمت الأذكار بحمد الله" عند الانتهاء
+- أضفت FocusScreen إلى page.tsx مع إخفاء BottomNav في شاشة التركيز
+- أضفت بطاقة "وضع التركيز" في home-screen.tsx بعد بطاقة التنفس:
+  - أيقونة قمر ذهبية + نص "وضع التركيز"
+  - تصميم glass-card موافق لنظام التصميم
+- أضفت زر مشاركة (Share2) في بطاقة السلسلة (النجمة):
+  - يظهر بجانب رقم السلسلة
+  - يستخدم Web Share API إن توفرت
+  - ينسخ للClipboard كبديل
+  - نص المشاركة: "أذكاري - سلسلة X أيام متتالية 🌟"
+  - استوردت Moon و Share2 من islamic-icons
+
+Stage Summary:
+- شاشة تركيز كاملة للذكر بلا تشتت (خلفية سوداء، نص أبيض، عداد، زر إغلاق ذهبي)
+- زر دخول وضع التركيز من الشاشة الرئيسية (بعد بطاقة التنفس)
+- زر مشاركة التقدم في بطاقة السلسلة (Web Share API / Clipboard)
+- بناء ناجح بدون أخطاء
+
+---
+Task ID: 8
+Agent: Super Z (Main)
+Task: إضافة 3 ميزات: مكتبة الأذكار المسموعة، تحديات الأسبوع، تصنيف تذييل القرآن
+
+Work Log:
+- Feature 1 - مكتبة الأذكار المسموعة (relaxation-screen.tsx):
+  - أضفت واجهة AudioTrack و3 مسارات: تسبيح (440+554Hz متناوبة)، تحميد (330+440+554Hz كورد)، تكبير (220Hz عميقة)
+  - أنشأت hook useAudioTrack يستخدم Web Audio API مع oscillators و gain
+  - أضفت مكوّن AudioLibrarySection بتأثيرات حركية مع أيقونات Play/Pause ورسوم متحركة للموجات الصوتية
+  - وضعت القسم في أعلى شاشة الاسترخاء مع عنوان "مكتبة الأذكار المسموعة" وأيقونة نجمة ذهبية
+- Feature 2 - تحديات الأسبوع (stats-screen.tsx):
+  - أضفت removeChallenge إلى المتجر (store.ts) مع حفظ/استرجاع من localStorage
+  - أضفت قسم "تحديات الأسبوع" بأيقونة Trophy في أسفل شاشة الإحصائيات
+  - عند عدم وجود تحديات: رسالة "لا توجد تحديات نشطة" وزر "إضافة تحدي"
+  - نموذج إضافة: اسم، هدف رقمي، وحدة (ذكر/صفحة/دورة)، مدة (3/7/14/30 يوم)
+  - بطاقة كل تحدي: اسم، شريط تقدم ذهبي (current/target)، أيام متبقية، زر حذف
+  - عند الإكمال: حدود خضراء + أيقونة تحقق
+  - زر "تسجيل تقدم" لزيادة العداد تدريجياً
+- Feature 3 - تصنيف تذييل القرآن (dhikr-data.ts + library-screen.tsx + reading-screen.tsx):
+  - أضفت { id: 'quran', name: 'تذييل القرآن', icon: 'book-open' } إلى dhikrCategories
+  - أنشأت مصفوفة quranAdhkar بـ5 أذكار: سبحان الله، اللهم اغفر لي (×3)، الحمد لله رب العالمين، لا إله إلا الله، الله أكبر
+  - أضفت case 'quran' في getAdhkarByCategory
+  - أضفت حالة خاصة لـ 'quran' في openCategory في library-screen.tsx
+  - أضفت 'quran': 'book-open' إلى categoryIconMap في reading-screen.tsx
+- البناء نجح بدون أخطاء
+
+Stage Summary:
+- مكتبة صوتية بـ3 مقاطع (Web Audio API: تسبيح، تحميد، تكبير) في شاشة الاسترخاء
+- نظام تحديات أسبوعية كامل: إنشاء، تتبع تقدم، حذف، حالة إكمال خضراء
+- تصنيف تذييل القرآن بـ5 أذكار قابل للقراءة من المكتبة
+- بناء ناجح بدون أخطاء

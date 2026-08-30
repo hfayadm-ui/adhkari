@@ -1,10 +1,11 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 import { useDhikrStore, ArabicFont } from '@/lib/store';
 import { treeIcons, treeNames } from '@/lib/dhikr-data';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
-import { Flame, TrendingUp, Calendar, Award, Zap, Star, TreePine } from '@/components/dhikr/islamic-icons';
+import { Flame, TrendingUp, Calendar, Award, Zap, Star, TreePine, Trophy, X, Plus } from '@/components/dhikr/islamic-icons';
 
 function getFontClass(font: ArabicFont): string {
   const map: Record<ArabicFont, string> = {
@@ -16,8 +17,13 @@ function getFontClass(font: ArabicFont): string {
 }
 
 export default function StatsScreen() {
-  const { streak, treeLevel, totalAllTime, completedPrayers, freeCounter, weeklyData, arabicFont } = useDhikrStore();
+  const { streak, treeLevel, totalAllTime, completedPrayers, freeCounter, weeklyData, arabicFont, challenges, addChallenge, removeChallenge, updateChallengeProgress } = useDhikrStore();
   const fontVar = getFontClass(arabicFont);
+  const [showAddChallenge, setShowAddChallenge] = useState(false);
+  const [challengeName, setChallengeName] = useState('');
+  const [challengeTarget, setChallengeTarget] = useState(100);
+  const [challengeUnit, setChallengeUnit] = useState('ذكر');
+  const [challengeDays, setChallengeDays] = useState(7);
 
   const weekLabels = ['سبت', 'أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة'];
   const weekValues = weeklyData.length > 0
@@ -141,6 +147,189 @@ export default function StatsScreen() {
               </div>
             ))}
           </div>
+        </motion.div>
+        {/* Weekly Challenges */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className='glass-card rounded-2xl app-border-c p-4'>
+          <div className='flex items-center justify-between mb-3'>
+            <h3 className='app-text font-medium text-sm flex items-center gap-2' style={{ fontFamily: fontVar }}>
+              <Trophy className='w-4 h-4' color='var(--gold-accent)' /> تحديات الأسبوع
+            </h3>
+          </div>
+
+          {challenges.length === 0 && !showAddChallenge && (
+            <div className='text-center py-4'>
+              <p className='app-text-muted text-sm mb-3' style={{ fontFamily: fontVar }}>لا توجد تحديات نشطة</p>
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                onClick={() => setShowAddChallenge(true)}
+                className='btn-gold px-5 py-2.5 rounded-xl text-sm font-bold'
+                style={{ fontFamily: fontVar }}
+              >
+                <span className='flex items-center gap-1.5'><Plus className='w-4 h-4' /> إضافة تحدي</span>
+              </motion.button>
+            </div>
+          )}
+
+          <AnimatePresence>
+            {showAddChallenge && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className='overflow-hidden'
+              >
+                <div className='space-y-3 p-3 rounded-xl glass-subtle mb-3' style={{ border: '1px solid var(--gold-border)' }}>
+                  <input
+                    type='text'
+                    value={challengeName}
+                    onChange={e => setChallengeName(e.target.value)}
+                    placeholder='اسم التحدي...'
+                    className='w-full px-3 py-2.5 rounded-xl glass-card app-text text-sm placeholder:app-text-muted focus:outline-none transition-colors'
+                    style={{ fontFamily: fontVar }}
+                  />
+                  <div className='flex gap-2'>
+                    <div className='flex-1'>
+                      <label className='app-text-2 text-[10px] mb-1 block'>الهدف</label>
+                      <input
+                        type='number'
+                        value={challengeTarget}
+                        onChange={e => setChallengeTarget(Math.max(1, parseInt(e.target.value) || 1))}
+                        min={1}
+                        className='w-full px-3 py-2 rounded-xl glass-card app-text text-sm focus:outline-none transition-colors'
+                        style={{ fontFamily: fontVar }}
+                      />
+                    </div>
+                    <div className='flex-1'>
+                      <label className='app-text-2 text-[10px] mb-1 block'>الوحدة</label>
+                      <select
+                        value={challengeUnit}
+                        onChange={e => setChallengeUnit(e.target.value)}
+                        className='w-full px-3 py-2 rounded-xl glass-card app-text text-sm focus:outline-none transition-colors appearance-none'
+                        style={{ fontFamily: fontVar }}
+                      >
+                        <option value='ذكر'>ذكر</option>
+                        <option value='صفحة'>صفحة</option>
+                        <option value='دورة'>دورة</option>
+                      </select>
+                    </div>
+                    <div className='flex-1'>
+                      <label className='app-text-2 text-[10px] mb-1 block'>المدة (يوم)</label>
+                      <select
+                        value={challengeDays}
+                        onChange={e => setChallengeDays(Number(e.target.value))}
+                        className='w-full px-3 py-2 rounded-xl glass-card app-text text-sm focus:outline-none transition-colors appearance-none'
+                        style={{ fontFamily: fontVar }}
+                      >
+                        <option value={3}>3</option>
+                        <option value={7}>7</option>
+                        <option value={14}>14</option>
+                        <option value={30}>30</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className='flex gap-2'>
+                    <motion.button
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => {
+                        if (challengeName.trim()) {
+                          addChallenge(challengeName.trim(), challengeTarget, challengeUnit, challengeDays);
+                          setChallengeName('');
+                          setChallengeTarget(100);
+                          setChallengeUnit('ذكر');
+                          setChallengeDays(7);
+                          setShowAddChallenge(false);
+                        }
+                      }}
+                      disabled={!challengeName.trim()}
+                      className='flex-1 btn-gold py-2.5 rounded-xl font-bold text-sm disabled:opacity-40 transition-opacity'
+                      style={{ fontFamily: fontVar }}
+                    >
+                      إضافة
+                    </motion.button>
+                    <motion.button
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => setShowAddChallenge(false)}
+                      className='px-4 py-2.5 rounded-xl glass-card app-text-2 text-sm transition-colors'
+                    >
+                      إلغاء
+                    </motion.button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {challenges.length > 0 && (
+            <div className='space-y-2.5'>
+              {challenges.map((c, i) => {
+                const daysLeft = Math.max(0, Math.ceil((new Date(c.endDate).getTime() - Date.now()) / 86400000));
+                const pct = Math.min((c.current / c.target) * 100, 100);
+                return (
+                  <motion.div
+                    key={c.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className='p-3 rounded-xl'
+                    style={c.completed
+                      ? { background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)' }
+                      : { border: '1px solid var(--gold-border)', background: 'var(--gold-glow)' }
+                    }
+                  >
+                    <div className='flex items-center justify-between mb-2'>
+                      <div className='flex items-center gap-2'>
+                        {c.completed && <IslamicIcon name='check-circle' className='w-4 h-4 text-green-400' />}
+                        <span className='app-text font-bold text-sm' style={{ fontFamily: fontVar }}>{c.name}</span>
+                      </div>
+                      <div className='flex items-center gap-1.5'>
+                        <span className='app-text-muted text-[10px]'>{daysLeft} يوم متبقي</span>
+                        <button
+                          onClick={() => removeChallenge(c.id)}
+                          className='w-7 h-7 rounded-lg flex items-center justify-center app-surface-h transition-colors'
+                        >
+                          <X className='w-3.5 h-3.5 app-text-muted' />
+                        </button>
+                      </div>
+                    </div>
+                    <div className='w-full rounded-full h-2 overflow-hidden' style={{ background: 'var(--app-ring-track)' }}>
+                      <motion.div
+                        className='h-2 rounded-full'
+                        style={{ background: c.completed ? '#22c55e' : 'linear-gradient(90deg, var(--gold-accent), var(--gold-bright))' }}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${pct}%` }}
+                        transition={{ duration: 0.5 }}
+                      />
+                    </div>
+                    <div className='flex items-center justify-between mt-1.5'>
+                      <span className='app-text-2 text-[10px]'>{c.current} / {c.target} {c.unit}</span>
+                      <span className='text-[10px] font-medium' style={{ color: c.completed ? '#22c55e' : 'var(--gold-accent)' }}>
+                        {Math.round(pct)}%
+                      </span>
+                    </div>
+                    {!c.completed && (
+                      <motion.button
+                        whileTap={{ scale: 0.96 }}
+                        onClick={() => updateChallengeProgress(c.id, 1)}
+                        className='mt-2 w-full py-1.5 rounded-lg text-xs font-medium app-text-2 transition-colors'
+                        style={{ border: '1px solid var(--gold-border)', background: 'var(--gold-glow)' }}
+                      >
+                        + تسجيل تقدم
+                      </motion.button>
+                    )}
+                  </motion.div>
+                );
+              })}
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                onClick={() => setShowAddChallenge(true)}
+                className='w-full py-2.5 rounded-xl glass-card app-text-2 text-sm flex items-center justify-center gap-1.5 transition-colors'
+                style={{ border: '1px dashed var(--gold-border)' }}
+              >
+                <Plus className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
+                <span style={{ color: 'var(--gold-accent)' }}>إضافة تحدي</span>
+              </motion.button>
+            </div>
+          )}
         </motion.div>
       </main>
     </motion.div>

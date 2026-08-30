@@ -18,7 +18,7 @@ function getFontClass(font: ArabicFont): string {
 const targetOptions = [33, 34, 100, 500, 1000];
 
 export default function CounterScreen() {
-  const { freeCounter, incrementFreeCounter, resetFreeCounter, setFreeCounter, counterPresets, updatePreset, soundEnabled, vibrationEnabled, arabicFont } = useDhikrStore();
+  const { freeCounter, incrementFreeCounter, resetFreeCounter, setFreeCounter, counterPresets, updatePreset, soundEnabled, vibrationEnabled, arabicFont, counterAlertEnabled, counterAlertInterval } = useDhikrStore();
   const [showPresets, setShowPresets] = useState(false);
   const [activePreset, setActivePreset] = useState<string | null>(null);
   const [tapAnim, setTapAnim] = useState(false);
@@ -43,8 +43,24 @@ export default function CounterScreen() {
   }, [soundEnabled]);
 
   const handleTap = useCallback(() => {
-    playTap();
-    if (vibrationEnabled && 'vibrate' in navigator) navigator.vibrate(25);
+    const newCount = freeCounter + 1;
+    const isAlert = counterAlertEnabled && counterAlertInterval > 0 && (newCount % counterAlertInterval === 0);
+    if (isAlert && soundEnabled) {
+      try {
+        const ctx = new (window.AudioContext || (window as unknown as Record<string, typeof AudioContext>).webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+        osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.25);
+      } catch { /* */ }
+    } else {
+      playTap();
+    }
+    if (vibrationEnabled && 'vibrate' in navigator) navigator.vibrate(isAlert ? 100 : 25);
     setTapAnim(true);
     setTimeout(() => setTapAnim(false), 100);
     incrementFreeCounter();
@@ -52,7 +68,7 @@ export default function CounterScreen() {
       const p = counterPresets.find(x => x.id === activePreset);
       if (p) updatePreset(activePreset, Math.min(p.current + 1, p.target));
     }
-  }, [playTap, vibrationEnabled, incrementFreeCounter, activePreset, counterPresets, updatePreset]);
+  }, [playTap, vibrationEnabled, incrementFreeCounter, activePreset, counterPresets, updatePreset, soundEnabled, freeCounter, counterAlertEnabled, counterAlertInterval]);
 
   const handleLongPressStart = useCallback(() => {
     longPressRef.current = setTimeout(() => {

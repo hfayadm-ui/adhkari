@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { IslamicIcon, Star, TreePine, Sparkles, ChevronLeft, Clock, Bell } from '@/components/dhikr/islamic-icons';
+import { IslamicIcon, Star, TreePine, Sparkles, ChevronLeft, Clock, Bell, Moon, Share2 } from '@/components/dhikr/islamic-icons';
 import { prayerDhikrGroups, prayerTimesList, getCurrentPrayerIndex, getSimpleHijriDate, dailyVerses, smartNotifications, treeIcons, fetchPrayerTimes } from '@/lib/dhikr-data';
 import { useDhikrStore, ArabicFont } from '@/lib/store';
 import BreathingCard from '@/components/dhikr/breathing-card';
@@ -32,6 +32,15 @@ export default function HomeScreen() {
   const [notif] = useState(() => smartNotifications[Math.floor(Math.random() * smartNotifications.length)]);
 
   const fontClass = getFontClass(arabicFont);
+
+  const shareProgress = async () => {
+    const text = `أذكاري - سلسلة ${streak} أيام متتالية \u{1F31F}\nشجرة الأذكار: المستوى ${treeLevel}\nما شاء الله، لا قوة إلا بالله`;
+    if (navigator.share) {
+      await navigator.share({ title: 'أذكاري - تقدمي', text });
+    } else {
+      await navigator.clipboard.writeText(text);
+    }
+  };
 
   useEffect(() => {
     const t = setInterval(() => setPrayerIdx(getCurrentPrayerIndex()), 60000);
@@ -144,6 +153,30 @@ export default function HomeScreen() {
         {/* Breathing Card */}
         <BreathingCard fontClass={fontClass} />
 
+        {/* Focus Mode Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.17 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={() => setCurrentScreen('focus')}
+          className='glass-card rounded-2xl p-4 cursor-pointer'
+        >
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-3'>
+              <div
+                className='w-10 h-10 rounded-xl flex items-center justify-center'
+                style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}
+              >
+                <Moon className='w-5 h-5' color='var(--gold-accent)' />
+              </div>
+              <div>
+                <p className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>وضع التركيز</p>
+                <p className='app-text-muted text-xs'>أذكار بلا تشتت</p>
+              </div>
+            </div>
+            <ChevronLeft className='w-4 h-4 app-text-muted rotate-180' />
+          </div>
+        </motion.div>
+
         {/* Next Prayer Card */}
         <motion.div
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }}
@@ -191,9 +224,19 @@ export default function HomeScreen() {
               <Star className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
               <span className='app-text-muted text-[11px]' style={{ fontFamily: fontClass }}>السلسلة</span>
             </div>
-            <div className='flex items-baseline gap-1'>
-              <span className='text-3xl font-bold' style={{ color: 'var(--gold-accent)' }}>{streak}</span>
-              <span className='app-text-muted text-[11px]' style={{ fontFamily: fontClass }}>يوم</span>
+            <div className='flex items-center justify-between'>
+              <div className='flex items-baseline gap-1'>
+                <span className='text-3xl font-bold' style={{ color: 'var(--gold-accent)' }}>{streak}</span>
+                <span className='app-text-muted text-[11px]' style={{ fontFamily: fontClass }}>يوم</span>
+              </div>
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                onClick={shareProgress}
+                className='w-7 h-7 rounded-lg glass-subtle flex items-center justify-center'
+                aria-label='مشاركة التقدم'
+              >
+                <Share2 className='w-3.5 h-3.5' style={{ color: 'var(--gold-accent)' }} />
+              </motion.button>
             </div>
             <div className='mt-2 flex gap-0.5'>
               {[...Array(7)].map((_, i) => (

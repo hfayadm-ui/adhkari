@@ -10,10 +10,32 @@ import CompletionScreen from '@/components/dhikr/completion-screen';
 import StatsScreen from '@/components/dhikr/stats-screen';
 import SettingsScreen from '@/components/dhikr/settings-screen';
 import RelaxationScreen from '@/components/dhikr/relaxation-screen';
+import FocusScreen from '@/components/dhikr/focus-screen';
 import BottomNav from '@/components/dhikr/bottom-nav';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-const noNavScreens: Screen[] = ['reading', 'completion'];
+function OfflineIndicator() {
+  const [offline, setOffline] = useState(false);
+  useEffect(() => {
+    setOffline(!navigator.onLine);
+    const goOffline = () => setOffline(true);
+    const goOnline = () => setOffline(false);
+    window.addEventListener('offline', goOffline);
+    window.addEventListener('online', goOnline);
+    return () => {
+      window.removeEventListener('offline', goOffline);
+      window.removeEventListener('online', goOnline);
+    };
+  }, []);
+  if (!offline) return null;
+  return (
+    <div className='fixed top-0 left-0 right-0 z-[200] text-center py-1.5 text-xs font-medium app-text' style={{ background: 'var(--gold-glow)', borderBottom: '1px solid var(--gold-border)' }}>
+      غير متصل
+    </div>
+  );
+}
+
+const noNavScreens: Screen[] = ['reading', 'completion', 'focus'];
 
 export default function Home() {
   const { currentScreen } = useDhikrStore();
@@ -39,6 +61,7 @@ export default function Home() {
 
   return (
     <div className='max-w-md mx-auto min-h-screen relative' style={{ fontFamily: 'var(--font-arabic)' }}>
+      <OfflineIndicator />
       <AnimatePresence mode='wait'>
         <motion.div
           key={currentScreen}
@@ -56,6 +79,7 @@ export default function Home() {
           {currentScreen === 'stats' && <StatsScreen />}
           {currentScreen === 'settings' && <SettingsScreen />}
           {currentScreen === 'relaxation' && <RelaxationScreen />}
+          {currentScreen === 'focus' && <FocusScreen />}
         </motion.div>
       </AnimatePresence>
       {showNav && <BottomNav />}

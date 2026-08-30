@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type Screen = 'home' | 'reading' | 'completion' | 'stats' | 'settings' | 'library' | 'counter' | 'category-reading' | 'relaxation';
+export type Screen = 'home' | 'reading' | 'completion' | 'stats' | 'settings' | 'library' | 'counter' | 'category-reading' | 'relaxation' | 'focus';
 export type ThemeColor = 'emerald' | 'blue' | 'purple' | 'amber' | 'rose';
 export type AppMode = 'dark' | 'light';
 export type ArabicFont = 'cairo' | 'amiri' | 'noto-naskh' | 'tajawal' | 'ibm-plex' | 'scheherazade';
@@ -17,6 +17,24 @@ interface CounterPreset {
   name: string;
   target: number;
   current: number;
+}
+
+interface CustomDhikrItem {
+  id: string;
+  text: string;
+  count: number;
+  createdAt: string;
+}
+
+interface Challenge {
+  id: string;
+  name: string;
+  target: number;
+  current: number;
+  unit: string;
+  startDate: string;
+  endDate: string;
+  completed: boolean;
 }
 
 interface SelectedCity {
@@ -90,6 +108,29 @@ interface DhikrState {
   setSelectedCity: (city: SelectedCity | null) => void;
   prayerTimes: {[key: string]: string};
   setPrayerTimes: (t: {[key: string]: string}) => void;
+
+  // Custom Dhikr
+  customDhikr: CustomDhikrItem[];
+  addCustomDhikr: (text: string, count: number) => void;
+  removeCustomDhikr: (id: string) => void;
+
+  // Notifications
+  notificationsEnabled: boolean;
+  toggleNotifications: () => void;
+  prayerNotifEnabled: boolean;
+  togglePrayerNotif: () => void;
+
+  // Counter Alert
+  counterAlertEnabled: boolean;
+  toggleCounterAlert: () => void;
+  counterAlertInterval: number;
+  setCounterAlertInterval: (n: number) => void;
+
+  // Challenges
+  challenges: Challenge[];
+  addChallenge: (name: string, target: number, unit: string, days: number) => void;
+  updateChallengeProgress: (id: string, amount: number) => void;
+  removeChallenge: (id: string) => void;
 }
 
 function load<T>(key: string, def: T): T {
@@ -209,4 +250,57 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
   setSelectedCity: (city) => { save('dz_selectedCity', city); set({ selectedCity: city }); },
   prayerTimes: load<{[key: string]: string}>('dz_prayerTimes', {}),
   setPrayerTimes: (t) => { save('dz_prayerTimes', t); set({ prayerTimes: t }); },
+
+  // Custom Dhikr
+  customDhikr: load<CustomDhikrItem[]>('dz_customDhikr', []),
+  addCustomDhikr: (text, count) => {
+    const item: CustomDhikrItem = { id: crypto.randomUUID(), text, count, createdAt: new Date().toISOString() };
+    const list = [...get().customDhikr, item];
+    save('dz_customDhikr', list);
+    set({ customDhikr: list });
+  },
+  removeCustomDhikr: (id) => {
+    const list = get().customDhikr.filter(d => d.id !== id);
+    save('dz_customDhikr', list);
+    set({ customDhikr: list });
+  },
+
+  // Notifications
+  notificationsEnabled: load<boolean>('dz_notifEnabled', false),
+  toggleNotifications: () => { const v = !get().notificationsEnabled; save('dz_notifEnabled', v); set({ notificationsEnabled: v }); },
+  prayerNotifEnabled: load<boolean>('dz_prayerNotifEnabled', false),
+  togglePrayerNotif: () => { const v = !get().prayerNotifEnabled; save('dz_prayerNotifEnabled', v); set({ prayerNotifEnabled: v }); },
+
+  // Counter Alert
+  counterAlertEnabled: load<boolean>('dz_counterAlert', false),
+  toggleCounterAlert: () => { const v = !get().counterAlertEnabled; save('dz_counterAlert', v); set({ counterAlertEnabled: v }); },
+  counterAlertInterval: load<number>('dz_counterAlertInterval', 33),
+  setCounterAlertInterval: (n) => { save('dz_counterAlertInterval', n); set({ counterAlertInterval: n }); },
+
+  // Challenges
+  challenges: load<Challenge[]>('dz_challenges', []),
+  addChallenge: (name, target, unit, days) => {
+    const now = new Date();
+    const end = new Date(now);
+    end.setDate(end.getDate() + days);
+    const challenge: Challenge = { id: crypto.randomUUID(), name, target, current: 0, unit, startDate: now.toISOString(), endDate: end.toISOString(), completed: false };
+    const list = [...get().challenges, challenge];
+    save('dz_challenges', list);
+    set({ challenges: list });
+  },
+  updateChallengeProgress: (id, amount) => {
+    const list = get().challenges.map(c => {
+      if (c.id !== id) return c;
+      const updated = { ...c, current: c.current + amount };
+      if (updated.current >= updated.target) updated.completed = true;
+      return updated;
+    });
+    save('dz_challenges', list);
+    set({ challenges: list });
+  },
+  removeChallenge: (id) => {
+    const list = get().challenges.filter(c => c.id !== id);
+    save('dz_challenges', list);
+    set({ challenges: list });
+  },
 }));
