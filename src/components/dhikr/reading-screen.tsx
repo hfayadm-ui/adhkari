@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useDhikrStore } from '@/lib/store';
 import { prayerDhikrGroups, getAdhkarByCategory, getCategoryName, motivationalQuotes, dhikrCategories } from '@/lib/dhikr-data';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
-import { Home, ChevronRight, Volume2, VolumeX, Bookmark, Info, Star, Sparkles, Hand } from '@/components/dhikr/islamic-icons';
+import { Home, ChevronRight, Volume2, VolumeX, Bookmark, Info, Star, Sparkles, Hand, Heart, Share2 } from '@/components/dhikr/islamic-icons';
 import { useState } from 'react';
 import { getFontClass } from '@/lib/font-utils';
+import { shareAsImage } from '@/lib/share-card';
 
 const categoryIconMap: Record<string, string> = {
   morning: 'sunrise', evening: 'sunset', sleep: 'moon', waking: 'sun',
@@ -20,12 +21,19 @@ export default function ReadingScreen() {
     setCurrentDhikrIndex, setCurrentCount, setCompletedSet, setCurrentScreen,
     completePrayer, addTodayRecord, setTreeLevel, setStreak, setTotalAllTime,
     completedPrayers, soundEnabled, vibrationEnabled, fontSize, themeColor, arabicFont,
+    toggleFavorite, isFavorite,
   } = useDhikrStore();
 
   const [showMotivation, setShowMotivation] = useState(false);
   const [currentQuote, setCurrentQuote] = useState('');
   const [showOpening, setShowOpening] = useState(true);
   const [showReference, setShowReference] = useState(false);
+  const [isFav, setIsFav] = useState(false);
+
+  const handleShareDhikr = async () => {
+    if (!currentDhikr) return;
+    await shareAsImage({ text: currentDhikr.text, footer: currentDhikr.reference || currentDhikr.category, type: 'dhikr' });
+  };
 
   const prayerGroup = readingSource === 'prayer' ? prayerDhikrGroups[selectedPrayerIndex] : null;
   const categoryDhikrList = readingSource === 'category' ? getAdhkarByCategory(selectedCategoryId) : [];
@@ -38,6 +46,10 @@ export default function ReadingScreen() {
   const currentDhikr = dhikrList[currentDhikrIndex];
   const totalDhikr = dhikrList.length;
   const progressPct = ((completedSet.length + (currentCount / (currentDhikr?.count || 1))) / totalDhikr) * 100;
+
+  // Sync favorite state when dhikr changes
+  const favStatus = currentDhikr ? isFavorite(currentDhikr.text) : false;
+  if (favStatus !== isFav) setIsFav(favStatus);
 
   const fontSizes = { small: 'text-lg', medium: 'text-2xl', large: 'text-3xl' };
   const fontClass = fontSizes[fontSize];
@@ -167,8 +179,11 @@ export default function ReadingScreen() {
                     <Info className='w-3.5 h-3.5 app-text-2' />
                   </button>
                 )}
-                <button className='w-7 h-7 rounded-full glass-card flex items-center justify-center' title='قريباً'>
-                  <Bookmark className='w-3.5 h-3.5 app-text-muted' />
+                <button onClick={handleShareDhikr} className='w-7 h-7 rounded-full glass-card flex items-center justify-center' aria-label='مشاركة الذكر كصورة'>
+                  <Share2 className='w-3.5 h-3.5 app-text-muted' />
+                </button>
+                <button onClick={() => { if (currentDhikr) { toggleFavorite(currentDhikr.text); setIsFav(!isFav); } }} className='w-7 h-7 rounded-full glass-card flex items-center justify-center' aria-label='إضافة للمفضلة'>
+                  <Heart className='w-3.5 h-3.5' style={{ color: isFav ? '#ef4444' : undefined, fill: isFav ? '#ef4444' : 'none' }} />
                 </button>
               </div>
 

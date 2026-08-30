@@ -131,6 +131,11 @@ interface DhikrState {
   addChallenge: (name: string, target: number, unit: string, days: number) => void;
   updateChallengeProgress: (id: string, amount: number) => void;
   removeChallenge: (id: string) => void;
+
+  // Favorites
+  favorites: string[];
+  toggleFavorite: (dhikrText: string) => void;
+  isFavorite: (dhikrText: string) => boolean;
 }
 
 function load<T>(key: string, def: T): T {
@@ -303,4 +308,16 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
     save('dz_challenges', list);
     set({ challenges: list });
   },
+
+  // Favorites
+  favorites: load<string[]>('dz_favorites', []),
+  toggleFavorite: (dhikrText) => {
+    const favs = get().favorites;
+    const updated = favs.includes(dhikrText)
+      ? favs.filter(f => f !== dhikrText)
+      : [dhikrText, ...favs].slice(0, 100);
+    save('dz_favorites', updated);
+    set({ favorites: updated });
+  },
+  isFavorite: (dhikrText) => get().favorites.includes(dhikrText),
 }));

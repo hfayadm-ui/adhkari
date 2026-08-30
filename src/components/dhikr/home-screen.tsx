@@ -1,34 +1,58 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
-import { IslamicIcon, Star, TreePine, Sparkles, ChevronLeft, Clock, Bell, Moon, Share2 } from '@/components/dhikr/islamic-icons';
-import { prayerDhikrGroups, prayerTimesList, getCurrentPrayerIndex, getSimpleHijriDate, dailyVerses, smartNotifications, treeIcons, fetchPrayerTimes } from '@/lib/dhikr-data';
+import { useState, useEffect, useCallback } from 'react';
+import { IslamicIcon, Star, TreePine, Sparkles, ChevronLeft, Clock, Bell, Moon, Share2, Heart, Trophy, Flame, Plus, X } from '@/components/dhikr/islamic-icons';
+import { prayerDhikrGroups, prayerTimesList, getCurrentPrayerIndex, getSimpleHijriDate, dailyVerses, smartNotifications, treeIcons, fetchPrayerTimes, dailyHadiths, getTodayHadithIndex, suggestedChallenges } from '@/lib/dhikr-data';
 import { useDhikrStore } from '@/lib/store';
 import { getFontClass } from '@/lib/font-utils';
 import BreathingCard from '@/components/dhikr/breathing-card';
+import { shareAsImage } from '@/lib/share-card';
 
 export default function HomeScreen() {
   const {
     setCurrentScreen, setSelectedPrayerIndex, setReadingSource,
     streak, treeLevel, completedPrayers, freeCounter,
     arabicFont, selectedCity, prayerTimes, setPrayerTimes,
+    totalAllTime, challenges, addChallenge,
   } = useDhikrStore();
 
   const [hijriDate] = useState(() => getSimpleHijriDate());
   const [prayerIdx, setPrayerIdx] = useState(getCurrentPrayerIndex);
   const [verse] = useState(() => dailyVerses[Math.floor(new Date().getDay() % dailyVerses.length)]);
   const [notif] = useState(() => smartNotifications[Math.floor(Math.random() * smartNotifications.length)]);
+  const [hadith] = useState(() => dailyHadiths[getTodayHadithIndex()]);
+  const [showChallengePicker, setShowChallengePicker] = useState(false);
+  const [sharing, setSharing] = useState<string | null>(null);
 
   const fontClass = getFontClass(arabicFont);
 
   const shareProgress = async () => {
-    const text = `أذكاري - سلسلة ${streak} أيام متتالية \u{1F31F}\nشجرة الأذكار: المستوى ${treeLevel}\nما شاء الله، لا قوة إلا بالله`;
-    if (navigator.share) {
-      await navigator.share({ title: 'أذكاري - تقدمي', text });
-    } else {
-      await navigator.clipboard.writeText(text);
-    }
+    setSharing('stats');
+    try {
+      await shareAsImage({
+        text: '',
+        type: 'stats',
+        stats: { streak, totalDhikr: totalAllTime, treeLevel },
+      });
+    } catch { /* */ }
+    setSharing(null);
+  };
+
+  const shareVerse = async () => {
+    setSharing('verse');
+    try {
+      await shareAsImage({ text: verse.text, footer: verse.ref, type: 'verse' });
+    } catch { /* */ }
+    setSharing(null);
+  };
+
+  const shareHadith = async () => {
+    setSharing('hadith');
+    try {
+      await shareAsImage({ text: hadith.text, footer: `${hadith.narrator} - ${hadith.source}`, type: 'hadith' });
+    } catch { /* */ }
+    setSharing(null);
   };
 
   useEffect(() => {
@@ -50,6 +74,9 @@ export default function HomeScreen() {
     if (fetched && fetched !== '--:--') return fetched;
     return defaultTime;
   };
+
+  const activeChallenges = challenges.filter(c => !c.completed);
+  const completedToday = challenges.filter(c => c.completed).slice(0, 2);
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='flex flex-col min-h-screen pb-24'>
@@ -93,7 +120,7 @@ export default function HomeScreen() {
           </div>
         </motion.div>
 
-        {/* Daily Verse Card */}
+        {/* Daily Verse Card — with share */}
         <motion.div
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className='glass-card-elevated rounded-2xl p-5 relative overflow-hidden'
@@ -104,12 +131,52 @@ export default function HomeScreen() {
           <div className='absolute bottom-0 right-0 w-10 h-10 border-b border-r rounded-br-2xl' style={{ borderColor: 'var(--gold-border-glow)' }} />
           <div className='absolute bottom-0 left-0 w-10 h-10 border-b border-l rounded-bl-2xl' style={{ borderColor: 'var(--gold-border-glow)' }} />
 
-          <div className='flex items-center gap-2 mb-3'>
-            <IslamicIcon name='book' className='w-5 h-5' color='var(--gold-accent)' />
-            <span className='app-text-2 text-xs' style={{ fontFamily: fontClass }}>آية اليوم</span>
+          <div className='flex items-center justify-between mb-3'>
+            <div className='flex items-center gap-2'>
+              <IslamicIcon name='book' className='w-5 h-5' color='var(--gold-accent)' />
+              <span className='app-text-2 text-xs' style={{ fontFamily: fontClass }}>آية اليوم</span>
+            </div>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={shareVerse}
+              disabled={sharing === 'verse'}
+              className='w-8 h-8 rounded-lg glass-subtle flex items-center justify-center'
+              aria-label='مشاركة الآية كصورة'
+            >
+              <Share2 className='w-3.5 h-3.5' style={{ color: 'var(--gold-accent)' }} />
+            </motion.button>
           </div>
           <p className='app-text text-lg leading-loose mb-2' style={{ fontFamily: fontClass }}>{verse.text}</p>
           <p className='text-xs' style={{ color: 'var(--gold-accent)', fontFamily: fontClass }}>{verse.ref}</p>
+        </motion.div>
+
+        {/* Daily Hadith Card — NEW */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.13 }}
+          className='glass-card rounded-2xl p-4 relative overflow-hidden'
+        >
+          <div className='flex items-center justify-between mb-3'>
+            <div className='flex items-center gap-2'>
+              <div className='w-7 h-7 rounded-lg flex items-center justify-center' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
+                <IslamicIcon name='book' className='w-3.5 h-3.5' color='var(--gold-accent)' />
+              </div>
+              <span className='app-text-2 text-xs' style={{ fontFamily: fontClass }}>حديث اليوم</span>
+            </div>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={shareHadith}
+              disabled={sharing === 'hadith'}
+              className='w-8 h-8 rounded-lg glass-subtle flex items-center justify-center'
+              aria-label='مشاركة الحديث كصورة'
+            >
+              <Share2 className='w-3.5 h-3.5' style={{ color: 'var(--gold-accent)' }} />
+            </motion.button>
+          </div>
+          <p className='app-text text-base leading-loose mb-3' style={{ fontFamily: fontClass }}>{hadith.text}</p>
+          <div className='flex items-center justify-between'>
+            <p className='text-[11px]' style={{ color: 'var(--gold-accent)' }}>{hadith.narrator}</p>
+            <p className='app-text-muted text-[10px]'>{hadith.source}</p>
+          </div>
         </motion.div>
 
         {/* Quick Free Counter */}
@@ -142,9 +209,108 @@ export default function HomeScreen() {
         {/* Breathing Card */}
         <BreathingCard fontClass={fontClass} />
 
+        {/* Active Challenges — NEW */}
+        {activeChallenges.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+            className='glass-card rounded-2xl p-4'
+          >
+            <div className='flex items-center justify-between mb-3'>
+              <div className='flex items-center gap-2'>
+                <Flame className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
+                <span className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>تحدياتي</span>
+                <span className='text-[10px] app-text-muted'>({activeChallenges.length})</span>
+              </div>
+              <button onClick={() => setShowChallengePicker(!showChallengePicker)} className='w-7 h-7 rounded-lg glass-subtle flex items-center justify-center'>
+                <Plus className='w-3.5 h-3.5' style={{ color: 'var(--gold-accent)' }} />
+              </button>
+            </div>
+            <div className='space-y-2'>
+              {activeChallenges.slice(0, 3).map(ch => {
+                const pct = Math.min((ch.current / ch.target) * 100, 100);
+                const daysLeft = Math.max(0, Math.ceil((new Date(ch.endDate).getTime() - Date.now()) / 86400000));
+                return (
+                  <div key={ch.id} className='p-2.5 rounded-xl glass-subtle'>
+                    <div className='flex items-center justify-between mb-1.5'>
+                      <span className='app-text text-xs font-medium' style={{ fontFamily: fontClass }}>{ch.name}</span>
+                      <span className='text-[10px] app-text-muted'>{ch.current}/{ch.target} {ch.unit}</span>
+                    </div>
+                    <div className='w-full rounded-full h-1.5' style={{ background: 'var(--app-ring-track)' }}>
+                      <div className='h-1.5 rounded-full transition-all' style={{ width: `${pct}%`, background: 'linear-gradient(90deg, var(--gold-accent), var(--gold-bright))' }} />
+                    </div>
+                    <p className='text-[10px] app-text-muted mt-1'>{daysLeft} يوم متبقي</p>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {/* No challenges yet — show prompt */}
+        {activeChallenges.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+            className='glass-card rounded-2xl p-4'
+          >
+            <div className='flex items-center gap-3'>
+              <div className='w-10 h-10 rounded-xl flex items-center justify-center' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
+                <Trophy className='w-5 h-5' style={{ color: 'var(--gold-accent)' }} />
+              </div>
+              <div className='flex-1'>
+                <p className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>ابدأ تحديك الأول</p>
+                <p className='app-text-muted text-[11px]'>خصص أهداف ذكر وحققها يومياً</p>
+              </div>
+              <motion.button whileTap={{ scale: 0.9 }} onClick={() => setShowChallengePicker(true)} className='btn-gold px-3 py-2 rounded-xl text-xs'>
+                ابدأ
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Challenge Picker Modal */}
+        {showChallengePicker && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            className='fixed inset-0 z-50 flex items-end justify-center'
+            onClick={() => setShowChallengePicker(false)}
+          >
+            <div className='absolute inset-0 bg-black/60' />
+            <motion.div
+              initial={{ y: 300 }} animate={{ y: 0 }}
+              onClick={e => e.stopPropagation()}
+              className='relative w-full max-w-lg glass-card-elevated rounded-t-3xl p-5 pb-8 max-h-[70vh] overflow-y-auto'
+            >
+              <div className='flex items-center justify-between mb-4'>
+                <h3 className='app-text font-bold text-base' style={{ fontFamily: fontClass }}>اختر تحدياً</h3>
+                <button onClick={() => setShowChallengePicker(false)} className='w-8 h-8 rounded-lg glass-subtle flex items-center justify-center'>
+                  <X className='w-4 h-4 app-text-2' />
+                </button>
+              </div>
+              <div className='space-y-2'>
+                {suggestedChallenges.map((ch) => (
+                  <motion.button
+                    key={ch.name}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => { addChallenge(ch.name, ch.target, ch.unit, ch.days); setShowChallengePicker(false); }}
+                    className='w-full p-3 rounded-xl glass-subtle flex items-center gap-3 text-right'
+                  >
+                    <div className='w-9 h-9 rounded-lg flex items-center justify-center' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
+                      <Flame className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
+                    </div>
+                    <div className='flex-1'>
+                      <p className='app-text text-sm font-medium' style={{ fontFamily: fontClass }}>{ch.name}</p>
+                      <p className='app-text-muted text-[11px]'>{ch.target} {ch.unit} - {ch.days} {ch.days === 1 ? 'يوم' : 'أيام'}</p>
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
         {/* Next Prayer Card */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }}
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
           className='glass-glow rounded-2xl p-5 relative overflow-hidden'
         >
           <div className='islamic-shimmer absolute inset-0 pointer-events-none' />
@@ -182,7 +348,7 @@ export default function HomeScreen() {
 
         {/* Streak + Tree Row */}
         <div className='grid grid-cols-2 gap-3'>
-          <motion.div initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.27 }}
+          <motion.div initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
             className='glass-card glass-glow rounded-2xl p-3.5'
           >
             <div className='flex items-center gap-1.5 mb-2'>
@@ -198,21 +364,21 @@ export default function HomeScreen() {
                 whileTap={{ scale: 0.9 }}
                 onClick={shareProgress}
                 className='w-7 h-7 rounded-lg glass-subtle flex items-center justify-center'
-                aria-label='مشاركة التقدم'
+                aria-label='مشاركة التقدم كصورة'
               >
                 <Share2 className='w-3.5 h-3.5' style={{ color: 'var(--gold-accent)' }} />
               </motion.button>
             </div>
             <div className='mt-2 flex gap-0.5'>
               {[...Array(7)].map((_, i) => (
-                <div key={i} className={`flex-1 h-1.5 rounded-full ${i < ((streak - 1) % 7) + 1 || streak >= 7 ? '' : ''}`} style={{
+                <div key={i} className={`flex-1 h-1.5 rounded-full`} style={{
                   background: i < ((streak - 1) % 7) + 1 || streak >= 7 ? 'var(--gold-accent)' : 'var(--app-ring-track)',
                 }} />
               ))}
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.32 }}
+          <motion.div initial={{ opacity: 0, x: 15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.35 }}
             className='glass-card rounded-2xl p-3.5'
           >
             <div className='flex items-center gap-1.5 mb-2'>
@@ -235,7 +401,7 @@ export default function HomeScreen() {
         </div>
 
         {/* Today's Prayers */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.37 }}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
           className='glass-card rounded-2xl p-4'
         >
           <div className='flex items-center justify-between mb-3'>
