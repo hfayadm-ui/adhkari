@@ -20,7 +20,7 @@ export default function BottomNav() {
     <nav className='fixed bottom-0 left-0 right-0 z-50'>
       <div className='max-w-md mx-auto'>
         <div
-          className='mx-3 mb-3 rounded-full'
+          className='mx-3 mb-3 rounded-[1.25rem]'
           style={{
             background: 'var(--app-nav-bg)',
             backdropFilter: 'blur(40px) saturate(1.5)',
@@ -29,6 +29,8 @@ export default function BottomNav() {
             boxShadow: '0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)',
           }}
         >
+          {/* Gold top highlight line */}
+          <div className='h-px' style={{ background: 'linear-gradient(90deg, transparent, var(--gold-border), transparent)' }} />
           <div className='flex items-center justify-around py-2'>
             {tabs.map((tab) => {
               const active = isActive(tab.id);
@@ -36,15 +38,15 @@ export default function BottomNav() {
                 <button
                   key={tab.id}
                   onClick={() => setCurrentScreen(tab.id)}
-                  className='relative flex flex-col items-center gap-1 px-4 py-1.5 rounded-full transition-all duration-200 min-w-[56px]'
+                  className='relative flex flex-col items-center gap-1 px-4 py-1.5 rounded-2xl transition-all duration-200 min-w-[56px]'
                 >
                   {active && (
                     <motion.div
                       layoutId='activeTab'
-                      className='absolute inset-0 rounded-full'
+                      className='absolute inset-0 rounded-2xl'
                       style={{
-                        background: 'linear-gradient(135deg, var(--gold-accent), var(--gold-bright))',
-                        boxShadow: '0 2px 12px var(--gold-glow), 0 4px 16px var(--gold-glow)',
+                        background: 'var(--gold-accent)',
+                        boxShadow: '0 2px 12px var(--gold-glow), 0 0 0 1px var(--gold-border-glow)',
                       }}
                       transition={{ type: 'spring', stiffness: 380, damping: 28 }}
                     />
