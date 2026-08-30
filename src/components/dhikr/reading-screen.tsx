@@ -242,7 +242,7 @@ export default function ReadingScreen() {
               {currentCount > 0 && (
                 <button onClick={() => {
                   if (currentDhikrIndex + 1 < totalDhikr) { setCurrentDhikrIndex(currentDhikrIndex + 1); setCurrentCount(0); }
-                }} className='mt-10 app-text-muted text-xs hover:app-text-2 transition-colors flex items-center gap-1 mx-auto glass-card py-2 px-5 rounded-full'>
+                }} className='mt-14 app-text-muted text-xs hover:app-text-2 transition-colors flex items-center gap-1 mx-auto glass-card py-2 px-5 rounded-full'>
                   <span style={{ fontFamily: fontVar }}>تخطي</span> <ChevronRight className='w-3 h-3' />
                 </button>
               )}
