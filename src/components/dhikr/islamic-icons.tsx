@@ -7,7 +7,7 @@ import {
   Award, Zap, RotateCcw, Target, Plus, Minus, Volume2, VolumeX,
   Search, CheckCircle2, Bookmark, Info, Share2, Copy, Compass, Gem,
   Utensils, Shield, MapPin, Type, Palette, Eye, Heart, Flame,
-  CircleDot, Landmark, PalmTree, Trees, StarOff, X, ArrowRight, Check,
+  CircleDot, Landmark, PalmTree, Trees, StarOff, X, ArrowRight, Check, Pencil,
   Mosque as LucideMosque, Waves, Wind, Brain, Flower2, Cloud, Droplets, Play, Pause, RotateCw, Download, Upload
 } from 'lucide-react';
 import React from 'react';
@@ -192,5 +192,5 @@ export {
   Bookmark, Info, Share2, Copy, Compass, Star, Flame, Sparkles,
   Sun, Moon, Sunrise, Sunset, CloudSun, Bell, Leaf, Gem, Utensils,
   Shield, MapPin, Type, Palette, Heart, Eye, Landmark, X, Plus, Minus, ArrowRight,
-  Wind, Brain, Flower2, Cloud, Droplets, Play, Pause, RotateCw, Download, Upload
+  Wind, Brain, Flower2, Cloud, Droplets, Play, Pause, RotateCw, Download, Upload, Pencil
 };

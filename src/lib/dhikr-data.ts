@@ -35,7 +35,6 @@ export const dhikrCategories: DhikrCategory[] = [
   { id: 'eating', name: 'أذكار الطعام', icon: 'utensils', description: 'أذكار قبل وبعد الأكل والشرب', color: 'rose' },
   { id: 'travel', name: 'أذكار السفر', icon: 'compass', description: 'أذكار الركوب والسفر', color: 'sky' },
   { id: 'misc', name: 'أذكار متنوعة', icon: 'gem', description: 'أذكار عامة متنوعة', color: 'teal' },
-  { id: 'quran', name: 'تذييل القرآن', icon: 'book-open', description: 'أذكار بعد تلاوة القرآن الكريم', color: 'emerald' },
 ];
 
 // ==================== العبارات التحفيزية ====================
@@ -215,14 +214,7 @@ export const miscAdhkar: Dhikr[] = [
   { id: 'ms7', text: 'لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ', count: 100, category: 'توحيد', benefit: 'كانت له عدل عشر رقاب', reference: 'صحيح البخاري' },
 ];
 
-// ==================== أذكار تذييل القرآن ====================
-export const quranAdhkar: Dhikr[] = [
-  { id: 'qr1', text: 'سَبْحَانَ اللَّهِ', count: 1, category: 'تسبيح', benefit: 'تسبيح الله بعد ختم القرآن' },
-  { id: 'qr2', text: 'اللَّهُمَّ اغْفِرْ لِي', count: 3, category: 'استغفار', benefit: 'الاستغفار بعد التلاوة' },
-  { id: 'qr3', text: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ', count: 1, category: 'تحميد' },
-  { id: 'qr4', text: 'لَا إِلَهَ إِلَّا اللَّهُ', count: 1, category: 'توحيد', benefit: 'التوحيد بعد الختم' },
-  { id: 'qr5', text: 'اللَّهُ أَكْبَرُ', count: 1, category: 'تكبير' },
-];
+
 
 // ==================== الحصول على الأذكار حسب التصنيف ====================
 export function getAdhkarByCategory(categoryId: string): Dhikr[] {
@@ -235,7 +227,6 @@ export function getAdhkarByCategory(categoryId: string): Dhikr[] {
     case 'eating': return eatingAdhkar;
     case 'travel': return travelAdhkar;
     case 'misc': return miscAdhkar;
-    case 'quran': return quranAdhkar;
     default: return [];
   }
 }

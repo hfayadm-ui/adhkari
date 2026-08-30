@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDhikrStore, ArabicFont } from '@/lib/store';
-import { dhikrCategories, getAdhkarByCategory, prayerDhikrGroups, quranAdhkar } from '@/lib/dhikr-data';
+import { dhikrCategories, getAdhkarByCategory, prayerDhikrGroups } from '@/lib/dhikr-data';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
 import { Search, ChevronLeft, CheckCircle2, BookOpen, Star, X, Plus } from '@/components/dhikr/islamic-icons';
 import { useState } from 'react';
@@ -46,10 +46,6 @@ export default function LibraryScreen() {
     if (id === 'prayer') {
       setSelectedPrayerIndex(0);
       setReadingSource('prayer');
-      setCurrentScreen('reading');
-    } else if (id === 'quran') {
-      setSelectedCategoryId('quran');
-      setReadingSource('category');
       setCurrentScreen('reading');
     } else {
       setSelectedCategoryId(id);
@@ -112,31 +108,74 @@ export default function LibraryScreen() {
               transition={{ duration: 0.3 }}
               className='overflow-hidden'
             >
-              <div className='glass-card rounded-2xl p-4 space-y-3' style={{ border: '1px solid var(--gold-border)' }}>
-                <div className='flex items-center gap-2 mb-1'>
-                  <Plus className='w-4 h-4' color='var(--gold-accent)' />
+              <div className='glass-card-elevated rounded-2xl overflow-hidden' style={{ border: '1px solid var(--gold-border)' }}>
+                {/* Header */}
+                <div className='px-4 pt-4 pb-2 flex items-center gap-2'>
+                  <div className='w-8 h-8 rounded-lg flex items-center justify-center' style={{ background: 'var(--gold-glow)' }}>
+                    <Plus className='w-4 h-4' color='var(--gold-accent)' />
+                  </div>
                   <h4 className='app-text font-bold text-sm' style={{ fontFamily: fontVar }}>إضافة ذكر جديد</h4>
                 </div>
-                <input
-                  type='text'
-                  value={customText}
-                  onChange={e => setCustomText(e.target.value)}
-                  placeholder='اكتب الذكر هنا...'
-                  className='w-full px-4 py-3 rounded-xl glass-card app-text text-sm placeholder:app-text-muted focus:outline-none transition-colors'
-                  style={{ fontFamily: fontVar, border: '1px solid var(--gold-border)' }}
-                />
-                <div className='flex items-center gap-3'>
-                  <div className='flex-1'>
-                    <label className='app-text-2 text-[11px] mb-1 block' style={{ fontFamily: fontVar }}>عدد التكرار</label>
-                    <input
-                      type='number'
-                      value={customCount}
-                      onChange={e => setCustomCount(Math.max(1, parseInt(e.target.value) || 1))}
-                      min={1}
-                      className='w-full px-4 py-2.5 rounded-xl glass-card app-text text-sm focus:outline-none transition-colors'
-                      style={{ fontFamily: fontVar, border: '1px solid var(--gold-border)' }}
+
+                {/* Dhikr text input */}
+                <div className='px-4 pb-3'>
+                  <div className='relative'>
+                    <textarea
+                      value={customText}
+                      onChange={e => setCustomText(e.target.value)}
+                      placeholder='اكتب الذكر هنا...'
+                      rows={2}
+                      className='w-full px-4 py-3 rounded-xl app-surface app-text text-sm placeholder:app-text-muted focus:outline-none transition-colors resize-none'
+                      style={{ fontFamily: fontVar, border: '1.5px solid var(--gold-border)' }}
                     />
+                    {customText.length > 0 && (
+                      <button
+                        onClick={() => setCustomText('')}
+                        className='absolute top-2.5 left-2.5 w-6 h-6 rounded-full flex items-center justify-center app-surface-h transition-colors'
+                      >
+                        <X className='w-3.5 h-3.5 app-text-muted' />
+                      </button>
+                    )}
                   </div>
+                </div>
+
+                {/* Count section */}
+                <div className='px-4 pb-3'>
+                  <label className='app-text-2 text-[11px] mb-2 block' style={{ fontFamily: fontVar }}>عدد التكرار</label>
+                  <div className='flex items-center gap-2'>
+                    <div className='flex-1 flex items-center gap-1'>
+                      {[10, 33, 34, 100].map(n => (
+                        <button
+                          key={n}
+                          onClick={() => setCustomCount(n)}
+                          className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all ${customCount === n ? '' : 'app-surface app-text-2 app-surface-h'}`}
+                          style={customCount === n
+                            ? { background: 'var(--gold-glow)', border: '1.5px solid var(--gold-border)', color: 'var(--gold-bright)' }
+                            : { border: '1px solid transparent' }}
+                        >
+                          {n}
+                        </button>
+                      ))}
+                    </div>
+                    <div className='relative w-20 flex-shrink-0'>
+                      <input
+                        type='number'
+                        value={customCount === 10 || customCount === 33 || customCount === 34 || customCount === 100 ? '' : customCount}
+                        onChange={e => {
+                          const v = parseInt(e.target.value);
+                          if (v > 0) setCustomCount(v);
+                        }}
+                        placeholder='مخصص'
+                        min={1}
+                        className='w-full px-3 py-2 rounded-lg app-surface app-text text-xs text-center focus:outline-none transition-colors'
+                        style={{ fontFamily: fontVar, border: '1.5px solid var(--gold-border)' }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Add button */}
+                <div className='px-4 pb-4'>
                   <button
                     onClick={() => {
                       if (customText.trim()) {
@@ -146,23 +185,29 @@ export default function LibraryScreen() {
                       }
                     }}
                     disabled={!customText.trim()}
-                    className='btn-gold px-6 py-2.5 rounded-xl app-text font-medium text-sm disabled:opacity-40 transition-opacity mt-4'
+                    className='w-full btn-gold py-3 rounded-xl app-text font-bold text-sm disabled:opacity-30 transition-all flex items-center justify-center gap-2'
                     style={{ fontFamily: fontVar }}
                   >
-                    إضافة
+                    <Plus className='w-4 h-4' />
+                    إضافة الذكر
                   </button>
                 </div>
 
+                {/* Divider */}
+                {customDhikr.length > 0 && (
+                  <div className='mx-4 h-px' style={{ background: 'linear-gradient(90deg, transparent, var(--gold-border), transparent)' }} />
+                )}
+
                 {/* Existing Custom Dhikr List */}
                 {customDhikr.length > 0 && (
-                  <div className='mt-3 space-y-2 max-h-96 overflow-y-auto'>
-                    <h4 className='app-text-2 text-xs font-medium' style={{ fontFamily: fontVar }}>الأذكار المضافة</h4>
+                  <div className='px-4 pb-4 space-y-2 max-h-80 overflow-y-auto'>
+                    <h4 className='app-text-2 text-xs font-medium pt-3 pb-1' style={{ fontFamily: fontVar }}>الأذكار المضافة ({customDhikr.length})</h4>
                     {customDhikr.map((item) => (
                       <motion.div
                         key={item.id}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className='flex items-center gap-3 p-3 rounded-xl app-surface-h transition-colors'
+                        className='flex items-center gap-3 p-3 rounded-xl app-surface transition-colors'
                         style={{ border: '1px solid var(--gold-border)' }}
                       >
                         <button
@@ -175,14 +220,16 @@ export default function LibraryScreen() {
                           className='flex-1 text-right'
                         >
                           <p className='app-text text-sm font-medium leading-relaxed' style={{ fontFamily: fontVar }}>{item.text}</p>
-                          <p className='app-text-muted text-[11px] mt-0.5'>{item.count} مرة</p>
+                          <div className='flex items-center gap-2 mt-1'>
+                            <span className='text-[10px] px-2 py-0.5 rounded-full' style={{ background: 'var(--gold-glow)', color: 'var(--gold-bright)' }}>{item.count} مرة</span>
+                          </div>
                         </button>
                         <button
                           onClick={() => removeCustomDhikr(item.id)}
-                          className='w-8 h-8 rounded-lg flex items-center justify-center app-surface-h transition-colors flex-shrink-0'
+                          className='w-8 h-8 rounded-lg flex items-center justify-center transition-colors flex-shrink-0 hover:bg-red-500/10'
                           style={{ border: '1px solid var(--gold-border)' }}
                         >
-                          <X className='w-4 h-4 app-text-muted' />
+                          <X className='w-4 h-4' style={{ color: '#ef4444' }} />
                         </button>
                       </motion.div>
                     ))}

@@ -19,7 +19,6 @@ function getFontClass(font: ArabicFont): string {
 const categoryIconMap: Record<string, string> = {
   morning: 'sunrise', evening: 'sunset', sleep: 'moon', waking: 'sun',
   eating: 'utensils', travel: 'compass', misc: 'gem', prayer: 'mosque',
-  quran: 'book-open',
 };
 
 export default function ReadingScreen() {
