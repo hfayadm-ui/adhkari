@@ -8,8 +8,9 @@ export type ArabicFont = 'cairo' | 'amiri' | 'noto-naskh' | 'tajawal' | 'ibm-ple
 interface DailyRecord {
   date: string;
   prayersCompleted: string[];
-  totalDhikr: number;
+  dhikrCount: number; // actual dhikr done THAT DAY (not cumulative)
   freeCount: number;
+  sessionsCount: number; // how many reading sessions completed
 }
 
 interface CounterPreset {
@@ -100,6 +101,8 @@ interface DhikrState {
   setTotalAllTime: (n: number) => void;
   weeklyData: DailyRecord[];
   addTodayRecord: () => void;
+  incrementTodayDhikr: (amount: number) => void;
+  incrementTodaySessions: () => void;
 
   // Free counter
   freeCounter: number;
@@ -248,15 +251,77 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
   weeklyData: load<DailyRecord[]>('dz_weekly', []),
   addTodayRecord: () => {
     const state = get();
-    const rec: DailyRecord = {
-      date: new Date().toDateString(),
-      prayersCompleted: state.completedPrayers,
-      totalDhikr: state.totalAllTime,
-      freeCount: state.freeCounter,
-    };
-    const week = [...state.weeklyData.slice(-6), rec];
-    save('dz_weekly', week);
-    set({ weeklyData: week });
+    const today = new Date().toDateString();
+    const existing = state.weeklyData.find(d => d.date === today);
+    
+    if (existing) {
+      // Update today's record
+      const updated = state.weeklyData.map(d => d.date === today ? {
+        ...d,
+        prayersCompleted: state.completedPrayers,
+        freeCount: state.freeCounter,
+      } : d);
+      save('dz_weekly', updated);
+      set({ weeklyData: updated });
+    } else {
+      // New day record — calculate today's dhikr from delta
+      const prevDayTotal = state.weeklyData.length > 0
+        ? state.weeklyData[state.weeklyData.length - 1].dhikrCount
+        : 0;
+      // We track daily count via the session completions
+      const rec: DailyRecord = {
+        date: today,
+        prayersCompleted: state.completedPrayers,
+        dhikrCount: 0, // will be incremented by handleSessionComplete
+        freeCount: state.freeCounter,
+        sessionsCount: 0,
+      };
+      const week = [...state.weeklyData.slice(-6), rec];
+      save('dz_weekly', week);
+      set({ weeklyData: week });
+    }
+  },
+  incrementTodayDhikr: (amount: number) => {
+    const state = get();
+    const today = new Date().toDateString();
+    const existing = state.weeklyData.find(d => d.date === today);
+    if (existing) {
+      const updated = state.weeklyData.map(d => d.date === today
+        ? { ...d, dhikrCount: d.dhikrCount + amount }
+        : d
+      );
+      save('dz_weekly', updated);
+      set({ weeklyData: updated });
+    } else {
+      const rec: DailyRecord = {
+        date: today, prayersCompleted: state.completedPrayers,
+        dhikrCount: amount, freeCount: state.freeCounter, sessionsCount: 1,
+      };
+      const week = [...state.weeklyData.slice(-6), rec];
+      save('dz_weekly', week);
+      set({ weeklyData: week });
+    }
+  },
+  incrementTodaySessions: () => {
+    const state = get();
+    const today = new Date().toDateString();
+    const existing = state.weeklyData.find(d => d.date === today);
+    if (existing) {
+      const updated = state.weeklyData.map(d => d.date === today
+        ? { ...d, sessionsCount: d.sessionsCount + 1 }
+        : d
+      );
+      save('dz_weekly', updated);
+      set({ weeklyData: updated });
+    } else {
+      const rec: DailyRecord = {
+        date: today, prayersCompleted: state.completedPrayers,
+        dhikrCount: 0, freeCount: state.freeCounter, sessionsCount: 1,
+      };
+      const week = [...state.weeklyData.slice(-6), rec];
+      save('dz_weekly', week);
+      set({ weeklyData: week });
+    }
   },
 
   freeCounter: load<number>('dz_freeCounter', 0),

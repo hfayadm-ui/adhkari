@@ -186,6 +186,11 @@ export function handleSessionComplete() {
     store.addGardenPlant(plantType);
     save('dz_streakDays', updatedDays);
 
+    // Track in weekly stats
+    store.incrementTodaySessions();
+    // Count actual dhikr from completed set
+    store.incrementTodayDhikr(store.completedSet.length);
+
     // Send garden reward notification
     if (store.notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
       const plantNames: Record<string, string> = {
