@@ -153,30 +153,6 @@ export default function HomeScreen() {
         {/* Breathing Card */}
         <BreathingCard fontClass={fontClass} />
 
-        {/* Focus Mode Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.17 }}
-          whileTap={{ scale: 0.97 }}
-          onClick={() => setCurrentScreen('focus')}
-          className='glass-card rounded-2xl p-4 cursor-pointer'
-        >
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-3'>
-              <div
-                className='w-10 h-10 rounded-xl flex items-center justify-center'
-                style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}
-              >
-                <Moon className='w-5 h-5' color='var(--gold-accent)' />
-              </div>
-              <div>
-                <p className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>وضع التركيز</p>
-                <p className='app-text-muted text-xs'>أذكار بلا تشتت</p>
-              </div>
-            </div>
-            <ChevronLeft className='w-4 h-4 app-text-muted rotate-180' />
-          </div>
-        </motion.div>
-
         {/* Next Prayer Card */}
         <motion.div
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }}

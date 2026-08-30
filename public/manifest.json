@@ -1,0 +1,30 @@
+{
+  "name": "أذكاري - أذكار المسلم",
+  "short_name": "أذكاري",
+  "description": "تطبيق أذكار شامل مع أذكار الصلوات والصباح والمساء والنوم والعداد الحر والإحصائيات وتقنيات التنفس",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111010",
+  "theme_color": "#C5A059",
+  "dir": "rtl",
+  "lang": "ar",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "education", "health"],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

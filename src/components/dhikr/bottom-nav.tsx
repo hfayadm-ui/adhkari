@@ -20,7 +20,7 @@ export default function BottomNav() {
     <nav className='fixed bottom-0 left-0 right-0 z-50'>
       <div className='max-w-md mx-auto'>
         <div
-          className='mx-3 mb-3 rounded-[1.25rem]'
+          className='mx-3 mb-3 rounded-[1.25rem] pb-safe'
           style={{
             background: 'var(--app-nav-bg)',
             backdropFilter: 'blur(40px) saturate(1.5)',

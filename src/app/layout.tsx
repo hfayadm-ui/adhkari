@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cairo, Amiri, Noto_Naskh_Arabic, Tajawal, IBM_Plex_Sans_Arabic, Scheherazade_New } from "next/font/google";
 import ThemeSync from "@/components/theme-sync";
 import SessionProvider from "@/components/auth/session-provider";
@@ -12,19 +12,65 @@ const ibmPlex = IBM_Plex_Sans_Arabic({ variable: "--font-ibm-plex", subsets: ["a
 const scheherazade = Scheherazade_New({ variable: "--font-scheherazade", subsets: ["arabic", "latin"], weight: ["400", "700"] });
 
 export const metadata: Metadata = {
-  title: "أذكاري - أذكار ما بعد الصلاة",
-  description: "تطبيق أذكار شامل مع أذكار الصلوات والصباح والمساء والنوم والعداد الحر والإحصائيات",
-  keywords: ["أذكار", "صلاة", "إسلام", "تسبيح", "استغفار", "أذكار الصباح", "أذكار المساء"],
-  icons: { icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕌</text></svg>" },
+  title: "أذكاري - أذكار المسلم",
+  description: "تطبيق أذكار شامل مع أذكار الصلوات والصباح والمساء والنوم والعداد الحر والإحصائيات وتقنيات التنفس",
+  keywords: ["أذكار", "صلاة", "إسلام", "تسبيح", "استغفار", "أذكار الصباح", "أذكار المساء", "مسبح", "عداد", "تطبيق إسلامي"],
+  icons: {
+    icon: "/icon-192.png",
+    apple: "/icon-192.png",
+  },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "أذكاري",
+  },
+  openGraph: {
+    type: "website",
+    locale: "ar_AR",
+    title: "أذكاري - أذكار المسلم",
+    description: "تطبيق أذكار شامل مع أذكار الصلوات والصباح والمساء والنوم والعداد الحر والإحصائيات",
+    siteName: "أذكاري",
+  },
+  twitter: {
+    card: "summary",
+    title: "أذكاري - أذكار المسلم",
+    description: "تطبيق أذكار شامل مع أذكار الصلوات والصباح والمساء والنوم والعداد الحر والإحصائيات",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+    "application-name": "أذكاري",
+    "msapplication-TileColor": "#111010",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#C5A059",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang='ar' dir='rtl' suppressHydrationWarning>
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="أذكاري" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
+        <meta name="format-detection" content="telephone=no" />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var m=localStorage.getItem('dz_appMode');if(m!=='"light"')document.documentElement.classList.add('dark')}catch(e){document.documentElement.classList.add('dark')}})()`,
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})})}`,
           }}
         />
       </head>

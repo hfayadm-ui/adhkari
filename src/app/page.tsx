@@ -10,8 +10,9 @@ import CompletionScreen from '@/components/dhikr/completion-screen';
 import StatsScreen from '@/components/dhikr/stats-screen';
 import SettingsScreen from '@/components/dhikr/settings-screen';
 import RelaxationScreen from '@/components/dhikr/relaxation-screen';
-import FocusScreen from '@/components/dhikr/focus-screen';
 import BottomNav from '@/components/dhikr/bottom-nav';
+import SplashScreen from '@/components/pwa/splash-screen';
+import InstallPrompt from '@/components/pwa/install-prompt';
 import { useEffect, useState } from 'react';
 
 function OfflineIndicator() {
@@ -35,7 +36,7 @@ function OfflineIndicator() {
   );
 }
 
-const noNavScreens: Screen[] = ['reading', 'completion', 'focus'];
+const noNavScreens: Screen[] = ['reading', 'completion'];
 
 export default function Home() {
   const { currentScreen } = useDhikrStore();
@@ -60,29 +61,31 @@ export default function Home() {
   const showNav = !noNavScreens.includes(currentScreen);
 
   return (
-    <div className='max-w-md mx-auto min-h-screen relative' style={{ fontFamily: 'var(--font-arabic)' }}>
-      <OfflineIndicator />
-      <AnimatePresence mode='wait'>
-        <motion.div
-          key={currentScreen}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.2, ease: 'easeInOut' }}
-          className='min-h-screen'
-        >
-          {currentScreen === 'home' && <HomeScreen />}
-          {currentScreen === 'library' && <LibraryScreen />}
-          {currentScreen === 'counter' && <CounterScreen />}
-          {currentScreen === 'reading' && <DhikrReadingScreen />}
-          {currentScreen === 'completion' && <CompletionScreen />}
-          {currentScreen === 'stats' && <StatsScreen />}
-          {currentScreen === 'settings' && <SettingsScreen />}
-          {currentScreen === 'relaxation' && <RelaxationScreen />}
-          {currentScreen === 'focus' && <FocusScreen />}
-        </motion.div>
-      </AnimatePresence>
-      {showNav && <BottomNav />}
-    </div>
+    <SplashScreen>
+      <div className='max-w-md mx-auto min-h-screen relative' style={{ fontFamily: 'var(--font-arabic)' }}>
+        <OfflineIndicator />
+        <AnimatePresence mode='wait'>
+          <motion.div
+            key={currentScreen}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className='min-h-screen'
+          >
+            {currentScreen === 'home' && <HomeScreen />}
+            {currentScreen === 'library' && <LibraryScreen />}
+            {currentScreen === 'counter' && <CounterScreen />}
+            {currentScreen === 'reading' && <DhikrReadingScreen />}
+            {currentScreen === 'completion' && <CompletionScreen />}
+            {currentScreen === 'stats' && <StatsScreen />}
+            {currentScreen === 'settings' && <SettingsScreen />}
+            {currentScreen === 'relaxation' && <RelaxationScreen />}
+          </motion.div>
+        </AnimatePresence>
+        {showNav && <BottomNav />}
+        <InstallPrompt />
+      </div>
+    </SplashScreen>
   );
 }
