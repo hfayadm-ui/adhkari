@@ -6,6 +6,7 @@ import { IslamicIcon } from '@/components/dhikr/islamic-icons';
 import { Volume2, VolumeX, Type, RotateCcw, MapPin, ChevronDown, Search, Check, Sun, Moon, Download, Upload, Bell } from '@/components/dhikr/islamic-icons';
 import { countries, CityData, fetchPrayerTimes } from '@/lib/dhikr-data';
 import { useState, useEffect, useMemo, useRef } from 'react';
+import GoogleLogin from '@/components/auth/google-login';
 
 function getFontClass(font: ArabicFont): string {
   const map: Record<ArabicFont, string> = {
@@ -138,6 +139,11 @@ export default function SettingsScreen() {
       </header>
 
       <main className='flex-1 px-4 pt-3 space-y-3'>
+        {/* Google Login */}
+        <div style={{ animationDelay: '0.05s' }}>
+          <GoogleLogin fontVar={fontVar} />
+        </div>
+
         {/* Mode Toggle */}
         <SettingRow delay={0.01}>
           <div className='flex items-center justify-between'>

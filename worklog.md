@@ -241,3 +241,65 @@ Stage Summary:
 - نظام تحديات أسبوعية كامل: إنشاء، تتبع تقدم، حذف، حالة إكمال خضراء
 - تصنيف تذييل القرآن بـ5 أذكار قابل للقراءة من المكتبة
 - بناء ناجح بدون أخطاء
+
+---
+Task ID: 9
+Agent: Super Z (Main)
+Task: حذف تذييل القرآن + تحسين إدخال الأذكار المخصصة + إدخال يدوي للأرقام
+
+Work Log:
+- حذفت تصنيف 'quran' من dhikrCategories في dhikr-data.ts
+- حذفت مصفوفة quranAdhkar بالكامل
+- حذفت case 'quran' من getAdhkarByCategory
+- أزلت استيراد quranAdhkar والحالة الخاصة لـ 'quran' من library-screen.tsx
+- أزلت 'quran': 'book-open' من categoryIconMap في reading-screen.tsx
+- حسّنت شريط إدخال الأذكار المخصصة في library-screen.tsx:
+  - استبدلت input بـ textarea مع زر مسح (X)
+  - أضفت أزرار سريعة للعدد (10, 33, 34, 100) كشرائح ذهبية
+  - أضفت حقل إدخال رقم مخصص جانبي
+  - تحسين زر الإضافة بعرض كامل وأيقونة
+  - تحسين قائمة الأذكار المضافة بتصنيف عددي ذهبي
+- أضفت إدخال الأرقام يدوياً في counter-screen.tsx:
+  - عند النقر على الرقم داخل الدائرة يظهر حقل إدخال
+  - أزرار تأكيد (Check) وإلغاء (X) بجانب الحقل
+  - يدعم Enter للتأكيد وEscape للإلغاء
+  - أيقونة قلم صغيرة تشير لإمكانية التعديل
+- أضفت أيقونات Pencil, LogOut, User إلى islamic-icons.tsx
+- البناء نجح بدون أخطاء
+
+Stage Summary:
+- تم حذف تصنيف تذييل القرآن من 3 ملفات
+- شريط إدخال الأذكار المخصصة بتصميم محسّن مع أزرار سريعة
+- إدخال يدوي للأرقام في شاشة المسبحة
+- بناء ناجح بدون أخطاء
+
+---
+Task ID: 10
+Agent: Super Z (Main)
+Task: إضافة تسجيل الدخول بحساب Google
+
+Work Log:
+- أنشأت /src/app/api/auth/[...nextauth]/route.ts:
+  - إعداد NextAuth v4 مع Google Provider
+  - استراتيجية JWT مع صلاحية 30 يوم
+  - حفظ معرف Google، الصورة، الاسم، البريد في token
+- أنشأت /src/components/auth/session-provider.tsx: غلاف client-side لـ NextAuth SessionProvider
+- حدّثت layout.tsx: غليف التطبيق بـ SessionProvider
+- أنشأت /src/components/auth/google-login.tsx:
+  - تصميم Glassmorphism إسلامي متناسق
+  - حالة عدم تسجيل: شريط Google الرسمي + فوائد (3 نقاط)
+  - حالة تسجيل: صورة المستخدم + اسم + بريد + مؤشر اتصال أخضر
+  - زر تسجيل خروج
+  - حالة تحميل (spinner)
+- أضفت المكون في settings-screen.tsx (أول قسم بعد العنوان)
+- حدّثت next.config.ts: سماح بصور Google (lh3.googleusercontent.com)
+- أضفت LogOut, User إلى islamic-icons.tsx
+- حدّثت .env: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, NEXTAUTH_SECRET
+- البناء نجح: مسار /api/auth/[...nextauth] يظهر كـ Dynamic
+
+Stage Summary:
+- تسجيل Google يعمل عبر NextAuth v4 + JWT
+- مكون تسجيل دخول بتصميم إسلامي زجاجي في الإعدادات
+- صورة المستخدم + اسم + بريد + حالة اتصال
+- البناء نجح بدون أخطاء
+- يجب إعداد بيانات Google OAuth في .env للاستخدام الفعلي
