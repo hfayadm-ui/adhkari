@@ -58,6 +58,9 @@ interface SelectedCity {
 }
 
 interface DhikrState {
+  // Best streak ever achieved
+  bestStreak: number;
+  updateBestStreak: () => void;
   // Navigation
   currentScreen: Screen;
   previousScreen: Screen | null;
@@ -94,6 +97,7 @@ interface DhikrState {
   streakDays: StreakDay[];
   setStreak: (streak: number) => void;
   useStreakFreeze: () => void;
+  ensureTodayRecord: () => void;
   resetStreakFreezeWeekly: () => void;
   treeLevel: number;
   setTreeLevel: (level: number) => void;
@@ -109,6 +113,8 @@ interface DhikrState {
   setFreeCounter: (n: number) => void;
   incrementFreeCounter: () => void;
   resetFreeCounter: () => void;
+  todayFreeClicks: number;
+  resetTodayFreeClicks: () => void;
   counterPresets: CounterPreset[];
   updatePreset: (id: string, current: number) => void;
 
@@ -227,11 +233,23 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
   },
 
   streak: load<number>('dz_streak', 0),
+  bestStreak: load<number>('dz_bestStreak', 0),
   streakFreezeAvailable: load<boolean>('dz_freezeAvail', true),
   streakFreezesLeft: load<number>('dz_freezesLeft', 2),
   lastActiveDate: load<string | null>('dz_lastActive', null),
   streakDays: load<StreakDay[]>('dz_streakDays', []),
-  setStreak: (streak) => { save('dz_streak', streak); set({ streak }); },
+  setStreak: (streak) => {
+    const best = Math.max(streak, useDhikrStore.getState().bestStreak);
+    save('dz_streak', streak);
+    save('dz_bestStreak', best);
+    set({ streak, bestStreak: best });
+  },
+  updateBestStreak: () => {
+    const s = useDhikrStore.getState();
+    const best = Math.max(s.streak, s.bestStreak);
+    save('dz_bestStreak', best);
+    set({ bestStreak: best });
+  },
   useStreakFreeze: () => {
     const state = get();
     if (state.streakFreezesLeft > 0) {
@@ -243,6 +261,20 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
     save('dz_freezesLeft', 2);
     save('dz_freezeAvail', true);
     set({ streakFreezesLeft: 2, streakFreezeAvailable: true });
+  },
+  ensureTodayRecord: () => {
+    const state = get();
+    const today = new Date().toDateString();
+    const exists = state.weeklyData.find(d => d.date === today);
+    if (!exists) {
+      const rec: DailyRecord = {
+        date: today, prayersCompleted: [], dhikrCount: 0,
+        freeCount: 0, sessionsCount: 0,
+      };
+      const week = [...state.weeklyData.slice(-6), rec];
+      save('dz_weekly', week);
+      set({ weeklyData: week });
+    }
   },
   treeLevel: load<number>('dz_treeLevel', 0),
   setTreeLevel: (level) => { save('dz_treeLevel', level); set({ treeLevel: level }); },
@@ -325,13 +357,32 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
   },
 
   freeCounter: load<number>('dz_freeCounter', 0),
+  todayFreeClicks: load<number>('dz_todayFreeClicks', 0),
   setFreeCounter: (n) => { save('dz_freeCounter', n); set({ freeCounter: n }); },
   incrementFreeCounter: () => {
-    const n = get().freeCounter + 1;
-    save('dz_freeCounter', n);
-    set({ freeCounter: n });
+    const state = get();
+    const n = state.freeCounter + 1;
+    const today = new Date().toDateString();
+    // Check if today's record exists, if not create it
+    const existing = state.weeklyData.find(d => d.date === today);
+    if (existing) {
+      const updated = state.weeklyData.map(d => d.date === today ? { ...d, freeCount: d.freeCount + 1 } : d);
+      save('dz_weekly', updated);
+      const todayClicks = (existing.freeCount || 0) + 1;
+      save('dz_freeCounter', n);
+      save('dz_todayFreeClicks', todayClicks);
+      set({ freeCounter: n, weeklyData: updated, todayFreeClicks: todayClicks });
+    } else {
+      const rec: DailyRecord = { date: today, prayersCompleted: state.completedPrayers, dhikrCount: 0, freeCount: 1, sessionsCount: 0 };
+      const week = [...state.weeklyData.slice(-6), rec];
+      save('dz_weekly', week);
+      save('dz_freeCounter', n);
+      save('dz_todayFreeClicks', 1);
+      set({ freeCounter: n, weeklyData: week, todayFreeClicks: 1 });
+    }
   },
   resetFreeCounter: () => { save('dz_freeCounter', 0); set({ freeCounter: 0 }); },
+  resetTodayFreeClicks: () => { save('dz_todayFreeClicks', 0); set({ todayFreeClicks: 0 }); },
   counterPresets: load<CounterPreset[]>('dz_presets', [
     { id: 'subhanallah', name: 'سبحان الله', target: 33, current: 0 },
     { id: 'alhamdulillah', name: 'الحمد لله', target: 33, current: 0 },

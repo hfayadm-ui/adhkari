@@ -5,17 +5,13 @@ import { useDhikrStore } from '@/lib/store';
 import { prayerDhikrGroups, getAdhkarByCategory, getCategoryName, treeIcons, treeNames } from '@/lib/dhikr-data';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
 import { Home, Share2, RotateCcw, Trophy, Star, Copy, Heart, Flame } from '@/components/dhikr/islamic-icons';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { getFontClass } from '@/lib/font-utils';
-import { handleSessionComplete } from '@/lib/smart-notifs';
 
 export default function CompletionScreen() {
   const { selectedPrayerIndex, selectedCategoryId, readingSource, setCurrentScreen, setCurrentDhikrIndex, setCurrentCount, setCompletedSet, streak, treeLevel, totalAllTime, completedPrayers, arabicFont } = useDhikrStore();
   const [copied, setCopied] = useState(false);
-
-  // Award garden plant on first completion today
-  useEffect(() => { handleSessionComplete(); }, []);
 
   const group = readingSource === 'prayer' ? prayerDhikrGroups[selectedPrayerIndex] : null;
   const title = readingSource === 'prayer' ? group?.prayerName ?? '' : getCategoryName(selectedCategoryId);

@@ -60,6 +60,15 @@ export default function Home() {
         }
       }
     }
+    // Ensure today's daily record exists for stats tracking
+    const store = useDhikrStore.getState();
+    store.ensureTodayRecord();
+    // Reset daily free clicks counter if new day
+    const lastFreeDate = localStorage.getItem('dz_freeClicksDate');
+    if (lastFreeDate !== today) {
+      localStorage.setItem('dz_freeClicksDate', today);
+      store.resetTodayFreeClicks();
+    }
     // Init smart notifications & check streak
     checkStreakOnOpen();
     initSmartNotifications();

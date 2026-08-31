@@ -162,7 +162,7 @@ export function initSmartNotifications() {
 }
 
 // Called when user completes a session to handle rewards
-export function handleSessionComplete() {
+export function handleSessionComplete(totalDhikrThisSession: number = 0) {
   const store = useDhikrStore.getState();
   const today = new Date().toDateString();
   const now = Date.now();
@@ -172,24 +172,18 @@ export function handleSessionComplete() {
   let updatedDays: { date: string; count: number }[];
 
   if (existingDay) {
-    updatedDays = store.streakDays.map(s => s.date === today ? { ...s, count: s.count + 1 } : s);
+    updatedDays = store.streakDays.map(s => s.date === today ? { ...s, count: s.count + totalDhikrThisSession } : s);
   } else {
-    updatedDays = [...store.streakDays.slice(-30), { date: today, count: 1 }];
-    // Keep last 30 days
+    updatedDays = [...store.streakDays.slice(-30), { date: today, count: totalDhikrThisSession }];
     if (updatedDays.length > 30) updatedDays = updatedDays.slice(-30);
   }
+  save('dz_streakDays', updatedDays);
 
   // Check if this is first activity today → award plant
   const isFirstToday = !existingDay;
   if (isFirstToday) {
     const plantType = getPlantForStreak(store.streak);
     store.addGardenPlant(plantType);
-    save('dz_streakDays', updatedDays);
-
-    // Track in weekly stats
-    store.incrementTodaySessions();
-    // Count actual dhikr from completed set
-    store.incrementTodayDhikr(store.completedSet.length);
 
     // Send garden reward notification
     if (store.notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
@@ -207,8 +201,6 @@ export function handleSessionComplete() {
       const msg = notificationMessages.streakMilestone(store.streak);
       sendBrowserNotification(msg.title, msg.body, `milestone-${store.streak}`);
     }
-  } else {
-    save('dz_streakDays', updatedDays);
   }
 
   // Track last active date

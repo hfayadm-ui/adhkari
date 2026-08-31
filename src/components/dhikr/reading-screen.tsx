@@ -21,7 +21,7 @@ export default function ReadingScreen() {
     setCurrentDhikrIndex, setCurrentCount, setCompletedSet, setCurrentScreen,
     completePrayer, addTodayRecord, setTreeLevel, setStreak, setTotalAllTime,
     completedPrayers, soundEnabled, vibrationEnabled, fontSize, themeColor, arabicFont,
-    toggleFavorite, isFavorite, customDhikr,
+    toggleFavorite, isFavorite, customDhikr, incrementTodayDhikr, incrementTodaySessions,
   } = useDhikrStore();
 
   const [showMotivation, setShowMotivation] = useState(false);
@@ -84,7 +84,10 @@ export default function ReadingScreen() {
     if (newCount >= currentDhikr.count) {
       const newSet = [...completedSet, currentDhikrIndex];
       setCompletedSet(newSet);
-      setTotalAllTime((useDhikrStore.getState().totalAllTime || 0) + currentDhikr.count);
+      const addedCount = currentDhikr.count;
+      setTotalAllTime((useDhikrStore.getState().totalAllTime || 0) + addedCount);
+      // Track daily dhikr count (actual repetitions)
+      useDhikrStore.getState().incrementTodayDhikr(addedCount);
       if (currentDhikrIndex + 1 < totalDhikr) {
         const q = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
         setCurrentQuote(q);
@@ -95,15 +98,33 @@ export default function ReadingScreen() {
           setCurrentCount(0);
         }, 2200);
       } else {
+        // Session complete — track session count
+        useDhikrStore.getState().incrementTodaySessions();
         if (readingSource === 'prayer' && prayerGroup) {
           const pid = prayerGroup.prayerId;
           completePrayer(pid);
-          if (completedPrayers.filter(p => !completedPrayers.includes(p)).length <= 1 || [...completedPrayers, pid].length >= 5) {
+          // Increment streak when all 5 prayers are completed
+          const newCompleted = [...completedPrayers, pid];
+          const allDone = newCompleted.length >= 5;
+          if (allDone) {
             setStreak(useDhikrStore.getState().streak + 1);
           }
         }
         setTreeLevel(Math.min(useDhikrStore.getState().treeLevel + 1, 7));
         addTodayRecord();
+        // Pass total dhikr count for this session to handleSessionComplete
+        const sessionTotal = newSet.reduce((sum, idx) => {
+          const item = readingSource === 'prayer'
+            ? prayerDhikrGroups[selectedPrayerIndex]?.dhikrList[idx]
+            : readingSource === 'custom'
+              ? customDhikrList[idx]
+              : categoryDhikrList[idx];
+          return sum + (item?.count || 0);
+        }, 0);
+        (async () => {
+          const { handleSessionComplete } = await import('@/lib/smart-notifs');
+          handleSessionComplete(sessionTotal);
+        })();
         setTimeout(() => setCurrentScreen('completion'), 800);
       }
     } else {

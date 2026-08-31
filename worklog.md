@@ -303,3 +303,49 @@ Stage Summary:
 - صورة المستخدم + اسم + بريد + حالة اتصال
 - البناء نجح بدون أخطاء
 - يجب إعداد بيانات Google OAuth في .env للاستخدام الفعلي
+
+---
+Task ID: 11
+Agent: Super Z (Main)
+Task: إحصائيات حقيقية + إضافات ضرورية
+
+Work Log:
+- أصلحت store.ts:
+  - أضفت bestStreak + updateBestStreak لتتبع أفضل سلسلة على الإطلاق
+  - أضفت ensureTodayRecord() لإنشاء سجل يومي تلقائياً عند فتح التطبيق
+  - أصلحت incrementFreeCounter() لتحديث freeCount في السجل اليومي (not cumulative)
+  - أضفت todayFreeClicks + resetTodayFreeClicks
+  - setStreak الآن يح تلقائياً update bestStreak
+- أصلحت smart-notifs.ts:
+  - handleSessionComplete يأخذ totalDhikrThisSession parameter
+  - أزلت تتبع mزدوج (incrementTodaySessions/incrementTodayDhikr) — الآن يتم في reading-screen
+  - streakDays.count الآن يتتبع العدد الفعلي لا عدد الجلسات
+- أصلحت reading-screen.tsx:
+  - أصلحت منطق السلسلة: كان يحتوي على tautology (filter(p => !includes(p)) دائماً فارغ)
+  - الآن يزيد السلسلة فقط عند إكمال جميع الصلوات الخمس
+  - incrementTodayDhikr يُستدعى عند إكمال كل ذكر بـ count الفعلي
+  - incrementTodaySessions يُستدعى عند إكمال الجلسة
+  - handleSessionComplete يُستدعى مباشرة مع إجمالي الأذكار الفعلي
+- أصلحت completion-screen.tsx:
+  - أزلت استدعاء handleSessionComplete المزدوج (الآن يتم من reading-screen)
+- أصلحت page.tsx:
+  - ensureTodayRecord() عند فتح التطبيق
+  - reset اليومي لـ todayFreeClicks عند يوم جديد
+- أعيد بناء stats-screen.tsx بالكامل:
+  - إحصائيات اليوم الحقيقية: إجمالي، صلوات، جلسات، أذكار من جلسات
+  - شريط تقدم الصلوات اليومية
+  - 4 بطاقات ملخص أسبوعي: سلسلة، إجمالي أسبوعي، معدل/يوم، أيام نشطة
+  - رسم بياني 7 أيام بأرقام حقيقية + نسبة إكمال الصلوات
+  - نظرة شهرية قابلة للتوسع (30 يوم) من streakDays
+  - شبكة حرارية شهرية 6×5 مع كثافة لونية
+  - أفضل يوم شهري
+  - التقدم العام: أفضل سلسلة، إجمالي، مستوى الشجرة، الحديقة، التحديات، المفضلة، الأذكار المخصصة
+  - الإنجاز التالي مع شريط تقدم
+  - 12 إنجاز حقيقي (3 جديدة: معدل 100/يوم، أفضل سلسلة 30، تحدي مكتمل)
+
+Stage Summary:
+- تتبع بيانات حقيقي: كل ذكر وكل نقرة في المسبحة تُسجّل في السجل اليومي
+- أفضل سلسلة على الإطلاق (bestStreak) تُحفظ تلقائياً
+- شاشة إحصائيات شاملة: يومي، أسبوعي، شهري
+- إصلاح منطق السلسلة (كان يزداد دائماً بسبب tautology)
+- بناء ناجح بدون أخطاء
