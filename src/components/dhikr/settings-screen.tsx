@@ -420,7 +420,7 @@ export default function SettingsScreen() {
             ].map(bg => (
               <button
                 key={bg.id}
-                onClick={() => { setSelectedBackground(bg.id); document.body.className = document.body.className.replace(/bg-app-\w+/g, ''); if (bg.id !== 'default') document.body.classList.add(`bg-app-${bg.id}`); }}
+                onClick={() => setSelectedBackground(bg.id)}
                 className={`relative rounded-xl overflow-hidden h-20 flex items-end p-2 transition-all ${selectedBackground === bg.id ? 'ring-2' : ''}`}
                 style={{
                   background: bg.preview,

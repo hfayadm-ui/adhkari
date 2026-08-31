@@ -78,7 +78,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body
         className={`${cairo.variable} ${amiri.variable} ${noto.variable} ${tajawal.variable} ${ibmPlex.variable} ${scheherazade.variable} antialiased`}
         style={{
-          background: 'var(--app-bg)',
+          backgroundColor: 'var(--app-bg)',
           color: 'var(--app-text)',
           minHeight: '100vh',
         }}
