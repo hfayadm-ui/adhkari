@@ -3,9 +3,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDhikrStore } from '@/lib/store';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
-import { Home, ChevronRight, Trees, Sparkles, Star, Lock, Droplets, Flower2, Leaf, Flame } from '@/components/dhikr/islamic-icons';
-import { useState, useEffect } from 'react';
+import { Home, ChevronRight, Trees, Sparkles, Star, Lock, Droplets, Flower2, Leaf, Flame, Check } from '@/components/dhikr/islamic-icons';
+import { useState } from 'react';
 import { getFontClass } from '@/lib/font-utils';
+import TreeVisualization, { treeConfigs } from '@/components/dhikr/tree-visualization';
 
 const plantConfig: Record<string, { label: string; icon: string; color: string; unlockDay: number; size: number }> = {
   seed:    { label: 'بذرة',     icon: 'circle-dot',  color: '#8B6914', unlockDay: 0,  size: 28 },
@@ -50,7 +51,7 @@ function GardenPlantSVG({ type, size, color, delay = 0 }: { type: string; size: 
 export default function GardenScreen() {
   const {
     setCurrentScreen, streak, gardenPlants, gardenLevel, arabicFont,
-    streakFreezesLeft, totalAllTime, streakDays,
+    streakFreezesLeft, totalAllTime, streakDays, selectedTree, setSelectedTree,
   } = useDhikrStore();
 
   const fontClass = getFontClass(arabicFont);
@@ -161,6 +162,61 @@ export default function GardenScreen() {
                 </motion.div>
                 <span className={`text-[9px] ${i === 6 ? 'app-text font-medium' : 'app-text-muted'}`} style={{ fontFamily: fontClass }}>{day.dayName}</span>
               </div>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className='glass-glow rounded-2xl p-4 relative overflow-hidden'>
+          <div className='islamic-shimmer absolute inset-0 pointer-events-none' />
+          <div className='relative z-10'>
+            <div className='flex items-center justify-between mb-2'>
+              <div className='flex items-center gap-2'>
+                <Trees className='w-4 h-4 text-emerald-500' />
+                <span className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>شجري</span>
+              </div>
+              <div className='flex items-center gap-1.5'>
+                <span className='text-[10px] app-text-muted'>{treeConfigs[selectedTree]?.label || ''}</span>
+                <div className='w-12 rounded-full h-1.5' style={{ background: 'var(--app-ring-track)' }}>
+                  <div className='h-1.5 rounded-full bg-emerald-500' style={{ width: `${Math.min(gardenLevel * 10, 100)}%` }} />
+                </div>
+              </div>
+            </div>
+            <div className='flex justify-center py-2'>
+              <TreeVisualization treeType={selectedTree} level={gardenLevel} size={180} />
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }} className='glass-card rounded-2xl p-4'>
+          <div className='flex items-center gap-2 mb-3'>
+            <Sparkles className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
+            <span className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>اختر شجرتك</span>
+          </div>
+          <div className='grid grid-cols-3 gap-2'>
+            {Object.entries(treeConfigs).map(([key, cfg]) => (
+              <button
+                key={key}
+                onClick={() => setSelectedTree(key)}
+                className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all ${selectedTree === key ? '' : 'app-surface app-surface-h'}`}
+                style={selectedTree === key
+                  ? { background: `${cfg.color}15`, border: `1px solid ${cfg.color}40` }
+                  : { border: '1px solid transparent' }
+                }
+              >
+                <div className='relative' style={{ width: 36, height: 36 }}>
+                  <TreeVisualization treeType={key} level={gardenLevel} size={36} />
+                  {selectedTree === key && (
+                    <motion.div
+                      initial={{ scale: 0 }} animate={{ scale: 1 }}
+                      className='absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center'
+                      style={{ background: cfg.color }}
+                    >
+                      <Check className='w-2.5 h-2.5 text-white' />
+                    </motion.div>
+                  )}
+                </div>
+                <span className={`text-[10px] ${selectedTree === key ? 'app-text' : 'app-text-muted'}`} style={{ fontFamily: fontClass }}>{cfg.label}</span>
+              </button>
             ))}
           </div>
         </motion.div>

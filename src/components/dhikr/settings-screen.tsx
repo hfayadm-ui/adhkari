@@ -44,7 +44,7 @@ export default function SettingsScreen() {
     arabicFont, setArabicFont,
     selectedCity, setSelectedCity, setPrayerTimes,
     streak, setStreak, treeLevel, setTreeLevel, resetDaily,
-    appMode, setAppMode,
+    appMode, setAppMode, selectedBackground, setSelectedBackground,
   } = useDhikrStore();
   const fontVar = getFontClass(arabicFont);
 
@@ -217,6 +217,44 @@ export default function SettingsScreen() {
                 <p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>قريباً - ستتوفر في تحديث لاحق</p>
               </div>
             </div>
+          </div>
+        </SettingRow>
+
+        {/* Background Selection */}
+        <SettingRow delay={0.21}>
+          <div className='flex items-center gap-3 mb-3'>
+            <div className='w-9 h-9 rounded-xl flex items-center justify-center' style={{ background: 'var(--gold-glow)' }}><IslamicIcon name='sparkles' className='w-4 h-4' color='var(--gold-accent)' /></div>
+            <div><p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>الخلفية</p><p className='app-text-2 text-[11px]' style={{ fontFamily: fontVar }}>اختر خلفية التطبيق</p></div>
+          </div>
+          <div className='grid grid-cols-2 gap-2'>
+            {[
+              { id: 'default', name: 'افتراضي', preview: 'radial-gradient(circle, rgba(197,160,89,0.1), transparent)' },
+              { id: 'stars', name: 'نجوم ليلية', preview: 'radial-gradient(1px 1px at 30% 30%, rgba(212,175,55,0.6), transparent), radial-gradient(1px 1px at 70% 60%, rgba(212,175,55,0.4), transparent)' },
+              { id: 'mosque', name: 'مسجد', preview: 'linear-gradient(180deg, transparent 40%, rgba(197,160,89,0.1) 100%)' },
+              { id: 'waves', name: 'أمواج ذهبية', preview: 'repeating-linear-gradient(135deg, transparent, transparent 8px, rgba(197,160,89,0.1) 8px, rgba(197,160,89,0.1) 10px)' },
+              { id: 'flowers', name: 'أزهار', preview: 'radial-gradient(circle, rgba(244,114,182,0.15), transparent), radial-gradient(circle at 70% 70%, rgba(167,139,250,0.15), transparent)' },
+              { id: 'dawn', name: 'فجر', preview: 'linear-gradient(180deg, transparent, rgba(251,191,36,0.1), rgba(249,115,22,0.1))' },
+              { id: 'night', name: 'ليلة هادئة', preview: 'linear-gradient(180deg, rgba(30,27,75,0.15), rgba(15,14,13,0.02))' },
+              { id: 'garden', name: 'حديقة', preview: 'radial-gradient(circle, rgba(16,185,129,0.12), transparent), radial-gradient(circle at 80% 80%, rgba(52,211,153,0.1), transparent)' },
+            ].map(bg => (
+              <button
+                key={bg.id}
+                onClick={() => { setSelectedBackground(bg.id); document.body.className = document.body.className.replace(/bg-app-\w+/g, ''); if (bg.id !== 'default') document.body.classList.add(`bg-app-${bg.id}`); }}
+                className={`relative rounded-xl overflow-hidden h-20 flex items-end p-2 transition-all ${selectedBackground === bg.id ? 'ring-2' : ''}`}
+                style={{
+                  background: bg.preview,
+                  border: selectedBackground === bg.id ? '1px solid var(--gold-border)' : '1px solid var(--glass-border)',
+                  boxShadow: selectedBackground === bg.id ? '0 0 0 2px var(--gold-accent)' : 'none',
+                }}
+              >
+                <span className={`text-[10px] ${selectedBackground === bg.id ? 'app-text font-medium' : 'app-text-2'}`} style={{ fontFamily: fontVar }}>{bg.name}</span>
+                {selectedBackground === bg.id && (
+                  <div className='absolute top-1.5 left-1.5 w-4 h-4 rounded-full flex items-center justify-center' style={{ background: 'var(--gold-accent)' }}>
+                    <Check className='w-2.5 h-2.5 text-white' />
+                  </div>
+                )}
+              </button>
+            ))}
           </div>
         </SettingRow>
 

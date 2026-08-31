@@ -169,6 +169,12 @@ interface DhikrState {
   gardenLevel: number;
   addGardenPlant: (type: GardenPlant['type']) => void;
 
+  // Appearance
+  selectedBackground: string;
+  setSelectedBackground: (bg: string) => void;
+  selectedTree: string;
+  setSelectedTree: (tree: string) => void;
+
   // Smart Notifications
   morningDone: boolean;
   eveningDone: boolean;
@@ -496,6 +502,12 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
     save('dz_gardenLevel', newLevel);
     set({ gardenPlants: plants, gardenLevel: newLevel });
   },
+
+  // Appearance
+  selectedBackground: load<string>('dz_bg', 'default'),
+  setSelectedBackground: (bg) => { save('dz_bg', bg); set({ selectedBackground: bg }); },
+  selectedTree: load<string>('dz_tree', 'olive'),
+  setSelectedTree: (tree) => { save('dz_tree', tree); set({ selectedTree: tree }); },
 
   // Smart Notifications
   morningDone: load<boolean>('dz_morningDone', false),

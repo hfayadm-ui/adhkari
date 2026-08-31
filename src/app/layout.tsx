@@ -66,7 +66,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <meta name="format-detection" content="telephone=no" />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var m=localStorage.getItem('dz_appMode');if(m!=='"light"')document.documentElement.classList.add('dark')}catch(e){document.documentElement.classList.add('dark')}})()`,
+            __html: `(function(){try{var m=localStorage.getItem('dz_appMode');if(m!=='"light"')document.documentElement.classList.add('dark')}catch(e){document.documentElement.classList.add('dark')}var b=localStorage.getItem('dz_bg');if(b&&b!=='"default"')document.body.classList.add('bg-app-'+JSON.parse(b))})()`,
           }}
         />
         <script
