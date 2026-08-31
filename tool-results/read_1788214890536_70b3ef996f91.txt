@@ -1,0 +1,662 @@
+     1→'use client';
+     2→
+     3→import { motion } from 'framer-motion';
+     4→import { useMemo } from 'react';
+     5→
+     6→interface TreeVizProps {
+     7→  treeType: string;
+     8→  level: number; // 0-10
+     9→  size?: number;
+    10→}
+    11→
+    12→type TreeStage = {
+    13→  trunk: number;
+    14→  canopy: number;
+    15→  fruits: number;
+    16→  flowers: number;
+    17→  color: string;
+    18→  trunkColor: string;
+    19→  fruitColor: string;
+    20→  flowerColor: string;
+    21→  label: string;
+    22→  lightColor2: string;
+    23→  lightColor3: string;
+    24→};
+    25→
+    26→export const treeConfigs: Record<string, TreeStage> = {
+    27→  olive:   { trunk: 0.3, canopy: 0.5, fruits: 0, flowers: 0, color: '#4ade80', trunkColor: '#78716c', fruitColor: '#1a1a1a', flowerColor: '#fbbf24', label: 'زيتونة', lightColor2: '#86efac', lightColor3: '#fde68a' },
+    28→  palm:    { trunk: 0.5, canopy: 0.6, fruits: 0, flowers: 0, color: '#22c55e', trunkColor: '#a16207', fruitColor: '#d97706', flowerColor: '#fde047', label: 'نخلة', lightColor2: '#fbbf24', lightColor3: '#a3e635' },
+    29→  cedar:   { trunk: 0.4, canopy: 0.7, fruits: 0, flowers: 0, color: '#16a34a', trunkColor: '#57534e', fruitColor: '#166534', flowerColor: '#86efac', label: 'أرز', lightColor2: '#6ee7b7', lightColor3: '#c4b5fd' },
+    30→  pomegranate: { trunk: 0.25, canopy: 0.55, fruits: 0, flowers: 0, color: '#f43f5e', trunkColor: '#78716c', fruitColor: '#dc2626', flowerColor: '#fb7185', label: 'رمان', lightColor2: '#fda4af', lightColor3: '#fbbf24' },
+    31→  sidrah:  { trunk: 0.35, canopy: 0.6, fruits: 0, flowers: 0, color: '#10b981', trunkColor: '#92400e', fruitColor: '#fbbf24', flowerColor: '#a78bfa', label: 'سدرة', lightColor2: '#c084fc', lightColor3: '#fde68a' },
+    32→  willow:  { trunk: 0.3, canopy: 0.65, fruits: 0, flowers: 0, color: '#34d399', trunkColor: '#6b7280', fruitColor: '#6ee7b7', flowerColor: '#a7f3d0', label: 'صفصاف', lightColor2: '#5eead4', lightColor3: '#f0abfc' },
+    33→};
+    34→
+    35→/* =============================================
+    36→   Helper: darken/lighten hex color
+    37→   ============================================= */
+    38→function adjustColor(hex: string, amount: number): string {
+    39→  const num = parseInt(hex.replace('#', ''), 16);
+    40→  const r = Math.min(255, Math.max(0, ((num >> 16) & 0xff) + amount));
+    41→  const g = Math.min(255, Math.max(0, ((num >> 8) & 0xff) + amount));
+    42→  const b = Math.min(255, Math.max(0, (num & 0xff) + amount));
+    43→  return `rgb(${r},${g},${b})`;
+    44→}
+    45→
+    46→/* =============================================
+    47→   Ground / Soil Component
+    48→   ============================================= */
+    49→function Ground({ s, color, growth }: { s: number; color: string; growth: number }) {
+    50→  if (growth < 0.05) return null;
+    51→  const w = s * 0.5 * Math.min(growth * 2, 1);
+    52→  return (
+    53→    <ellipse cx={s / 2} cy={s * 0.93} rx={w} ry={s * 0.035}
+    54→      fill={`url(#groundGrad-${color.replace('#', '')})`} opacity={Math.min(growth * 2, 0.6)} />
+    55→  );
+    56→}
+    57→
+    58→/* =============================================
+    59→   Olive Tree — detailed with branches & leaves
+    60→   ============================================= */
+    61→function OliveTree({ cfg, growth, s }: { cfg: TreeStage; growth: number; s: number }) {
+    62→  const trunkH = s * cfg.trunk * Math.min(growth, 1);
+    63→  const canopyR = s * cfg.canopy * Math.min(growth * 0.8, 0.8);
+    64→  const hasFruits = growth >= 0.5;
+    65→  const hasFlowers = growth >= 0.3 && growth < 0.5;
+    66→  const canopyY = s * 0.92 - trunkH;
+    67→  const branchLen = canopyR * 0.4;
+    68→
+    69→  return (
+    70→    <svg viewBox={`0 0 ${s} ${s}`} className='w-full h-full'>
+    71→      <defs>
+    72→        <radialGradient id={`og-${s}`} cx='50%' cy='40%'>
+    73→          <stop offset='0%' stopColor={adjustColor(cfg.color, 40)} />
+    74→          <stop offset='60%' stopColor={cfg.color} />
+    75→          <stop offset='100%' stopColor={adjustColor(cfg.color, -30)} />
+    76→        </radialGradient>
+    77→      </defs>
+    78→
+    79→      {/* Shadow */}
+    80→      <Ground s={s} color={cfg.color} growth={growth} />
+    81→
+    82→      {/* Trunk with texture */}
+    83→      <path
+    84→        d={`M${s/2-3} ${s*0.92} Q${s/2-7} ${s*0.92-trunkH*0.4} ${s/2-5} ${s*0.92-trunkH*0.7} Q${s/2-3} ${canopyY+4} ${s/2-2} ${canopyY} Q${s/2} ${canopyY-6} ${s/2+2} ${canopyY} Q${s/2+3} ${canopyY+4} ${s/2+5} ${s*0.92-trunkH*0.7} Q${s/2+7} ${s*0.92-trunkH*0.4} ${s/2+3} ${s*0.92}`}
+    85→        fill={cfg.trunkColor}
+    86→      />
+    87→      {/* Trunk highlight */}
+    88→      <path
+    89→        d={`M${s/2-1} ${s*0.9} Q${s/2-3} ${s*0.92-trunkH*0.4} ${s/2-2} ${canopyY+8}`}
+    90→        stroke={adjustColor(cfg.trunkColor, 30)} strokeWidth='1.5' fill='none' opacity='0.5'
+    91→      />
+    92→
+    93→      {/* Branches */}
+    94→      {growth >= 0.3 && <>
+    95→        <path d={`M${s/2-2} ${canopyY+trunkH*0.15} Q${s/2-branchLen*0.6} ${canopyY+trunkH*0.1} ${s/2-branchLen} ${canopyY+trunkH*0.05}`} stroke={cfg.trunkColor} strokeWidth='2' fill='none' strokeLinecap='round' />
+    96→        <path d={`M${s/2+2} ${canopyY+trunkH*0.2} Q${s/2+branchLen*0.5} ${canopyY+trunkH*0.12} ${s/2+branchLen*0.8} ${canopyY+trunkH*0.08}`} stroke={cfg.trunkColor} strokeWidth='1.5' fill='none' strokeLinecap='round' />
+    97→      </>}
+    98→
+    99→      {/* Canopy — layered circles with gradient */}
+   100→      <circle cx={s/2-canopyR*0.25} cy={canopyY-canopyR*0.15} r={canopyR*0.72} fill={`url(#og-${s})`} opacity='0.85' />
+   101→      <circle cx={s/2+canopyR*0.3} cy={canopyY-canopyR*0.1} r={canopyR*0.68} fill={`url(#og-${s})`} opacity='0.9' />
+   102→      <circle cx={s/2} cy={canopyY-canopyR*0.35} r={canopyR*0.62} fill={`url(#og-${s})`} opacity='0.95' />
+   103→      <circle cx={s/2-canopyR*0.1} cy={canopyY-canopyR*0.25} r={canopyR*0.55} fill={cfg.color} />
+   104→      <circle cx={s/2+canopyR*0.15} cy={canopyY-canopyR*0.3} r={canopyR*0.5} fill={cfg.color} opacity='0.9' />
+   105→      {/* Canopy highlight */}
+   106→      <circle cx={s/2-canopyR*0.1} cy={canopyY-canopyR*0.45} r={canopyR*0.3} fill='white' opacity='0.08' />
+   107→
+   108→      {/* Fruits */}
+   109→      {hasFruits && [...Array(Math.floor(growth * 10))].map((_, i) => {
+   110→        const angle = (i / 10) * Math.PI * 2 + 0.3;
+   111→        const r = canopyR * (0.25 + (i % 3) * 0.15);
+   112→        const cx = s/2 + Math.cos(angle) * r;
+   113→        const cy = (canopyY - canopyR * 0.25) + Math.sin(angle) * r * 0.65;
+   114→        return (
+   115→          <g key={i}>
+   116→            <circle cx={cx} cy={cy} r={s * 0.016} fill={cfg.fruitColor} opacity='0.85' />
+   117→            <circle cx={cx - 1} cy={cy - 1} r={s * 0.006} fill='white' opacity='0.3' />
+   118→          </g>
+   119→        );
+   120→      })}
+   121→
+   122→      {/* Flowers */}
+   123→      {hasFlowers && [...Array(5)].map((_, i) => {
+   124→        const angle = (i / 5) * Math.PI * 2;
+   125→        const r = canopyR * 0.45;
+   126→        return (
+   127→          <g key={i} transform={`translate(${s/2 + Math.cos(angle)*r},${(canopyY-canopyR*0.25)+Math.sin(angle)*r*0.6})`}>
+   128→            {[0,1,2,3,4].map(p => (
+   129→              <circle key={p} cx={Math.cos(p*1.256)*s*0.01} cy={Math.sin(p*1.256)*s*0.01} r={s*0.005} fill={cfg.flowerColor} opacity='0.8' />
+   130→            ))}
+   131→            <circle r={s*0.004} fill='#fbbf24' />
+   132→          </g>
+   133→        );
+   134→      })}
+   135→    </svg>
+   136→  );
+   137→}
+   138→
+   139→/* =============================================
+   140→   Palm Tree — curved trunk with detailed fronds
+   141→   ============================================= */
+   142→function PalmTree({ cfg, growth, s }: { cfg: TreeStage; growth: number; s: number }) {
+   143→  const trunkH = s * cfg.trunk * Math.min(growth, 1);
+   144→  const leafLen = s * 0.28 * Math.min(growth, 1);
+   145→  const hasFruits = growth >= 0.6;
+   146→  const topY = s * 0.92 - trunkH;
+   147→  const curve = 6 * Math.min(growth, 1);
+   148→
+   149→  return (
+   150→    <svg viewBox={`0 0 ${s} ${s}`} className='w-full h-full'>
+   151→      <defs>
+   152→        <linearGradient id={`pg-${s}`} x1='0' y1='0' x2='1' y2='0'>
+   153→          <stop offset='0%' stopColor={adjustColor(cfg.trunkColor, -15)} />
+   154→          <stop offset='50%' stopColor={cfg.trunkColor} />
+   155→          <stop offset='100%' stopColor={adjustColor(cfg.trunkColor, -20)} />
+   156→        </linearGradient>
+   157→      </defs>
+   158→
+   159→      <Ground s={s} color={cfg.color} growth={growth} />
+   160→
+   161→      {/* Trunk — curved with segments */}
+   162→      <path
+   163→        d={`M${s/2-2} ${s*0.92} C${s/2+curve*0.5} ${s*0.92-trunkH*0.3} ${s/2+curve*0.8} ${s*0.92-trunkH*0.6} ${s/2+curve*0.6} ${topY}`}
+   164→        stroke={`url(#pg-${s})`} strokeWidth={s * 0.032} fill='none' strokeLinecap='round'
+   165→      />
+   166→      {/* Trunk segment lines */}
+   167→      {[...Array(Math.floor(growth * 8) + 1)].map((_, i) => {
+   168→        const t = (i + 1) / 9;
+   169→        const x = (s/2-2) + (curve*0.8) * t;
+   170→        const y = s*0.92 - trunkH * t;
+   171→        return <line key={i} x1={x - s*0.015} y1={y} x2={x + s*0.015} y2={y} stroke={adjustColor(cfg.trunkColor, -25)} strokeWidth='0.8' opacity='0.4' />;
+   172→      })}
+   173→
+   174→      {/* Coconuts / fruits at top */}
+   175→      {hasFruits && <>
+   176→        <circle cx={s/2+curve*0.6-3} cy={topY+5} r={s*0.016} fill={cfg.fruitColor} />
+   177→        <circle cx={s/2+curve*0.6+3} cy={topY+6} r={s*0.014} fill={cfg.fruitColor} opacity='0.9' />
+   178→        <circle cx={s/2+curve*0.6} cy={topY+8} r={s*0.015} fill={adjustColor(cfg.fruitColor, -15)} />
+   179→      </>}
+   180→
+   181→      {/* Palm fronds — detailed with midrib */}
+   182→      {[...Array(Math.min(Math.floor(growth * 7) + 1, 7))].map((_, i) => {
+   183→        const angle = -Math.PI/2 + (i - 3) * 0.5;
+   184→        const tipX = (s/2+curve*0.6) + Math.cos(angle) * leafLen;
+   185→        const tipY = topY + Math.sin(angle) * leafLen;
+   186→        const droop = 0.15 + (i % 2) * 0.1;
+   187→        const cp1x = (s/2+curve*0.6) + Math.cos(angle + 0.25) * leafLen * 0.55;
+   188→        const cp1y = topY + Math.sin(angle + 0.25) * leafLen * 0.55 - leafLen * 0.15;
+   189→        const cp2x = (s/2+curve*0.6) + Math.cos(angle - droop) * leafLen * 0.65;
+   190→        const cp2y = topY + Math.sin(angle - droop) * leafLen * 0.65 + leafLen * 0.1;
+   191→        const midX = (s/2+curve*0.6) + Math.cos(angle - 0.05) * leafLen * 0.5;
+   192→        const midY = topY + Math.sin(angle - 0.05) * leafLen * 0.5 - leafLen * 0.05;
+   193→        return (
+   194→          <g key={i}>
+   195→            {/* Leaf shape */}
+   196→            <path
+   197→              d={`M${s/2+curve*0.6} ${topY} Q${cp1x} ${cp1y} ${tipX} ${tipY} Q${cp2x} ${cp2y} ${s/2+curve*0.6} ${topY}`}
+   198→              fill={cfg.color} opacity={0.6 + i * 0.05}
+   199→            />
+   200→            {/* Midrib */}
+   201→            <line x1={s/2+curve*0.6} y1={topY} x2={midX} y2={midY} stroke={adjustColor(cfg.color, -20)} strokeWidth='0.8' opacity='0.5' />
+   202→          </g>
+   203→        );
+   204→      })}
+   205→    </svg>
+   206→  );
+   207→}
+   208→
+   209→/* =============================================
+   210→   Pomegranate Tree — with red blossoms
+   211→   ============================================= */
+   212→function PomegranateTree({ cfg, growth, s }: { cfg: TreeStage; growth: number; s: number }) {
+   213→  const trunkH = s * cfg.trunk * Math.min(growth, 1);
+   214→  const canopyR = s * cfg.canopy * Math.min(growth * 0.7, 0.7);
+   215→  const canopyY = s * 0.92 - trunkH;
+   216→  const hasFruits = growth >= 0.5;
+   217→  const hasFlowers = growth >= 0.3;
+   218→
+   219→  return (
+   220→    <svg viewBox={`0 0 ${s} ${s}`} className='w-full h-full'>
+   221→      <defs>
+   222→        <radialGradient id={`pm-${s}`} cx='50%' cy='35%'>
+   223→          <stop offset='0%' stopColor={adjustColor(cfg.color, 20)} />
+   224→          <stop offset='100%' stopColor={adjustColor(cfg.color, -20)} />
+   225→        </radialGradient>
+   226→      </defs>
+   227→
+   228→      <Ground s={s} color={cfg.color} growth={growth} />
+   229→
+   230→      {/* Trunk — slightly gnarled */}
+   231→      <path d={`M${s/2-2} ${s*0.92} Q${s/2-4} ${s*0.92-trunkH*0.5} ${s/2-1} ${canopyY+4} Q${s/2+1} ${canopyY} ${s/2+2} ${canopyY+4} Q${s/2+4} ${s*0.92-trunkH*0.5} ${s/2+2} ${s*0.92}`} fill={cfg.trunkColor} />
+   232→
+   233→      {/* Canopy */}
+   234→      <circle cx={s/2} cy={canopyY-canopyR*0.25} r={canopyR*0.9} fill={`url(#pm-${s})`} opacity='0.8' />
+   235→      <circle cx={s/2-canopyR*0.3} cy={canopyY-canopyR*0.1} r={canopyR*0.7} fill={`url(#pm-${s})`} opacity='0.85' />
+   236→      <circle cx={s/2+canopyR*0.25} cy={canopyY-canopyR*0.2} r={canopyR*0.75} fill={cfg.color} opacity='0.9' />
+   237→      <circle cx={s/2} cy={canopyY-canopyR*0.4} r={canopyR*0.45} fill={cfg.color} opacity='0.95' />
+   238→
+   239→      {/* Red flowers */}
+   240→      {hasFlowers && [...Array(Math.floor(growth * 6))].map((_, i) => {
+   241→        const angle = (i / 6) * Math.PI * 2 + 0.5;
+   242→        const r = canopyR * (0.4 + (i % 2) * 0.2);
+   243→        const cx = s/2 + Math.cos(angle) * r;
+   244→        const cy = (canopyY-canopyR*0.2) + Math.sin(angle) * r * 0.6;
+   245→        return (
+   246→          <g key={i}>
+   247→            {[0,1,2,3,4,5].map(p => (
+   248→              <ellipse key={p} cx={cx + Math.cos(p*1.047)*s*0.008} cy={cy + Math.sin(p*1.047)*s*0.008} rx={s*0.006} ry={s*0.004} fill={cfg.flowerColor} opacity='0.85' transform={`rotate(${p*30},${cx},${cy})`} />
+   249→            ))}
+   250→            <circle cx={cx} cy={cy} r={s*0.004} fill='#fbbf24' />
+   251→          </g>
+   252→        );
+   253→      })}
+   254→
+   255→      {/* Pomegranate fruits */}
+   256→      {hasFruits && [...Array(Math.floor(growth * 5))].map((_, i) => {
+   257→        const angle = (i / 5) * Math.PI * 2 + 1;
+   258→        const r = canopyR * 0.5;
+   259→        const cx = s/2 + Math.cos(angle) * r;
+   260→        const cy = (canopyY-canopyR*0.2) + Math.sin(angle) * r * 0.55;
+   261→        return (
+   262→          <g key={i}>
+   263→            <circle cx={cx} cy={cy} r={s*0.02} fill={cfg.fruitColor} />
+   264→            <circle cx={cx-1} cy={cy-1.5} r={s*0.005} fill='#fca5a5' opacity='0.5' />
+   265→            {/* Crown */}
+   266→            <path d={`M${cx-3} ${cy-s*0.02} L${cx} ${cy-s*0.026} L${cx+3} ${cy-s*0.02}`} stroke={cfg.fruitColor} strokeWidth='0.8' fill='none' />
+   267→          </g>
+   268→        );
+   269→      })}
+   270→    </svg>
+   271→  );
+   272→}
+   273→
+   274→/* =============================================
+   275→   Cedar Tree — layered conifer triangles
+   276→   ============================================= */
+   277→function CedarTree({ cfg, growth, s }: { cfg: TreeStage; growth: number; s: number }) {
+   278→  const trunkH = s * cfg.trunk * Math.min(growth, 1);
+   279→  const canopyR = s * cfg.canopy * Math.min(growth * 0.7, 0.7);
+   280→  const canopyY = s * 0.92 - trunkH;
+   281→  const layers = Math.min(Math.floor(growth * 5) + 1, 5);
+   282→
+   283→  return (
+   284→    <svg viewBox={`0 0 ${s} ${s}`} className='w-full h-full'>
+   285→      <defs>
+   286→        <linearGradient id={`cd-${s}`} x1='0' y1='0' x2='0' y2='1'>
+   287→          <stop offset='0%' stopColor={adjustColor(cfg.color, 20)} />
+   288→          <stop offset='100%' stopColor={adjustColor(cfg.color, -15)} />
+   289→        </linearGradient>
+   290→      </defs>
+   291→
+   292→      <Ground s={s} color={cfg.color} growth={growth} />
+   293→
+   294→      {/* Trunk */}
+   295→      <rect x={s/2-s*0.018} y={canopyY+canopyR*0.1} width={s*0.036} height={trunkH-canopyR*0.1} rx={s*0.008} fill={cfg.trunkColor} />
+   296→
+   297→      {/* Conifer layers */}
+   298→      {[...Array(layers)].map((_, i) => {
+   299→        const w = canopyR * (1.3 - i * 0.18);
+   300→        const y = canopyY - i * canopyR * 0.3;
+   301→        const h = canopyR * 0.45;
+   302→        return (
+   303→          <g key={i}>
+   304→            <polygon
+   305→              points={`${s/2},${y-h} ${s/2-w/2},${y+w*0.05} ${s/2+w/2},${y+w*0.05}`}
+   306→              fill={`url(#cd-${s})`} opacity={0.75 + i * 0.05}
+   307→            />
+   308→            {/* Snow/highlight on edge */}
+   309→            <polygon
+   310→              points={`${s/2},${y-h} ${s/2-w*0.15},${y-h+h*0.4} ${s/2-w*0.05},${y-h+h*0.3}`}
+   311→              fill='white' opacity={0.06}
+   312→            />
+   313→          </g>
+   314→        );
+   315→      })}
+   316→    </svg>
+   317→  );
+   318→}
+   319→
+   320→/* =============================================
+   321→   Sidrah (Sidra) Tree — mystical with purple accents
+   322→   ============================================= */
+   323→function SidrahTree({ cfg, growth, s }: { cfg: TreeStage; growth: number; s: number }) {
+   324→  const trunkH = s * cfg.trunk * Math.min(growth, 1);
+   325→  const canopyR = s * cfg.canopy * Math.min(growth * 0.7, 0.7);
+   326→  const canopyY = s * 0.92 - trunkH;
+   327→  const hasFruits = growth >= 0.5;
+   328→
+   329→  return (
+   330→    <svg viewBox={`0 0 ${s} ${s}`} className='w-full h-full'>
+   331→      <defs>
+   332→        <radialGradient id={`sd-${s}`} cx='50%' cy='40%'>
+   333→          <stop offset='0%' stopColor={adjustColor(cfg.color, 30)} />
+   334→          <stop offset='70%' stopColor={cfg.color} />
+   335→          <stop offset='100%' stopColor={adjustColor(cfg.color, -25)} />
+   336→        </radialGradient>
+   337→      </defs>
+   338→
+   339→      <Ground s={s} color={cfg.color} growth={growth} />
+   340→
+   341→      {/* Trunk — mystical curved */}
+   342→      <path d={`M${s/2-3} ${s*0.92} Q${s/2-5} ${s*0.92-trunkH*0.5} ${s/2-2} ${s*0.92-trunkH*0.8} Q${s/2} ${canopyY-5} ${s/2+2} ${canopyY} Q${s/2+4} ${canopyY+3} ${s/2+3} ${s*0.92}`} fill={cfg.trunkColor} />
+   343→
+   344→      {/* Canopy — wide spreading */}
+   345→      <circle cx={s/2-canopyR*0.35} cy={canopyY-canopyR*0.05} r={canopyR*0.65} fill={`url(#sd-${s})`} opacity='0.8' />
+   346→      <circle cx={s/2+canopyR*0.35} cy={canopyY-canopyR*0.05} r={canopyR*0.65} fill={`url(#sd-${s})`} opacity='0.8' />
+   347→      <circle cx={s/2} cy={canopyY-canopyR*0.3} r={canopyR*0.7} fill={`url(#sd-${s})`} opacity='0.9' />
+   348→      <circle cx={s/2} cy={canopyY-canopyR*0.1} r={canopyR*0.55} fill={cfg.color} />
+   349→
+   350→      {/* Mystical purple fruits */}
+   351→      {hasFruits && [...Array(Math.floor(growth * 7))].map((_, i) => {
+   352→        const angle = (i / 7) * Math.PI * 2;
+   353→        const r = canopyR * (0.3 + (i % 3) * 0.15);
+   354→        const cx = s/2 + Math.cos(angle) * r;
+   355→        const cy = (canopyY - canopyR * 0.15) + Math.sin(angle) * r * 0.55;
+   356→        return (
+   357→          <g key={i}>
+   358→            <circle cx={cx} cy={cy} r={s*0.014} fill={i % 2 === 0 ? cfg.fruitColor : cfg.flowerColor} opacity='0.85' />
+   359→            <circle cx={cx-0.5} cy={cy-0.5} r={s*0.005} fill='white' opacity='0.25' />
+   360→          </g>
+   361→        );
+   362→      })}
+   363→    </svg>
+   364→  );
+   365→}
+   366→
+   367→/* =============================================
+   368→   Willow Tree — drooping branches
+   369→   ============================================= */
+   370→function WillowTree({ cfg, growth, s }: { cfg: TreeStage; growth: number; s: number }) {
+   371→  const trunkH = s * cfg.trunk * Math.min(growth, 1);
+   372→  const canopyR = s * cfg.canopy * Math.min(growth * 0.7, 0.7);
+   373→  const canopyY = s * 0.92 - trunkH;
+   374→  const branchCount = Math.min(Math.floor(growth * 8) + 1, 8);
+   375→
+   376→  return (
+   377→    <svg viewBox={`0 0 ${s} ${s}`} className='w-full h-full'>
+   378→      <defs>
+   379→        <radialGradient id={`wl-${s}`} cx='50%' cy='30%'>
+   380→          <stop offset='0%' stopColor={adjustColor(cfg.color, 25)} />
+   381→          <stop offset='100%' stopColor={adjustColor(cfg.color, -15)} />
+   382→        </radialGradient>
+   383→      </defs>
+   384→
+   385→      <Ground s={s} color={cfg.color} growth={growth} />
+   386→
+   387→      {/* Trunk */}
+   388→      <path d={`M${s/2-3} ${s*0.92} Q${s/2-4} ${s*0.92-trunkH*0.5} ${s/2-2} ${canopyY+5} Q${s/2} ${canopyY} ${s/2+2} ${canopyY+5} Q${s/2+4} ${s*0.92-trunkH*0.5} ${s/2+3} ${s*0.92}`} fill={cfg.trunkColor} />
+   389→
+   390→      {/* Canopy dome */}
+   391→      <circle cx={s/2} cy={canopyY - canopyR * 0.2} r={canopyR * 0.6} fill={`url(#wl-${s})`} opacity='0.85' />
+   392→      <circle cx={s/2 - canopyR * 0.2} cy={canopyY - canopyR * 0.1} r={canopyR * 0.5} fill={cfg.color} opacity='0.8' />
+   393→      <circle cx={s/2 + canopyR * 0.2} cy={canopyY - canopyR * 0.1} r={canopyR * 0.5} fill={cfg.color} opacity='0.8' />
+   394→
+   395→      {/* Drooping willow branches */}
+   396→      {branchCount > 2 && [...Array(branchCount)].map((_, i) => {
+   397→        const angle = (i / branchCount) * Math.PI - Math.PI * 0.05;
+   398→        const startX = s/2 + Math.cos(angle) * canopyR * 0.4;
+   399→        const startY = canopyY - canopyR * 0.1;
+   400→        const endX = startX + Math.cos(angle) * canopyR * 0.3 + (i % 2 ? 3 : -3);
+   401→        const endY = s * 0.88;
+   402→        const cpX = startX + (endX - startX) * 0.3 + (i % 2 ? 5 : -5);
+   403→        const cpY = startY + (endY - startY) * 0.2;
+   404→        return (
+   405→          <path key={i}
+   406→            d={`M${startX} ${startY} Q${cpX} ${cpY} ${endX} ${endY}`}
+   407→            stroke={cfg.color} strokeWidth='1.2' fill='none' opacity={0.4 + (i % 3) * 0.1}
+   408→            strokeLinecap='round'
+   409→          />
+   410→        );
+   411→      })}
+   412→
+   413→      {/* Small leaves on branches */}
+   414→      {growth >= 0.4 && [...Array(Math.min(Math.floor(growth * 12), 12))].map((_, i) => {
+   415→        const t = (i + 1) / 13;
+   416→        const angle = (i / 12) * Math.PI;
+   417→        const bx = s/2 + Math.cos(angle) * canopyR * (0.3 + t * 0.3);
+   418→        const by = canopyY + t * (s * 0.88 - canopyY);
+   419→        return <circle key={i} cx={bx} cy={by} r={s * 0.008} fill={cfg.flowerColor} opacity='0.5' />;
+   420→      })}
+   421→    </svg>
+   422→  );
+   423→}
+   424→
+   425→/* =============================================
+   426→   Magical Orbiting Lights — firefly-like particles
+   427→   ============================================= */
+   428→function OrbitingLights({ size, color, growth, cfg, count = 6 }: {
+   429→  size: number; color: string; growth: number; cfg: TreeStage; count?: number;
+   430→}) {
+   431→  if (growth < 0.15) return null;
+   432→
+   433→  const actualCount = Math.min(Math.floor(growth * count) + 1, count);
+   434→  const baseRadius = size * 0.4;
+   435→
+   436→  /* Generate deterministic but varied light configs */
+   437→  const lights = useMemo(() => {
+   438→    return [...Array(actualCount)].map((_, i) => {
+   439→      const colors = [color, cfg.lightColor2, cfg.lightColor3, '#fbbf24', '#ffffff'];
+   440→      return {
+   441→        duration: 5 + (i * 2.3) % 6,
+   442→        radiusX: baseRadius * (0.75 + (i % 4) * 0.12),
+   443→        radiusY: baseRadius * (0.45 + (i % 3) * 0.1),
+   444→        startAngle: (i / actualCount) * Math.PI * 2,
+   445→        particleSize: 2.5 + (i % 3) * 1.5,
+   446→        color: colors[i % colors.length],
+   447→        direction: i % 3 === 0 ? -1 : 1,
+   448→        wobble: 0.1 + (i % 4) * 0.05,
+   449→        pulseSpeed: 1.5 + (i % 3) * 0.8,
+   450→      };
+   451→    });
+   452→  }, [actualCount, baseRadius, color, cfg.lightColor2, cfg.lightColor3]);
+   453→
+   454→  return (
+   455→    <>
+   456→      {lights.map((light, i) => (
+   457→        <motion.div
+   458→          key={i}
+   459→          className='absolute rounded-full pointer-events-none'
+   460→          style={{
+   461→            width: light.particleSize,
+   462→            height: light.particleSize,
+   463→            background: `radial-gradient(circle, white 0%, ${light.color} 40%, transparent 70%)`,
+   464→            boxShadow: `0 0 ${light.particleSize * 2}px ${light.color}, 0 0 ${light.particleSize * 5}px ${light.color}60, 0 0 ${light.particleSize * 8}px ${light.color}25`,
+   465→          }}
+   466→          animate={{
+   467→            x: light.direction === 1
+   468→              ? [
+   469→                  Math.cos(light.startAngle) * light.radiusX,
+   470→                  Math.cos(light.startAngle + Math.PI * 0.5) * light.radiusX,
+   471→                  Math.cos(light.startAngle + Math.PI) * light.radiusX,
+   472→                  Math.cos(light.startAngle + Math.PI * 1.5) * light.radiusX,
+   473→                  Math.cos(light.startAngle + Math.PI * 2) * light.radiusX,
+   474→                ]
+   475→              : [
+   476→                  Math.cos(light.startAngle) * light.radiusX,
+   477→                  Math.cos(light.startAngle - Math.PI * 0.5) * light.radiusX,
+   478→                  Math.cos(light.startAngle - Math.PI) * light.radiusX,
+   479→                  Math.cos(light.startAngle - Math.PI * 1.5) * light.radiusX,
+   480→                  Math.cos(light.startAngle - Math.PI * 2) * light.radiusX,
+   481→                ],
+   482→            y: [
+   483→              Math.sin(light.startAngle) * light.radiusY,
+   484→              Math.sin(light.startAngle + Math.PI * 0.5 * light.direction) * light.radiusY * (1 + light.wobble),
+   485→              Math.sin(light.startAngle + Math.PI) * light.radiusY,
+   486→              Math.sin(light.startAngle + Math.PI * 1.5 * light.direction) * light.radiusY * (1 - light.wobble),
+   487→              Math.sin(light.startAngle + Math.PI * 2) * light.radiusY,
+   488→            ],
+   489→            opacity: [0.3, 0.9, 0.5, 1, 0.3],
+   490→            scale: [0.6, 1.3, 0.8, 1.15, 0.6],
+   491→          }}
+   492→          transition={{
+   493→            duration: light.duration,
+   494→            repeat: Infinity,
+   495→            ease: 'easeInOut',
+   496→            delay: i * 0.7,
+   497→          }}
+   498→        />
+   499→      ))}
+   500→    </>
+   501→  );
+   502→}
+   503→
+   504→/* =============================================
+   505→   Floating Sparkle Particles
+   506→   ============================================= */
+   507→function FloatingParticles({ size, color, growth }: { size: number; color: string; growth: number }) {
+   508→  if (growth < 0.3) return null;
+   509→
+   510→  const particles = useMemo(() => {
+   511→    return [...Array(8)].map((_, i) => ({
+   512→      x: size * (0.15 + (i * 0.1) % 0.7),
+   513→      y: size * (0.1 + (i * 0.11) % 0.7),
+   514→      size: 1 + (i % 3),
+   515→      delay: i * 0.8,
+   516→      duration: 3 + (i % 4),
+   517→      drift: 5 + (i % 3) * 3,
+   518→    }));
+   519→  }, [size]);
+   520→
+   521→  return (
+   522→    <>
+   523→      {particles.map((p, i) => (
+   524→        <motion.div
+   525→          key={i}
+   526→          className='absolute rounded-full pointer-events-none'
+   527→          style={{
+   528→            width: p.size,
+   529→            height: p.size,
+   530→            background: color,
+   531→            boxShadow: `0 0 ${p.size * 2}px ${color}80`,
+   532→          }}
+   533→          animate={{
+   534→            y: [p.y, p.y - p.drift, p.y - p.drift * 0.5, p.y],
+   535→            x: [p.x, p.x + p.drift * 0.5, p.x - p.drift * 0.3, p.x],
+   536→            opacity: [0, 0.7, 0.4, 0],
+   537→            scale: [0, 1, 0.8, 0],
+   538→          }}
+   539→          transition={{
+   540→            duration: p.duration,
+   541→            repeat: Infinity,
+   542→            ease: 'easeInOut',
+   543→            delay: p.delay,
+   544→          }}
+   545→        />
+   546→      ))}
+   547→    </>
+   548→  );
+   549→}
+   550→
+   551→/* =============================================
+   552→   Main Tree Visualization Component
+   553→   ============================================= */
+   554→export default function TreeVisualization({ treeType, level, size = 200 }: TreeVizProps) {
+   555→  const cfg = treeConfigs[treeType] || treeConfigs.olive;
+   556→  const growth = Math.min(level / 10, 1);
+   557→  const s = size;
+   558→
+   559→  /* Deterministic sway based on treeType */
+   560→  const swayAmount = growth > 0.1 ? (1.5 + growth * 2) : 0;
+   561→  const swayDuration = 3.5 + (treeType === 'palm' ? 1.5 : treeType === 'willow' ? 1 : 0);
+   562→  const lightCount = level >= 7 ? 10 : level >= 4 ? 7 : level >= 2 ? 5 : 3;
+   563→
+   564→  /* Render tree SVG based on type */
+   565→  const treeSVG = useMemo(() => {
+   566→    const props = { cfg, growth, s };
+   567→    switch (treeType) {
+   568→      case 'palm': return <PalmTree {...props} />;
+   569→      case 'olive': return <OliveTree {...props} />;
+   570→      case 'pomegranate': return <PomegranateTree {...props} />;
+   571→      case 'cedar': return <CedarTree {...props} />;
+   572→      case 'sidrah': return <SidrahTree {...props} />;
+   573→      case 'willow': return <WillowTree {...props} />;
+   574→      default: return <OliveTree {...props} />;
+   575→    }
+   576→  }, [treeType, cfg, growth, s]);
+   577→
+   578→  return (
+   579→    <motion.div
+   580→      initial={{ scale: 0.8, opacity: 0 }}
+   581→      animate={{ scale: 1, opacity: 1 }}
+   582→      transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+   583→      style={{ width: size, height: size }}
+   584→      className='relative flex items-center justify-center'
+   585→    >
+   586→      {/* Outer atmospheric glow */}
+   587→      <motion.div
+   588→        className='absolute rounded-full pointer-events-none'
+   589→        style={{
+   590→          inset: -size * 0.18,
+   591→          background: `radial-gradient(ellipse at 50% 45%, ${cfg.color}18, ${cfg.color}08 40%, transparent 65%)`,
+   592→        }}
+   593→        animate={growth > 0.2 ? {
+   594→          scale: [1, 1.12, 0.95, 1.08, 1],
+   595→          opacity: [0.4, 0.7, 0.5, 0.65, 0.4],
+   596→        } : {}}
+   597→        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+   598→      />
+   599→
+   600→      {/* Second glow layer — colored aura */}
+   601→      {growth > 0.4 && (
+   602→        <motion.div
+   603→          className='absolute rounded-full pointer-events-none'
+   604→          style={{
+   605→            inset: -size * 0.08,
+   606→            background: `radial-gradient(ellipse at 50% 40%, ${cfg.lightColor2}12, transparent 60%)`,
+   607→          }}
+   608→          animate={{
+   609→            scale: [1, 1.08, 1],
+   610→            opacity: [0.3, 0.6, 0.3],
+   611→          }}
+   612→          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+   613→        />
+   614→      )}
+   615→
+   616→      {/* Swaying tree container — organic movement */}
+   617→      <motion.div
+   618→        className='relative'
+   619→        style={{ width: s, height: s, transformOrigin: '50% 95%' }}
+   620→        animate={swayAmount > 0 ? {
+   621→          rotate: [0, swayAmount, -swayAmount * 0.3, -swayAmount, swayAmount * 0.3, 0],
+   622→        } : {}}
+   623→        transition={{
+   624→          duration: swayDuration,
+   625→          repeat: Infinity,
+   626→          ease: [0.45, 0.05, 0.55, 0.95],
+   627→        }}
+   628→      >
+   629→        {/* Tree SVG */}
+   630→        {treeSVG}
+   631→
+   632→        {/* Inner canopy glow — breathing */}
+   633→        {growth > 0.3 && (
+   634→          <motion.div
+   635→            className='absolute pointer-events-none rounded-full'
+   636→            style={{
+   637→              width: s * 0.45,
+   638→              height: s * 0.4,
+   639→              top: s * 0.08,
+   640→              left: s * 0.28,
+   641→              background: `radial-gradient(circle, ${cfg.color}25, transparent 65%)`,
+   642→            }}
+   643→            animate={{
+   644→              opacity: [0.2, 0.6, 0.3, 0.55, 0.2],
+   645→              scale: [0.95, 1.05, 1, 1.03, 0.95],
+   646→            }}
+   647→            transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+   648→          />
+   649→        )}
+   650→      </motion.div>
+   651→
+   652→      {/* Orbiting magical lights */}
+   653→      <OrbitingLights size={s} color={cfg.color} growth={growth} cfg={cfg} count={lightCount} />
+   654→
+   655→      {/* Floating sparkle particles */}
+   656→      <FloatingParticles size={s} color={cfg.color} growth={growth} />
+   657→    </motion.div>
+   658→  );
+   659→}
+   660→
+   661→export type { TreeStage };
+   662→
