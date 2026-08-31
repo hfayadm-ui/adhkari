@@ -38,13 +38,6 @@ interface Challenge {
   completed: boolean;
 }
 
-export interface GardenPlant {
-  id: string;
-  type: 'seed' | 'sprout' | 'flower' | 'tree' | 'palm' | 'rose' | 'jasmine' | 'lotus';
-  dayEarned: number;
-  unlockedAt: string;
-}
-
 export interface StreakDay {
   date: string;
   count: number; // dhikr count that day
@@ -164,13 +157,7 @@ interface DhikrState {
   toggleFavorite: (dhikrText: string) => void;
   isFavorite: (dhikrText: string) => boolean;
 
-  // Garden
-  gardenPlants: GardenPlant[];
-  gardenLevel: number;
-  addGardenPlant: (type: GardenPlant['type']) => void;
   // Dev helpers
-  setGardenLevel: (level: number) => void;
-  setGardenPlants: (plants: GardenPlant[]) => void;
   setBestStreak: (n: number) => void;
   setStreakDays: (days: StreakDay[]) => void;
   setTodayFreeClicks: (n: number) => void;
@@ -492,25 +479,6 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
   },
   isFavorite: (dhikrText) => get().favorites.includes(dhikrText),
 
-  // Garden
-  gardenPlants: load<GardenPlant[]>('dz_gardenPlants', []),
-  gardenLevel: load<number>('dz_gardenLevel', 0),
-  addGardenPlant: (type) => {
-    const state = get();
-    const plant: GardenPlant = {
-      id: crypto.randomUUID(),
-      type,
-      dayEarned: state.streak,
-      unlockedAt: new Date().toISOString(),
-    };
-    const plants = [...state.gardenPlants, plant];
-    const newLevel = Math.min(Math.floor(plants.length / 3) + 1, 10);
-    save('dz_gardenPlants', plants);
-    save('dz_gardenLevel', newLevel);
-    set({ gardenPlants: plants, gardenLevel: newLevel });
-  },
-  setGardenLevel: (level) => { save('dz_gardenLevel', level); set({ gardenLevel: level }); },
-  setGardenPlants: (plants) => { save('dz_gardenPlants', plants); set({ gardenPlants: plants }); },
   setBestStreak: (n) => { save('dz_bestStreak', n); set({ bestStreak: n }); },
   setStreakDays: (days) => { save('dz_streakDays', days); set({ streakDays: days }); },
   setTodayFreeClicks: (n) => { set({ todayFreeClicks: n }); },

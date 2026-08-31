@@ -1,10 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useDhikrStore, ArabicFont, GardenPlant, StreakDay } from '@/lib/store';
+import { useDhikrStore, ArabicFont, StreakDay } from '@/lib/store';
 import { getFontClass } from '@/lib/font-utils';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
-import { Volume2, VolumeX, Type, RotateCcw, MapPin, ChevronDown, Search, Check, Sun, Moon, Download, Upload, Bell, Flame, Trees, Sparkles, Trophy, Plus, Trash2, Zap } from '@/components/dhikr/islamic-icons';
+import { Volume2, VolumeX, Type, RotateCcw, MapPin, ChevronDown, Search, Check, Sun, Moon, Download, Upload, Bell, Flame, Sparkles, Trophy, Zap } from '@/components/dhikr/islamic-icons';
 import { countries, CityData, fetchPrayerTimes } from '@/lib/dhikr-data';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import GoogleLogin from '@/components/auth/google-login';
@@ -40,19 +40,6 @@ function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
 }
 
 /* ========== Developer Panel ========== */
-const plantTypes: { type: GardenPlant['type']; label: string; color: string }[] = [
-  { type: 'seed', label: 'بذرة', color: '#8B6914' },
-  { type: 'sprout', label: 'نبتة', color: '#22c55e' },
-  { type: 'flower', label: 'زهرة', color: '#f472b6' },
-  { type: 'rose', label: 'وردة', color: '#ef4444' },
-  { type: 'jasmine', label: 'ياسمين', color: '#fbbf24' },
-  { type: 'lotus', label: 'لوتس', color: '#818cf8' },
-  { type: 'tree', label: 'شجرة', color: '#10b981' },
-  { type: 'palm', label: 'نخلة', color: '#059669' },
-];
-
-const gardenNames = ['أرض قاحلة', 'حديقة ناشئة', 'حديقة خضراء', 'حديقة الزهور', 'جنة صغيرة', 'روضة رائعة', 'حديقة النخيل', 'جنة المؤمن', 'حديقة الخلد', 'جنة الفردوس'];
-
 function DevSlider({ label, value, min, max, step = 1, onChange, color = 'var(--gold-accent)' }: {
   label: string; value: number; min: number; max: number; step?: number; onChange: (v: number) => void; color?: string;
 }) {
@@ -76,19 +63,9 @@ function DevSlider({ label, value, min, max, step = 1, onChange, color = 'var(--
 function DevPanel({ fontVar }: { fontVar: string }) {
   const store = useDhikrStore();
   const [open, setOpen] = useState(false);
-  const [tab, setTab] = useState<'stats' | 'garden' | 'streak'>('stats');
+  const [tab, setTab] = useState<'stats' | 'streak'>('stats');
   const [genDays, setGenDays] = useState(7);
   const [genCount, setGenCount] = useState(100);
-
-  const addPlant = (type: GardenPlant['type']) => {
-    const plant: GardenPlant = {
-      id: crypto.randomUUID(),
-      type,
-      dayEarned: store.streak,
-      unlockedAt: new Date().toISOString(),
-    };
-    store.setGardenPlants([...store.gardenPlants, plant]);
-  };
 
   const generateStreakDays = () => {
     const days: StreakDay[] = [];
@@ -100,23 +77,9 @@ function DevPanel({ fontVar }: { fontVar: string }) {
     store.setStreakDays(days);
   };
 
-  const clearPlants = () => store.setGardenPlants([]);
-  const fillAllPlants = () => {
-    const plants: GardenPlant[] = [];
-    const d = new Date();
-    for (let i = 0; i < 24; i++) {
-      const typeIdx = Math.min(Math.floor(i / 3), plantTypes.length - 1);
-      d.setDate(d.getDate() - (i % 3 === 0 ? 1 : 0));
-      plants.push({ id: crypto.randomUUID(), type: plantTypes[typeIdx].type, dayEarned: i + 1, unlockedAt: d.toISOString() });
-    }
-    store.setGardenPlants(plants);
-  };
-
   const resetAll = () => {
     store.setStreak(0);
     store.setTreeLevel(0);
-    store.setGardenLevel(0);
-    store.setGardenPlants([]);
     store.setBestStreak(0);
     store.setTotalAllTime(0);
     store.setStreakDays([]);
@@ -151,7 +114,7 @@ function DevPanel({ fontVar }: { fontVar: string }) {
 
           {/* Tabs */}
           <div className='flex gap-1 p-1 rounded-xl' style={{ background: 'var(--app-ring-track)' }}>
-            {([['stats', 'الإحصائيات', Trophy], ['garden', 'الحديقة', Trees], ['streak', 'السلسلة', Flame]] as const).map(([id, label, Icon]) => (
+            {([['stats', 'الإحصائيات', Trophy], ['streak', 'السلسلة', Flame]] as const).map(([id, label, Icon]) => (
               <button key={id} onClick={() => setTab(id)}
                 className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all flex items-center justify-center gap-1.5 ${tab === id ? 'text-white shadow-md' : 'app-text-2'}`}
                 style={tab === id ? { background: 'linear-gradient(135deg, #ef4444, #dc2626)' } : {}}>
@@ -167,7 +130,6 @@ function DevPanel({ fontVar }: { fontVar: string }) {
               <DevSlider label='السلسلة الحالية (streak)' value={store.streak} min={0} max={60} onChange={v => store.setStreak(v)} color='#f97316' />
               <DevSlider label='أفضل سلسلة (bestStreak)' value={store.bestStreak} min={0} max={100} onChange={v => store.setBestStreak(v)} color='#ef4444' />
               <DevSlider label='مستوى الشجرة (treeLevel)' value={store.treeLevel} min={0} max={7} onChange={v => store.setTreeLevel(v)} color='#10b981' />
-              <DevSlider label='مستوى الحديقة (gardenLevel)' value={store.gardenLevel} min={0} max={10} onChange={v => store.setGardenLevel(v)} color='#22c55e' />
               <DevSlider label='الإجمالي الكلي (totalAllTime)' value={store.totalAllTime} min={0} max={50000} step={100} onChange={v => store.setTotalAllTime(v)} color='var(--gold-accent)' />
               <DevSlider label='العداد الحر (freeCounter)' value={store.freeCounter} min={0} max={10000} step={50} onChange={v => store.setFreeCounter(v)} color='#818cf8' />
               <DevSlider label='نقرات اليوم الحر (todayFreeClicks)' value={store.todayFreeClicks} min={0} max={500} step={10} onChange={v => store.setTodayFreeClicks(v)} color='#a78bfa' />
@@ -183,67 +145,6 @@ function DevPanel({ fontVar }: { fontVar: string }) {
                   <TreeVisualization treeType={store.selectedTree} level={store.treeLevel} size={120} />
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* === GARDEN TAB === */}
-          {tab === 'garden' && (
-            <div className='space-y-3'>
-              <div className='flex items-center justify-between'>
-                <div>
-                  <p className='app-text text-sm font-medium' style={{ fontFamily: fontVar }}>{gardenNames[Math.min(store.gardenLevel, gardenNames.length - 1)]}</p>
-                  <p className='app-text-2 text-[10px]'>{store.gardenPlants.length} نبات — مستوى {store.gardenLevel}</p>
-                </div>
-                <DevSlider label='المستوى' value={store.gardenLevel} min={0} max={10} onChange={v => store.setGardenLevel(v)} color='#22c55e' />
-              </div>
-
-              {/* Add plant buttons */}
-              <div>
-                <p className='app-text-2 text-xs mb-2'>إضافة نبات:</p>
-                <div className='flex flex-wrap gap-1.5'>
-                  {plantTypes.map(p => (
-                    <button key={p.type} onClick={() => addPlant(p.type)}
-                      className='px-2.5 py-1.5 rounded-lg text-[10px] font-medium transition-all hover:scale-105'
-                      style={{ background: `${p.color}15`, color: p.color, border: `1px solid ${p.color}30` }}>
-                      {p.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Quick actions */}
-              <div className='flex gap-2'>
-                <button onClick={fillAllPlants}
-                  className='flex-1 py-2 rounded-xl text-xs font-medium text-white flex items-center justify-center gap-1'
-                  style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}>
-                  <Plus className='w-3.5 h-3.5' /> ملء 24 نبات
-                </button>
-                <button onClick={clearPlants}
-                  className='flex-1 py-2 rounded-xl text-xs font-medium text-red-300 flex items-center justify-center gap-1 bg-red-500/10 border border-red-500/20'>
-                  <Trash2 className='w-3.5 h-3.5' /> مسح الكل
-                </button>
-              </div>
-
-              {/* Plant grid preview */}
-              {store.gardenPlants.length > 0 && (
-                <div className='p-3 rounded-xl glass-card'>
-                  <p className='app-text-2 text-xs mb-2'>معاينة النباتات ({store.gardenPlants.length}):</p>
-                  <div className='grid grid-cols-4 gap-2'>
-                    {store.gardenPlants.slice(-12).map((p) => {
-                      const pt = plantTypes.find(t => t.type === p.type);
-                      return (
-                        <div key={p.id} className='flex flex-col items-center gap-0.5 p-1.5 rounded-xl' style={{ background: `${pt?.color || '#10b981'}10` }}>
-                          <div className='w-3 h-3 rounded-full' style={{ background: pt?.color || '#10b981' }} />
-                          <span className='text-[8px] app-text-muted'>{pt?.label}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {store.gardenPlants.length > 12 && (
-                    <p className='text-[9px] app-text-muted text-center mt-1'>+{store.gardenPlants.length - 12} آخر</p>
-                  )}
-                </div>
-              )}
             </div>
           )}
 

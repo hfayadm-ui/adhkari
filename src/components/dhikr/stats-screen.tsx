@@ -27,7 +27,7 @@ function formatDateShort(dateStr: string): string {
 export default function StatsScreen() {
   const {
     streak, bestStreak, treeLevel, totalAllTime, completedPrayers,
-    weeklyData, arabicFont, gardenPlants, gardenLevel, streakFreezesLeft,
+    weeklyData, arabicFont, streakFreezesLeft,
     favorites, customDhikr, challenges, streakDays,
   } = useDhikrStore();
 
@@ -96,14 +96,6 @@ export default function StatsScreen() {
   const completedChallenges = challenges.filter(c => c.completed).length;
   const activeChallenges = challenges.filter(c => !c.completed).length;
 
-  // === GARDEN ===
-  const plantTypes: Record<string, number> = {};
-  gardenPlants.forEach(p => { plantTypes[p.type] = (plantTypes[p.type] || 0) + 1; });
-  const rarestPlant = gardenPlants.reduce((best, p) => {
-    const order = ['seed', 'sprout', 'flower', 'rose', 'jasmine', 'lotus', 'tree', 'palm'];
-    return order.indexOf(p.type) > order.indexOf(best.type) ? p : best;
-  }, gardenPlants[0]);
-
   // === ACHIEVEMENTS (real milestones) ===
   const achievements = [
     { name: 'البداية', done: streak >= 1, icon: 'flame', desc: 'أول يوم نشاط' },
@@ -112,9 +104,7 @@ export default function StatsScreen() {
     { name: 'نصف شهر', done: streak >= 15, icon: 'trophy', desc: '15 يوم متتالي' },
     { name: 'شجرة مثمرة', done: treeLevel >= 5, icon: 'tree-pine', desc: 'مستوى الشجرة 5' },
     { name: 'ألف ذكر', done: totalAllTime >= 1000, icon: 'trending-up', desc: '1000 ذكر إجمالي' },
-    { name: 'حديقة', done: gardenPlants.length >= 3, icon: 'trees', desc: '3 نباتات فأكثر' },
     { name: '10 آلاف', done: totalAllTime >= 10000, icon: 'award', desc: '10000 ذكر إجمالي' },
-    { name: 'مستوى 5', done: gardenLevel >= 5, icon: 'sparkles', desc: 'حديقة المستوى 5' },
     { name: 'مئة ذكر/يوم', done: weekAvgPerDay >= 100, icon: 'zap', desc: 'معدل 100 يومياً' },
     { name: 'أفضل سلسلة', done: bestStreak >= 30, icon: 'trophy', desc: 'أفضل سلسلة 30 يوم' },
     { name: 'تحدي مكتمل', done: completedChallenges >= 1, icon: 'award', desc: 'إكمال تحدي واحد' },
@@ -330,7 +320,7 @@ export default function StatsScreen() {
                 <Trees className='w-4 h-4 text-emerald-400' />
                 <span className='app-text-2 text-sm' style={{ fontFamily: fontVar }}>حديقتي</span>
               </div>
-              <span className='font-bold text-emerald-400'>{gardenPlants.length} نبات (مستوى {gardenLevel})</span>
+              <span className='font-bold text-emerald-400'>شجرة مستوى {treeLevel}</span>
             </div>
             <div className='flex items-center justify-between p-2.5 rounded-xl app-surface'>
               <div className='flex items-center gap-2.5'>

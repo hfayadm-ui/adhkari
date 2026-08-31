@@ -50,29 +50,11 @@ const notificationMessages = {
     ],
     icon: 'sparkles',
   },
-  gardenReward: (plantType: string) => ({
-    title: 'نبتة جديدة في حديقتك!',
-    body: `حصلت على ${plantType} جديدة. استمر للحصول على المزيد!`,
-    icon: 'flower2',
-    urgency: 'high' as const,
-  }),
 };
 
 // Get current hour in user's timezone
 function getCurrentHour(): number {
   return new Date().getHours();
-}
-
-// Determine which plant type to award based on streak
-function getPlantForStreak(streak: number): 'seed' | 'sprout' | 'flower' | 'tree' | 'palm' | 'rose' | 'jasmine' | 'lotus' {
-  if (streak >= 21) return 'palm';
-  if (streak >= 14) return 'tree';
-  if (streak >= 10) return 'lotus';
-  if (streak >= 7) return 'jasmine';
-  if (streak >= 5) return 'rose';
-  if (streak >= 3) return 'flower';
-  if (streak >= 1) return 'sprout';
-  return 'seed';
 }
 
 // Request notification permission
@@ -179,23 +161,9 @@ export function handleSessionComplete(totalDhikrThisSession: number = 0) {
   }
   save('dz_streakDays', updatedDays);
 
-  // Check if this is first activity today → award plant
+  // Check if this is first activity today → streak milestone notifications
   const isFirstToday = !existingDay;
   if (isFirstToday) {
-    const plantType = getPlantForStreak(store.streak);
-    store.addGardenPlant(plantType);
-
-    // Send garden reward notification
-    if (store.notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
-      const plantNames: Record<string, string> = {
-        seed: 'بذرة', sprout: 'نبتة', flower: 'زهرة', tree: 'شجرة',
-        palm: 'نخلة', rose: 'وردة', jasmine: 'ياسمين', lotus: 'زهر اللوتس',
-      };
-      const msg = notificationMessages.gardenReward(plantNames[plantType] || plantType);
-      sendBrowserNotification(msg.title, msg.body, 'garden-reward');
-    }
-
-    // Streak milestone notifications
     const milestones = [3, 7, 14, 21, 30, 50, 100];
     if (milestones.includes(store.streak)) {
       const msg = notificationMessages.streakMilestone(store.streak);
