@@ -1,0 +1,79 @@
+{
+  "success": true,
+  "query": "Forest app pomodoro focus tree illustration style",
+  "count": 10,
+  "ranked": false,
+  "captioned_count": 0,
+  "results": [
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/8e1ce0136128.png",
+      "caption": "",
+      "source": "forestapp.cc",
+      "original_width": "1300px",
+      "original_height": "1001px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/043285eee3b1.jpg",
+      "caption": "",
+      "source": "How-To Geek",
+      "original_width": "705px",
+      "original_height": "1500px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/32957b2ea6ab.jpeg",
+      "caption": "",
+      "source": "Reddit",
+      "original_width": "640px",
+      "original_height": "1385px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/c877ad12930a.png",
+      "caption": "",
+      "source": "Medium",
+      "original_width": "1400px",
+      "original_height": "1193px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/2fd0bfa5cfae.jpeg",
+      "caption": "",
+      "source": "Product Hunt",
+      "original_width": "690px",
+      "original_height": "1227px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/d31294019bcc.png",
+      "caption": "",
+      "source": "Medium",
+      "original_width": "1400px",
+      "original_height": "1050px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/6957a7638c28.png",
+      "caption": "",
+      "source": "Lifestack",
+      "original_width": "1440px",
+      "original_height": "900px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/53a0ec9b2fc7.png",
+      "caption": "",
+      "source": "Jotform",
+      "original_width": "1400px",
+      "original_height": "1080px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/c6d77ef84446.png",
+      "caption": "",
+      "source": "Learning With Angie",
+      "original_width": "1600px",
+      "original_height": "1000px"
+    },
+    {
+      "original_url": "https://z-cdn.chatglm.cn/image-search-mcp/images-ppt/e77b5f2787e0.jpg",
+      "caption": "",
+      "source": "Better Habits Hub",
+      "original_width": "1920px",
+      "original_height": "1080px"
+    }
+  ]
+}
