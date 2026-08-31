@@ -10,6 +10,111 @@ import BreathingCard from '@/components/dhikr/breathing-card';
 import { shareAsImage } from '@/lib/share-card';
 import { requestNotificationPermission } from '@/lib/smart-notifs';
 
+const homePlantColors: Record<string, string> = {
+  seed: '#8B6914', sprout: '#22c55e', flower: '#f472b6', rose: '#ef4444',
+  jasmine: '#fbbf24', lotus: '#818cf8', tree: '#10b981', palm: '#059669',
+};
+
+function MiniPlantSVG({ type, color }: { type: string; color: string }) {
+  switch (type) {
+    case 'seed':
+      return (
+        <svg viewBox='0 0 100 100' className='w-full h-full'>
+          <ellipse cx='50' cy='72' rx='8' ry='11' fill={color} opacity='0.9' />
+          <path d='M50 61 Q48 55 44 50' stroke='#22c55e' strokeWidth='2.5' fill='none' strokeLinecap='round' />
+          <path d='M44 50 Q40 48 42 44 Q46 46 44 50' fill='#22c55e' opacity='0.8' />
+        </svg>
+      );
+    case 'sprout':
+      return (
+        <svg viewBox='0 0 100 100' className='w-full h-full'>
+          <path d='M50 83 Q50 60 50 45' stroke='#16a34a' strokeWidth='2.5' fill='none' strokeLinecap='round' />
+          <path d='M50 55 Q35 45 30 35 Q38 38 50 48' fill={color} opacity='0.9' />
+          <path d='M50 48 Q65 38 70 28 Q62 32 50 42' fill={color} opacity='0.85' />
+        </svg>
+      );
+    case 'flower':
+      return (
+        <svg viewBox='0 0 100 100' className='w-full h-full'>
+          <path d='M50 86 Q50 60 50 50' stroke='#16a34a' strokeWidth='2' fill='none' />
+          {[0, 60, 120, 180, 240, 300].map((a, i) => {
+            const r = (a * Math.PI) / 180;
+            return <ellipse key={i} cx={50 + Math.cos(r) * 10} cy={42 + Math.sin(r) * 10} rx='6' ry='9' fill={color} opacity='0.85' transform={`rotate(${a}, ${50 + Math.cos(r) * 10}, ${42 + Math.sin(r) * 10})`} />;
+          })}
+          <circle cx='50' cy='42' r='5' fill='#fbbf24' />
+        </svg>
+      );
+    case 'rose':
+      return (
+        <svg viewBox='0 0 100 100' className='w-full h-full'>
+          <path d='M50 88 Q49 65 50 50' stroke='#16a34a' strokeWidth='2' fill='none' />
+          <ellipse cx='40' cy='40' rx='11' ry='9' fill={color} opacity='0.7' transform='rotate(-30, 40, 40)' />
+          <ellipse cx='60' cy='40' rx='11' ry='9' fill={color} opacity='0.7' transform='rotate(30, 60, 40)' />
+          <ellipse cx='50' cy='34' rx='8' ry='10' fill={color} opacity='0.8' />
+          <circle cx='50' cy='37' r='4' fill='#fca5a5' opacity='0.9' />
+        </svg>
+      );
+    case 'jasmine':
+      return (
+        <svg viewBox='0 0 100 100' className='w-full h-full'>
+          <path d='M25 70 Q50 58 75 48' stroke='#78350f' strokeWidth='2.5' fill='none' strokeLinecap='round' />
+          {[{ cx: 30, cy: 68 }, { cx: 50, cy: 60 }, { cx: 70, cy: 50 }].map((pos, i) => (
+            <g key={i}>
+              {[0, 72, 144, 216, 288].map((a, j) => {
+                const r = (a * Math.PI) / 180;
+                return <ellipse key={j} cx={pos.cx + Math.cos(r) * 4} cy={pos.cy + Math.sin(r) * 4} rx='3' ry='5' fill='white' opacity='0.9' transform={`rotate(${a}, ${pos.cx + Math.cos(r) * 4}, ${pos.cy + Math.sin(r) * 4})`} />;
+              })}
+              <circle cx={pos.cx} cy={pos.cy} r='2' fill={color} />
+            </g>
+          ))}
+        </svg>
+      );
+    case 'lotus':
+      return (
+        <svg viewBox='0 0 100 100' className='w-full h-full'>
+          <path d='M50 76 Q49 58 50 44' stroke='#16a34a' strokeWidth='2.5' fill='none' />
+          <ellipse cx='32' cy='42' rx='7' ry='14' fill={color} opacity='0.55' transform='rotate(-25, 32, 42)' />
+          <ellipse cx='68' cy='42' rx='7' ry='14' fill={color} opacity='0.55' transform='rotate(25, 68, 42)' />
+          <ellipse cx='43' cy='40' rx='5' ry='13' fill={color} opacity='0.7' transform='rotate(-10, 43, 40)' />
+          <ellipse cx='57' cy='40' rx='5' ry='13' fill={color} opacity='0.7' transform='rotate(10, 57, 40)' />
+          <circle cx='50' cy='38' r='4' fill='#fbbf24' />
+        </svg>
+      );
+    case 'tree':
+      return (
+        <svg viewBox='0 0 100 100' className='w-full h-full'>
+          <path d='M47 88 Q46 72 44 58 Q48 55 50 50 Q52 55 56 58 Q54 72 53 88' fill='#78350f' />
+          <circle cx='50' cy='38' r='20' fill={color} opacity='0.7' />
+          <circle cx='38' cy='44' r='14' fill={color} opacity='0.75' />
+          <circle cx='62' cy='44' r='14' fill={color} opacity='0.75' />
+          <circle cx='50' cy='30' r='12' fill='#34d399' opacity='0.85' />
+          <circle cx='42' cy='36' r='2' fill='#f97316' opacity='0.8' />
+          <circle cx='56' cy='32' r='2' fill='#f97316' opacity='0.8' />
+        </svg>
+      );
+    case 'palm':
+      return (
+        <svg viewBox='0 0 100 100' className='w-full h-full'>
+          <path d='M50 90 Q52 70 48 50 Q46 35 50 25' stroke='#a16207' strokeWidth='4' fill='none' strokeLinecap='round' />
+          {[{ a: -90, l: 28 }, { a: -55, l: 26 }, { a: -125, l: 26 }, { a: -30, l: 22 }, { a: -150, l: 22 }].map((f, i) => {
+            const r = (f.a * Math.PI) / 180;
+            const tx = 50 + Math.cos(r) * f.l;
+            const ty = 25 + Math.sin(r) * f.l;
+            const mx = 50 + Math.cos(r) * f.l * 0.5;
+            const my = 25 + Math.sin(r) * f.l * 0.5 + 5;
+            return <path key={i} d={`M50 25 Q${mx} ${my} ${tx} ${ty + 6}`} stroke={color} strokeWidth='1.8' fill='none' strokeLinecap='round' />;
+          })}
+        </svg>
+      );
+    default:
+      return (
+        <svg viewBox='0 0 100 100' className='w-full h-full'>
+          <circle cx='50' cy='50' r='15' fill={color} opacity='0.5' />
+        </svg>
+      );
+  }
+}
+
 export default function HomeScreen() {
   const {
     setCurrentScreen, setSelectedPrayerIndex, setReadingSource,
@@ -355,12 +460,15 @@ export default function HomeScreen() {
               </div>
             </div>
             {gardenPlants.length > 0 ? (
-              <div className='flex gap-1 mt-2'>
-                {gardenPlants.slice(-4).map((p) => (
-                  <div key={p.id} className='w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center'>
-                    <div className='w-2 h-2 rounded-full bg-emerald-500' />
-                  </div>
-                ))}
+              <div className='flex gap-1.5 mt-2'>
+                {gardenPlants.slice(-4).map((p) => {
+                  const c = homePlantColors[p.type] || '#10b981';
+                  return (
+                    <div key={p.id} className='w-7 h-7 rounded-lg flex items-center justify-center' style={{ background: `${c}15` }}>
+                      <MiniPlantSVG type={p.type} color={c} />
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               <p className='text-[9px] app-text-muted mt-2'>اضغط لتأسيس حديقتك</p>

@@ -1,0 +1,644 @@
+     1→'use client';
+     2→
+     3→import { motion, AnimatePresence } from 'framer-motion';
+     4→import { useDhikrStore } from '@/lib/store';
+     5→import { IslamicIcon } from '@/components/dhikr/islamic-icons';
+     6→import { Home, ChevronRight, Trees, Sparkles, Star, Lock, Droplets, Flower2, Leaf, Flame, Check } from '@/components/dhikr/islamic-icons';
+     7→import { useState } from 'react';
+     8→import { getFontClass } from '@/lib/font-utils';
+     9→import TreeVisualization, { treeConfigs } from '@/components/dhikr/tree-visualization';
+    10→
+    11→const plantConfig: Record<string, { label: string; color: string; unlockDay: number; size: number; glowColor: string }> = {
+    12→  seed:    { label: 'بذرة',     color: '#8B6914', unlockDay: 0,  size: 44, glowColor: '#a07d1a' },
+    13→  sprout:  { label: 'نبتة',     color: '#22c55e', unlockDay: 1,  size: 48, glowColor: '#4ade80' },
+    14→  flower:  { label: 'زهرة',     color: '#f472b6', unlockDay: 3,  size: 50, glowColor: '#f9a8d4' },
+    15→  rose:    { label: 'وردة',     icon: 'sparkles', color: '#ef4444', unlockDay: 5,  size: 52, glowColor: '#fca5a5' },
+    16→  jasmine: { label: 'ياسمين',  color: '#fbbf24', unlockDay: 7,  size: 52, glowColor: '#fde68a' },
+    17→  lotus:   { label: 'زهر اللوتس', color: '#818cf8', unlockDay: 10, size: 54, glowColor: '#c4b5fd' },
+    18→  tree:    { label: 'شجرة',     color: '#10b981', unlockDay: 14, size: 56, glowColor: '#6ee7b7' },
+    19→  palm:    { label: 'نخلة',     color: '#059669', unlockDay: 21, size: 58, glowColor: '#34d399' },
+    20→};
+    21→
+    22→const gardenNames = ['أرض barren', 'حديقة ناشئة', 'حديقة خضراء', 'حديقة الزهور', 'جنة صغيرة', 'روضة رائعة', 'حديقة النخيل', 'جنة المؤمن', 'حديقة الخلد', 'جنة الفردوس'];
+    23→
+    24→/* ========== Custom SVG Plant Illustrations ========== */
+    25→
+    26→function SeedSVG({ size, color }: { size: number; color: string }) {
+    27→  const s = size;
+    28→  return (
+    29→    <svg viewBox='0 0 100 100' className='w-full h-full' style={{ width: s, height: s }}>
+    30→      {/* Soil mound */}
+    31→      <ellipse cx='50' cy='82' rx='28' ry='8' fill='#78350f' opacity='0.6' />
+    32→      <ellipse cx='50' cy='80' rx='24' ry='6' fill='#92400e' opacity='0.5' />
+    33→      {/* Seed body - oval */}
+    34→      <ellipse cx='50' cy='72' rx='8' ry='11' fill={color} opacity='0.9' />
+    35→      <ellipse cx='50' cy='72' rx='8' ry='11' fill='url(#seedShine)' />
+    36→      {/* Seed line */}
+    37→      <path d='M50 62 Q50 72 50 83' stroke='#6b4c12' strokeWidth='0.8' fill='none' opacity='0.5' />
+    38→      {/* Tiny sprout emerging */}
+    39→      <path d='M50 61 Q48 55 44 50' stroke='#22c55e' strokeWidth='2' fill='none' strokeLinecap='round' />
+    40→      <path d='M44 50 Q40 48 42 44 Q46 46 44 50' fill='#22c55e' opacity='0.8' />
+    41→      <path d='M50 61 Q52 56 56 52' stroke='#22c55e' strokeWidth='1.5' fill='none' strokeLinecap='round' />
+    42→      <path d='M56 52 Q58 49 55 46 Q53 49 56 52' fill='#4ade80' opacity='0.7' />
+    43→      <defs>
+    44→        <radialGradient id='seedShine' cx='40%' cy='35%'>
+    45→          <stop offset='0%' stopColor='white' stopOpacity='0.3' />
+    46→          <stop offset='100%' stopColor='white' stopOpacity='0' />
+    47→        </radialGradient>
+    48→      </defs>
+    49→    </svg>
+    50→  );
+    51→}
+    52→
+    53→function SproutSVG({ size, color }: { size: number; color: string }) {
+    54→  const s = size;
+    55→  return (
+    56→    <svg viewBox='0 0 100 100' className='w-full h-full' style={{ width: s, height: s }}>
+    57→      {/* Soil */}
+    58→      <ellipse cx='50' cy='85' rx='26' ry='7' fill='#78350f' opacity='0.5' />
+    59→      {/* Stem */}
+    60→      <path d='M50 83 Q50 60 50 45' stroke='#16a34a' strokeWidth='2.5' fill='none' strokeLinecap='round' />
+    61→      {/* Left leaf */}
+    62→      <path d='M50 55 Q35 45 30 35 Q38 38 50 48' fill={color} opacity='0.9' />
+    63→      <path d='M50 55 Q40 47 35 40' stroke='#15803d' strokeWidth='0.8' fill='none' />
+    64→      {/* Right leaf */}
+    65→      <path d='M50 48 Q65 38 70 28 Q62 32 50 42' fill={color} opacity='0.85' />
+    66→      <path d='M50 48 Q60 40 65 33' stroke='#15803d' strokeWidth='0.8' fill='none' />
+    67→      {/* Small top leaf */}
+    68→      <path d='M50 45 Q46 38 42 32 Q47 35 50 42' fill='#4ade80' opacity='0.8' />
+    69→      {/* Tiny roots visible in soil */}
+    70→      <path d='M50 83 Q46 88 42 90' stroke='#92400e' strokeWidth='1' fill='none' opacity='0.4' />
+    71→      <path d='M50 83 Q54 89 58 91' stroke='#92400e' strokeWidth='1' fill='none' opacity='0.4' />
+    72→    </svg>
+    73→  );
+    74→}
+    75→
+    76→function FlowerSVG({ size, color }: { size: number; color: string }) {
+    77→  const s = size;
+    78→  return (
+    79→    <svg viewBox='0 0 100 100' className='w-full h-full' style={{ width: s, height: s }}>
+    80→      {/* Soil */}
+    81→      <ellipse cx='50' cy='88' rx='22' ry='5' fill='#78350f' opacity='0.4' />
+    82→      {/* Stem */}
+    83→      <path d='M50 86 Q50 60 50 42' stroke='#16a34a' strokeWidth='2.5' fill='none' strokeLinecap='round' />
+    84→      {/* Leaves on stem */}
+    85→      <path d='M50 68 Q38 62 34 55 Q40 58 50 64' fill='#22c55e' opacity='0.8' />
+    86→      <path d='M50 60 Q62 54 66 47 Q60 50 50 56' fill='#22c55e' opacity='0.8' />
+    87→      {/* Petals - 6 petals arranged in circle */
+    88→      {[0, 60, 120, 180, 240, 300].map((angle, i) => {
+    89→        const rad = (angle * Math.PI) / 180;
+    90→        const cx = 50 + Math.cos(rad) * 12;
+    91→        const cy = 34 + Math.sin(rad) * 12;
+    92→        return (
+    93→          <ellipse key={i} cx={cx} cy={cy} rx='7' ry='11' fill={color} opacity='0.85'
+    94→            transform={`rotate(${angle}, ${cx}, ${cy})`} />
+    95→        );
+    96→      })}
+    97→      {/* Inner petals - smaller, lighter */}
+    98→      {[30, 90, 150, 210, 270, 330].map((angle, i) => {
+    99→        const rad = (angle * Math.PI) / 180;
+   100→        const cx = 50 + Math.cos(rad) * 6;
+   101→        const cy = 34 + Math.sin(rad) * 6;
+   102→        return (
+   103→          <ellipse key={`inner-${i}`} cx={cx} cy={cy} rx='4' ry='7' fill={color} opacity='0.6'
+   104→            transform={`rotate(${angle}, ${cx}, ${cy})`} />
+   105→        );
+   106→      })}
+   107→      {/* Center */}
+   108→      <circle cx='50' cy='34' r='6' fill='#fbbf24' />
+   109→      <circle cx='50' cy='34' r='3.5' fill='#f59e0b' />
+   110→      {/* Center dots */
+   111→      {[0, 60, 120].map((a, i) => {
+   112→        const r = (a * Math.PI) / 180;
+   113→        return <circle key={`dot-${i}`} cx={50 + Math.cos(r) * 2.5} cy={34 + Math.sin(r) * 2.5} r='0.8' fill='#d97706' />;
+   114→      })}
+   115→    </svg>
+   116→  );
+   117→}
+   118→
+   119→function RoseSVG({ size, color }: { size: number; color: string }) {
+   120→  const s = size;
+   121→  return (
+   122→    <svg viewBox='0 0 100 100' className='w-full h-full' style={{ width: s, height: s }}>
+   123→      {/* Soil */}
+   124→      <ellipse cx='50' cy='90' rx='20' ry='5' fill='#78350f' opacity='0.4' />
+   125→      {/* Stem with thorns */}
+   126→      <path d='M50 88 Q49 65 50 44' stroke='#16a34a' strokeWidth='2.5' fill='none' strokeLinecap='round' />
+   127→      {/* Thorns */}
+   128→      <path d='M49.5 75 L45 72 L49 73' fill='#16a34a' />
+   129→      <path d='M50.5 65 L55 62 L51 63' fill='#16a34a' />
+   130→      {/* Leaves */}
+   131→      <path d='M49 72 Q36 66 32 58 Q38 62 49 68' fill='#22c55e' opacity='0.8' />
+   132→      <path d='M49 72 Q37 67 33 60' stroke='#15803d' strokeWidth='0.7' fill='none' />
+   133→      <path d='M51 62 Q64 56 68 48 Q62 52 51 58' fill='#22c55e' opacity='0.8' />
+   134→      {/* Rose petals - layered spiral */}
+   135→      {/* Outer petals */}
+   136→      <ellipse cx='40' cy='36' rx='12' ry='9' fill={color} opacity='0.7' transform='rotate(-30, 40, 36)' />
+   137→      <ellipse cx='60' cy='36' rx='12' ry='9' fill={color} opacity='0.7' transform='rotate(30, 60, 36)' />
+   138→      <ellipse cx='50' cy='28' rx='10' ry='12' fill={color} opacity='0.75' />
+   139→      <ellipse cx='38' cy='42' rx='10' ry='8' fill={color} opacity='0.65' transform='rotate(-45, 38, 42)' />
+   140→      <ellipse cx='62' cy='42' rx='10' ry='8' fill={color} opacity='0.65' transform='rotate(45, 62, 42)' />
+   141→      {/* Middle petals */}
+   142→      <ellipse cx='46' cy='35' rx='8' ry='7' fill='#f87171' opacity='0.85' transform='rotate(-15, 46, 35)' />
+   143→      <ellipse cx='54' cy='35' rx='8' ry='7' fill='#f87171' opacity='0.85' transform='rotate(15, 54, 35)' />
+   144→      <ellipse cx='50' cy='32' rx='7' ry='8' fill='#f87171' opacity='0.8' />
+   145→      {/* Inner petals - tightly curled */}
+   146→      <ellipse cx='48' cy='35' rx='5' ry='4' fill='#fca5a5' opacity='0.9' transform='rotate(-20, 48, 35)' />
+   147→      <ellipse cx='52' cy='34' rx='4' ry='5' fill='#fca5a5' opacity='0.9' transform='rotate(10, 52, 34)' />
+   148→      <ellipse cx='50' cy='36' rx='3.5' ry='3' fill='#fecaca' opacity='0.9' />
+   149→      {/* Center spiral hint */}
+   150→      <circle cx='50' cy='35' r='2' fill='#fee2e2' opacity='0.8' />
+   151→    </svg>
+   152→  );
+   153→}
+   154→
+   155→function JasmineSVG({ size, color }: { size: number; color: string }) {
+   156→  const s = size;
+   157→  return (
+   158→    <svg viewBox='0 0 100 100' className='w-full h-full' style={{ width: s, height: s }}>
+   159→      {/* Branch */}
+   160→      <path d='M20 75 Q35 70 50 60 Q65 50 80 42' stroke='#78350f' strokeWidth='3' fill='none' strokeLinecap='round' />
+   161→      <path d='M50 60 Q55 72 60 80' stroke='#78350f' strokeWidth='2' fill='none' strokeLinecap='round' />
+   162→      {/* Leaves on branch */}
+   163→      <path d='M30 72 Q22 64 18 56 Q26 62 30 68' fill='#22c55e' opacity='0.8' />
+   164→      <path d='M30 72 Q25 66 22 60' stroke='#15803d' strokeWidth='0.6' fill='none' />
+   165→      <path d='M42 66 Q34 58 30 50 Q38 56 42 62' fill='#16a34a' opacity='0.75' />
+   166→      <path d='M58 54 Q66 46 70 38 Q64 44 58 50' fill='#22c55e' opacity='0.8' />
+   167→      <path d='M70 48 Q78 40 82 32 Q76 38 70 44' fill='#16a34a' opacity='0.75' />
+   168→      <path d='M55 68 Q48 74 42 78 Q50 74 54 66' fill='#22c55e' opacity='0.7' />
+   169→      {/* Jasmine flowers - 5-petal star shapes */}
+   170→      {[{ cx: 25, cy: 70 }, { cx: 45, cy: 62 }, { cx: 65, cy: 50 }, { cx: 78, cy: 43 }, { cx: 56, cy: 76 }].map((pos, i) => {
+   171→        const petalR = i === 2 ? 7 : 5.5;
+   172→        return (
+   173→          <g key={i}>
+   174→            {[0, 72, 144, 216, 288].map((angle, j) => {
+   175→              const rad = (angle * Math.PI) / 180;
+   176→              const px = pos.cx + Math.cos(rad) * petalR * 0.6;
+   177→              const py = pos.cy + Math.sin(rad) * petalR * 0.6;
+   178→              return (
+   179→                <ellipse key={j} cx={px} cy={py} rx={petalR * 0.45} ry={petalR * 0.7}
+   180→                  fill='white' opacity='0.9' transform={`rotate(${angle}, ${px}, ${py})`} />
+   181→              );
+   182→            })}
+   183→            <circle cx={pos.cx} cy={pos.cy} r={petalR * 0.25} fill={color} />
+   184→          </g>
+   185→        );
+   186→      })}
+   187→      {/* Unopened buds */}
+   188→      <ellipse cx='36' cy='68' rx='2.5' ry='4' fill='white' opacity='0.7' transform='rotate(-15, 36, 68)' />
+   189→      <ellipse cx='72' cy='46' rx='2' ry='3.5' fill='white' opacity='0.7' transform='rotate(20, 72, 46)' />
+   190→    </svg>
+   191→  );
+   192→}
+   193→
+   194→function LotusSVG({ size, color }: { size: number; color: string }) {
+   195→  const s = size;
+   196→  return (
+   197→    <svg viewBox='0 0 100 100' className='w-full h-full' style={{ width: s, height: s }}>
+   198→      {/* Water surface */}
+   199→      <ellipse cx='50' cy='78' rx='38' ry='10' fill='#3b82f6' opacity='0.15' />
+   200→      <ellipse cx='50' cy='78' rx='30' ry='7' fill='#3b82f6' opacity='0.1' />
+   201→      {/* Water ripples */}
+   202→      <ellipse cx='50' cy='78' rx='42' ry='11' fill='none' stroke='#60a5fa' strokeWidth='0.5' opacity='0.3' />
+   203→      <ellipse cx='50' cy='78' rx='46' ry='12' fill='none' stroke='#60a5fa' strokeWidth='0.3' opacity='0.2' />
+   204→      {/* Lotus leaf (pad) */}
+   205→      <ellipse cx='30' cy='76' rx='16' ry='6' fill='#16a34a' opacity='0.5' transform='rotate(-10, 30, 76)' />
+   206→      <path d='M30 76 L30 70' stroke='#15803d' strokeWidth='0.5' opacity='0.3' />
+   207→      {/* Stem */}
+   208→      <path d='M50 76 Q49 58 50 42' stroke='#16a34a' strokeWidth='3' fill='none' strokeLinecap='round' />
+   209→      {/* Outer petals - large, open */}
+   210→      <ellipse cx='30' cy='40' rx='8' ry='16' fill={color} opacity='0.5' transform='rotate(-35, 30, 40)' />
+   211→      <ellipse cx='70' cy='40' rx='8' ry='16' fill={color} opacity='0.5' transform='rotate(35, 70, 40)' />
+   212→      <ellipse cx='36' cy='44' rx='7' ry='15' fill={color} opacity='0.55' transform='rotate(-20, 36, 44)' />
+   213→      <ellipse cx='64' cy='44' rx='7' ry='15' fill={color} opacity='0.55' transform='rotate(20, 64, 44)' />
+   214→      {/* Middle petals */}
+   215→      <ellipse cx='42' cy='40' rx='6' ry='14' fill={color} opacity='0.7' transform='rotate(-10, 42, 40)' />
+   216→      <ellipse cx='58' cy='40' rx='6' ry='14' fill={color} opacity='0.7' transform='rotate(10, 58, 40)' />
+   217→      <ellipse cx='50' cy='38' rx='5' ry='13' fill={color} opacity='0.75' />
+   218→      {/* Inner petals */}
+   219→      <ellipse cx='46' cy='38' rx='4' ry='10' fill='#c4b5fd' opacity='0.85' transform='rotate(-8, 46, 38)' />
+   220→      <ellipse cx='54' cy='38' rx='4' ry='10' fill='#c4b5fd' opacity='0.85' transform='rotate(8, 54, 38)' />
+   221→      {/* Center */}
+   222→      <circle cx='50' cy='36' r='5' fill='#fbbf24' opacity='0.9' />
+   223→      <circle cx='50' cy='36' r='3' fill='#f59e0b' />
+   224→      {/* Center seeds */}
+   225→      {[0, 45, 90, 135, 180, 225, 270, 315].map((a, i) => {
+   226→        const r = (a * Math.PI) / 180;
+   227→        return <circle key={i} cx={50 + Math.cos(r) * 2} cy={36 + Math.sin(r) * 2} r='0.7' fill='#d97706' />;
+   228→      })}
+   229→    </svg>
+   230→  );
+   231→}
+   232→
+   233→function TreePlantSVG({ size, color }: { size: number; color: string }) {
+   234→  const s = size;
+   235→  return (
+   236→    <svg viewBox='0 0 100 100' className='w-full h-full' style={{ width: s, height: s }}>
+   237→      {/* Ground */}
+   238→      <ellipse cx='50' cy='90' rx='30' ry='6' fill='#78350f' opacity='0.3' />
+   239→      {/* Grass tufts */}
+   240→      <path d='M30 88 Q28 83 26 80' stroke='#22c55e' strokeWidth='1.2' fill='none' opacity='0.5' />
+   241→      <path d='M33 88 Q32 84 34 81' stroke='#16a34a' strokeWidth='1' fill='none' opacity='0.4' />
+   242→      <path d='M68 88 Q70 83 72 80' stroke='#22c55e' strokeWidth='1.2' fill='none' opacity='0.5' />
+   243→      <path d='M65 88 Q66 84 64 82' stroke='#16a34a' strokeWidth='1' fill='none' opacity='0.4' />
+   244→      {/* Trunk */}
+   245→      <path d='M47 88 Q46 72 44 58 Q48 55 50 50 Q52 55 56 58 Q54 72 53 88' fill='#78350f' />
+   246→      <path d='M47 88 Q46 72 44 58' stroke='#5c2d0e' strokeWidth='0.5' fill='none' opacity='0.5' />
+   247→      {/* Branches hint */}
+   248→      <path d='M46 65 Q38 60 32 55' stroke='#78350f' strokeWidth='2' fill='none' strokeLinecap='round' />
+   249→      <path d='M54 62 Q62 57 68 52' stroke='#78350f' strokeWidth='2' fill='none' strokeLinecap='round' />
+   250→      {/* Canopy - layered circles */}
+   251→      <circle cx='50' cy='38' r='22' fill={color} opacity='0.7' />
+   252→      <circle cx='36' cy='44' r='16' fill={color} opacity='0.75' />
+   253→      <circle cx='64' cy='44' r='16' fill={color} opacity='0.75' />
+   254→      <circle cx='42' cy='32' r='14' fill={color} opacity='0.8' />
+   255→      <circle cx='58' cy='32' r='14' fill={color} opacity='0.8' />
+   256→      <circle cx='50' cy='28' r='13' fill='#34d399' opacity='0.85' />
+   257→      <circle cx='50' cy='24' r='8' fill='#6ee7b7' opacity='0.6' />
+   258→      {/* Fruits */}
+   259→      {[{ x: 35, y: 42 }, { x: 58, y: 36 }, { x: 44, y: 30 }, { x: 62, y: 46 }, { x: 40, y: 48 }].map((p, i) => (
+   260→        <circle key={i} cx={p.x} cy={p.y} r='2.5' fill='#f97316' opacity='0.8' />
+   261→      ))}
+   262→      {/* Fruit highlights */}
+   263→      {[{ x: 35, y: 42 }, { x: 58, y: 36 }, { x: 44, y: 30 }].map((p, i) => (
+   264→        <circle key={`h-${i}`} cx={p.x - 0.8} cy={p.y - 0.8} r='0.8' fill='white' opacity='0.4' />
+   265→      ))}
+   266→    </svg>
+   267→  );
+   268→}
+   269→
+   270→function PalmPlantSVG({ size, color }: { size: number; color: string }) {
+   271→  const s = size;
+   272→  return (
+   273→    <svg viewBox='0 0 100 100' className='w-full h-full' style={{ width: s, height: s }}>
+   274→      {/* Ground / sand */}
+   275→      <ellipse cx='50' cy='92' rx='32' ry='6' fill='#d4a056' opacity='0.3' />
+   276→      {/* Trunk - curved with segments */}
+   277→      <path d='M50 90 Q52 70 48 50 Q46 35 50 22' stroke='#92400e' strokeWidth='6' fill='none' strokeLinecap='round' />
+   278→      <path d='M50 90 Q52 70 48 50 Q46 35 50 22' stroke='#a16207' strokeWidth='4' fill='none' strokeLinecap='round' />
+   279→      {/* Trunk segment lines */}
+   280→      {[75, 65, 55, 45].map((y, i) => (
+   281→        <path key={i} d={`M${48 + (i < 2 ? 1 : -1)} ${y} Q50 ${y - 2} ${52 + (i < 2 ? -1 : 1)} ${y + 1}`}
+   282→          stroke='#78350f' strokeWidth='0.8' fill='none' opacity='0.4' />
+   283→      ))}
+   284→      {/* Palm fronds - 7 leaves radiating from top */}
+   285→      {[{ angle: -90, len: 32 }, { angle: -55, len: 30 }, { angle: -125, len: 30 },
+   286→        { angle: -30, len: 26 }, { angle: -150, len: 26 },
+   287→        { angle: -10, len: 20 }, { angle: -170, len: 20 }].map((frond, i) => {
+   288→        const rad = (frond.angle * Math.PI) / 180;
+   289→        const baseX = 50;
+   290→        const baseY = 22;
+   291→        const tipX = baseX + Math.cos(rad) * frond.len;
+   292→        const tipY = baseY + Math.sin(rad) * frond.len;
+   293→        const midX = baseX + Math.cos(rad) * frond.len * 0.5;
+   294→        const midY = baseY + Math.sin(rad) * frond.len * 0.5 + 6;
+   295→        const droopX = baseX + Math.cos(rad) * frond.len * 0.8;
+   296→        const droopY = baseY + Math.sin(rad) * frond.len * 0.8 + 8;
+   297→        return (
+   298→          <g key={i}>
+   299→            {/* Main frond stem */}
+   300→            <path d={`M${baseX} ${baseY} Q${midX} ${midY} ${droopX} ${droopY} Q${tipX} ${tipY + 4} ${tipX + (i < 4 ? 3 : -3)} ${tipY + 8}`}
+   301→              stroke={i < 4 ? '#15803d' : '#16a34a'} strokeWidth={i < 4 ? '2' : '1.5'} fill='none' strokeLinecap='round' />
+   302→            {/* Leaflets along frond */}
+   303→            {[0.2, 0.35, 0.5, 0.65, 0.8].map((t, j) => {
+   304→              const px = baseX + (midX - baseX) * t * 2 + (droopX - midX) * Math.max(0, t - 0.3);
+   305→              const py = baseY + (midY - baseY) * t * 2 + (droopY - midY) * Math.max(0, t - 0.3);
+   306→              const leafAngle = rad + (j % 2 === 0 ? 0.5 : -0.5);
+   307→              const lx = px + Math.cos(leafAngle) * 5;
+   308→              const ly = py + Math.sin(leafAngle) * 5;
+   309→              const lx2 = px + Math.cos(leafAngle + Math.PI) * 4;
+   310→              const ly2 = py + Math.sin(leafAngle + Math.PI) * 4;
+   311→              return (
+   312→                <g key={j}>
+   313→                  <line x1={px} y1={py} x2={lx} y2={ly} stroke={color} strokeWidth='1.5' opacity='0.7' />
+   314→                  <line x1={px} y1={py} x2={lx2} y2={ly2} stroke={color} strokeWidth='1.2' opacity='0.5' />
+   315→                </g>
+   316→              );
+   317→            })}
+   318→          </g>
+   319→        );
+   320→      })}
+   321→      {/* Coconuts */}
+   322→      <circle cx='47' cy='26' r='3.5' fill='#a16207' opacity='0.8' />
+   323→      <circle cx='53' cy='25' r='3' fill='#92400e' opacity='0.8' />
+   324→      <circle cx='50' cy='28' r='2.5' fill='#78350f' opacity='0.7' />
+   325→    </svg>
+   326→  );
+   327→}
+   328→
+   329→const plantSVGMap: Record<string, React.FC<{ size: number; color: string }>> = {
+   330→  seed: SeedSVG,
+   331→  sprout: SproutSVG,
+   332→  flower: FlowerSVG,
+   333→  rose: RoseSVG,
+   334→  jasmine: JasmineSVG,
+   335→  lotus: LotusSVG,
+   336→  tree: TreePlantSVG,
+   337→  palm: PalmPlantSVG,
+   338→};
+   339→
+   340→function GardenPlantSVG({ type, size, color, delay = 0 }: { type: string; size: number; color: string; delay?: number }) {
+   341→  const PlantComponent = plantSVGMap[type] || SproutSVG;
+   342→  const glowColor = plantConfig[type]?.glowColor || color;
+   343→  return (
+   344→    <motion.div
+   345→      initial={{ scale: 0, opacity: 0 }}
+   346→      animate={{ scale: 1, opacity: 1 }}
+   347→      transition={{ type: 'spring', stiffness: 200, damping: 15, delay }}
+   348→      style={{ width: size, height: size }}
+   349→      className='relative flex items-center justify-center'
+   350→    >
+   351→      {/* Soft glow */}
+   352→      <div className='absolute inset-[-4px] rounded-2xl opacity-25 blur-lg' style={{ background: `radial-gradient(circle, ${glowColor}, transparent)` }} />
+   353→      {/* Plant SVG */}
+   354→      <PlantComponent size={size} color={color} />
+   355→      {/* Floating sparkle particles */}
+   356→      {[...Array(3)].map((_, i) => (
+   357→        <motion.div
+   358→          key={i}
+   359→          className='absolute w-1 h-1 rounded-full'
+   360→          style={{ background: glowColor, left: `${25 + i * 25}%`, top: `${20 + (i % 2) * 15}%` }}
+   361→          animate={{ y: [-3, -12, -3], opacity: [0.2, 0.7, 0.2], scale: [0.8, 1.2, 0.8] }}
+   362→          transition={{ duration: 2.5 + i * 0.4, repeat: Infinity, delay: delay + i * 0.4, ease: 'easeInOut' }}
+   363→        />
+   364→      ))}
+   365→    </motion.div>
+   366→  );
+   367→}
+   368→
+   369→export default function GardenScreen() {
+   370→  const {
+   371→    setCurrentScreen, streak, gardenPlants, gardenLevel, arabicFont,
+   372→    streakFreezesLeft, totalAllTime, streakDays, selectedTree, setSelectedTree,
+   373→  } = useDhikrStore();
+   374→
+   375→  const fontClass = getFontClass(arabicFont);
+   376→  const [showInfo, setShowInfo] = useState<string | null>(null);
+   377→  const gardenName = gardenNames[Math.min(gardenLevel, gardenNames.length - 1)];
+   378→
+   379→  const plantCounts: Record<string, number> = {};
+   380→  gardenPlants.forEach(p => { plantCounts[p.type] = (plantCounts[p.type] || 0) + 1; });
+   381→
+   382→  const unlockedTypes = Object.entries(plantConfig).filter(([, cfg]) => streak >= cfg.unlockDay);
+   383→  const lockedTypes = Object.entries(plantConfig).filter(([, cfg]) => streak < cfg.unlockDay);
+   384→
+   385→  // Recent 7 days streak visualization
+   386→  const recentDays = [...Array(7)].map((_, i) => {
+   387→    const d = new Date();
+   388→    d.setDate(d.getDate() - (6 - i));
+   389→    const dateStr = d.toDateString();
+   390→    const dayData = streakDays.find(s => s.date === dateStr);
+   391→    return { date: dateStr, dayName: ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'][d.getDay()], count: dayData?.count || 0 };
+   392→  });
+   393→
+   394→  // Check if today has activity
+   395→  const todayActive = streakDays.some(s => s.date === new Date().toDateString());
+   396→
+   397→  return (
+   398→    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='flex flex-col min-h-screen pb-24'>
+   399→      {/* Header */}
+   400→      <header className='px-4 pt-4 pb-3'>
+   401→        <div className='flex items-center gap-2.5 mb-1'>
+   402→          <div className='w-10 h-10 rounded-xl flex items-center justify-center' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
+   403→            <Trees className='w-5 h-5' style={{ color: 'var(--gold-accent)' }} />
+   404→          </div>
+   405→          <div>
+   406→            <h1 className='text-2xl font-bold app-text' style={{ fontFamily: fontClass }}>حديقتي الروحانية</h1>
+   407→            <p className='app-text-2 text-xs'>{gardenName} — المستوى {gardenLevel}</p>
+   408→          </div>
+   409→        </div>
+   410→      </header>
+   411→
+   412→      <main className='flex-1 px-4 space-y-4'>
+   413→        {/* Streak Fire Card */}
+   414→        <motion.div
+   415→          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
+   416→          className='glass-glow rounded-2xl p-5 relative overflow-hidden'
+   417→        >
+   418→          <div className='islamic-shimmer absolute inset-0 pointer-events-none' />
+   419→          <div className='relative z-10 text-center'>
+   420→            {/* Fire animation */}
+   421→            <div className='flex items-center justify-center mb-3'>
+   422→              <motion.div
+   423→                animate={streak > 0 ? { scale: [1, 1.15, 1], rotate: [-2, 2, -2] } : {}}
+   424→                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+   425→                className='relative'
+   426→              >
+   427→                <Flame className='w-14 h-14' style={{ color: streak > 0 ? (streak >= 7 ? '#ef4444' : streak >= 3 ? '#f97316' : '#fbbf24') : '#4b5563', filter: streak > 0 ? 'drop-shadow(0 0 12px rgba(239,68,68,0.5))' : 'none' }} />
+   428→                {streak > 0 && (
+   429→                  <motion.div
+   430→                    className='absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white'
+   431→                    style={{ background: 'linear-gradient(135deg, var(--gold-accent), var(--gold-bright))' }}
+   432→                    animate={{ scale: [1, 1.2, 1] }}
+   433→                    transition={{ duration: 2, repeat: Infinity }}
+   434→                  >
+   435→                    {streak}
+   436→                  </motion.div>
+   437→                )}
+   438→              </motion.div>
+   439→            </div>
+   440→            <h2 className='text-3xl font-bold app-text mb-1' style={{ fontFamily: fontClass }}>
+   441→              {streak > 0 ? `${streak} يوم متتالي` : 'ابدأ سلسلتك اليوم'}
+   442→            </h2>
+   443→            <p className='app-text-2 text-sm mb-3'>{streak >= 7 ? 'ما شاء الله! سلسلة قوية' : streak >= 3 ? 'أحسنت! استمر' : streak > 0 ? 'بداية ممتازة' : 'أكمل أذكار اليوم لتبدأ'}</p>
+   444→            <div className='flex items-center justify-center gap-4'>
+   445→              <div className='flex items-center gap-1.5'>
+   446→                <Droplets className='w-3.5 h-3.5' style={{ color: '#60a5fa' }} />
+   447→                <span className='app-text-2 text-xs'>{streakFreezesLeft} تجميد متبقي</span>
+   448→              </div>
+   449→              <div className='w-px h-4' style={{ background: 'var(--gold-border)' }} />
+   450→              <div className='flex items-center gap-1.5'>
+   451→                <Star className='w-3.5 h-3.5' style={{ color: 'var(--gold-accent)' }} />
+   452→                <span className='app-text-2 text-xs'>{gardenPlants.length} نبات</span>
+   453→              </div>
+   454→            </div>
+   455→          </div>
+   456→        </motion.div>
+   457→
+   458→        {/* Week Streak Dots */}
+   459→        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className='glass-card rounded-2xl p-4'>
+   460→          <div className='flex items-center gap-2 mb-3'>
+   461→            <Flame className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
+   462→            <span className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>نشاط الأسبوع</span>
+   463→          </div>
+   464→          <div className='flex justify-between'>
+   465→            {recentDays.map((day, i) => (
+   466→              <div key={i} className='flex flex-col items-center gap-1.5'>
+   467→                <motion.div
+   468→                  initial={{ scale: 0 }}
+   469→                  animate={{ scale: 1 }}
+   470→                  transition={{ delay: 0.1 + i * 0.05 }}
+   471→                  className='w-9 h-9 rounded-xl flex items-center justify-center'
+   472→                  style={{
+   473→                    background: day.count > 0
+   474→                      ? `linear-gradient(135deg, ${streak >= 7 ? '#ef4444' : '#f97316'}, ${streak >= 7 ? '#f97316' : '#fbbf24'})`
+   475→                      : 'var(--app-ring-track)',
+   476→                    boxShadow: day.count > 0 ? `0 0 12px ${streak >= 7 ? 'rgba(239,68,68,0.3)' : 'rgba(249,115,22,0.3)'}` : 'none',
+   477→                  }}
+   478→                >
+   479→                  {day.count > 0 && <Flame className='w-4 h-4 text-white' />}
+   480→                </motion.div>
+   481→                <span className={`text-[9px] ${i === 6 ? 'app-text font-medium' : 'app-text-muted'}`} style={{ fontFamily: fontClass }}>{day.dayName}</span>
+   482→              </div>
+   483→            ))}
+   484→          </div>
+   485→        </motion.div>
+   486→
+   487→        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className='glass-glow rounded-2xl p-4 relative overflow-hidden'>
+   488→          <div className='islamic-shimmer absolute inset-0 pointer-events-none' />
+   489→          <div className='relative z-10'>
+   490→            <div className='flex items-center justify-between mb-2'>
+   491→              <div className='flex items-center gap-2'>
+   492→                <Trees className='w-4 h-4 text-emerald-500' />
+   493→                <span className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>شجري</span>
+   494→              </div>
+   495→              <div className='flex items-center gap-1.5'>
+   496→                <span className='text-[10px] app-text-muted'>{treeConfigs[selectedTree]?.label || ''}</span>
+   497→                <div className='w-12 rounded-full h-1.5' style={{ background: 'var(--app-ring-track)' }}>
+   498→                  <div className='h-1.5 rounded-full bg-emerald-500' style={{ width: `${Math.min(gardenLevel * 10, 100)}%` }} />
+   499→                </div>
+   500→              </div>
+   501→            </div>
+   502→            <div className='flex justify-center py-2'>
+   503→              <TreeVisualization treeType={selectedTree} level={gardenLevel} size={180} />
+   504→            </div>
+   505→          </div>
+   506→        </motion.div>
+   507→
+   508→        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }} className='glass-card rounded-2xl p-4'>
+   509→          <div className='flex items-center gap-2 mb-3'>
+   510→            <Sparkles className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
+   511→            <span className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>اختر شجرتك</span>
+   512→          </div>
+   513→          <div className='grid grid-cols-3 gap-2'>
+   514→            {Object.entries(treeConfigs).map(([key, cfg]) => (
+   515→              <button
+   516→                key={key}
+   517→                onClick={() => setSelectedTree(key)}
+   518→                className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all ${selectedTree === key ? '' : 'app-surface app-surface-h'}`}
+   519→                style={selectedTree === key
+   520→                  ? { background: `${cfg.color}15`, border: `1px solid ${cfg.color}40` }
+   521→                  : { border: '1px solid transparent' }
+   522→                }
+   523→              >
+   524→                <div className='relative' style={{ width: 36, height: 36 }}>
+   525→                  <TreeVisualization treeType={key} level={gardenLevel} size={36} />
+   526→                  {selectedTree === key && (
+   527→                    <motion.div
+   528→                      initial={{ scale: 0 }} animate={{ scale: 1 }}
+   529→                      className='absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center'
+   530→                      style={{ background: cfg.color }}
+   531→                    >
+   532→                      <Check className='w-2.5 h-2.5 text-white' />
+   533→                    </motion.div>
+   534→                  )}
+   535→                </div>
+   536→                <span className={`text-[10px] ${selectedTree === key ? 'app-text' : 'app-text-muted'}`} style={{ fontFamily: fontClass }}>{cfg.label}</span>
+   537→              </button>
+   538→            ))}
+   539→          </div>
+   540→        </motion.div>
+   541→
+   542→        {/* Garden Grid */}
+   543→        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className='glass-card rounded-2xl p-4'>
+   544→          <div className='flex items-center justify-between mb-3'>
+   545→            <div className='flex items-center gap-2'>
+   546→              <Flower2 className='w-4 h-4 text-emerald-500' />
+   547→              <span className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>نباتاتي ({gardenPlants.length})</span>
+   548→            </div>
+   549→            <div className='flex items-center gap-1.5'>
+   550→              <div className='w-12 rounded-full h-1.5' style={{ background: 'var(--app-ring-track)' }}>
+   551→                <div className='h-1.5 rounded-full bg-emerald-500' style={{ width: `${Math.min(gardenLevel * 10, 100)}%` }} />
+   552→              </div>
+   553→              <span className='text-[10px] app-text-muted'>مستوى {gardenLevel}</span>
+   554→            </div>
+   555→          </div>
+   556→
+   557→          {gardenPlants.length === 0 ? (
+   558→            <div className='text-center py-8'>
+   559→              <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 2, repeat: Infinity }}>
+   560→                <IslamicIcon name='circle-dot' className='w-12 h-12 mx-auto mb-3 app-text-muted' color='#4b5563' />
+   561→              </motion.div>
+   562→              <p className='app-text-2 text-sm mb-1' style={{ fontFamily: fontClass }}>حديقتك فارغة</p>
+   563→              <p className='app-text-muted text-xs'>أكمل أذكار اليوم لتحصل على أول نبتة</p>
+   564→            </div>
+   565→          ) : (
+   566→            <div className='grid grid-cols-4 gap-3'>
+   567→              {gardenPlants.map((plant, i) => {
+   568→                const cfg = plantConfig[plant.type] || plantConfig.seed;
+   569→                return (
+   570→                  <motion.button
+   571→                    key={plant.id}
+   572→                    initial={{ scale: 0, rotate: -10 }}
+   573→                    animate={{ scale: 1, rotate: 0 }}
+   574→                    transition={{ type: 'spring', delay: i * 0.03 }}
+   575→                    whileTap={{ scale: 0.9 }}
+   576→                    onClick={() => setShowInfo(showInfo === plant.id ? null : plant.id)}
+   577→                    className='flex flex-col items-center gap-1.5 p-2 rounded-xl app-surface-h transition-colors relative'
+   578→                  >
+   579→                    <GardenPlantSVG type={plant.type} size={cfg.size * 0.7} color={cfg.color} delay={i * 0.03} />
+   580→                    <span className='text-[9px] app-text-2' style={{ fontFamily: fontClass }}>{cfg.label}</span>
+   581→                    {showInfo === plant.id && (
+   582→                      <motion.div
+   583→                        initial={{ opacity: 0, y: -5 }}
+   584→                        animate={{ opacity: 1, y: 0 }}
+   585→                        className='absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 rounded-lg glass-card text-[9px] app-text whitespace-nowrap z-20'
+   586→                      >
+   587→                        يوم {plant.dayEarned}
+   588→                      </motion.div>
+   589→                    )}
+   590→                  </motion.button>
+   591→                );
+   592→              })}
+   593→            </div>
+   594→          )}
+   595→        </motion.div>
+   596→
+   597→        {/* Unlocked Plants Preview */}
+   598→        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className='glass-card rounded-2xl p-4'>
+   599→          <div className='flex items-center gap-2 mb-3'>
+   600→            <Sparkles className='w-4 h-4' style={{ color: 'var(--gold-accent)' }} />
+   601→            <span className='app-text font-medium text-sm' style={{ fontFamily: fontClass }}>النباتات المتاحة</span>
+   602→          </div>
+   603→          <div className='flex gap-3 overflow-x-auto pb-2'>
+   604→            {unlockedTypes.map(([type, cfg]) => (
+   605→              <div key={type} className='flex flex-col items-center gap-1 flex-shrink-0'>
+   606→                <div className='w-12 h-12 rounded-xl flex items-center justify-center' style={{ background: `${cfg.color}15`, border: `1px solid ${cfg.color}30` }}>
+   607→                  <IslamicIcon name={cfg.icon} className='w-6 h-6' color={cfg.color} />
+   608→                </div>
+   609→                <span className='text-[9px] app-text-2'>{cfg.label}</span>
+   610→                {plantCounts[type] ? (
+   611→                  <span className='text-[8px] px-1.5 rounded-full' style={{ background: `${cfg.color}20`, color: cfg.color }}>{plantCounts[type]}</span>
+   612→                ) : null}
+   613→              </div>
+   614→            ))}
+   615→            {lockedTypes.map(([type, cfg]) => (
+   616→              <div key={type} className='flex flex-col items-center gap-1 flex-shrink-0 opacity-40'>
+   617→                <div className='w-12 h-12 rounded-xl flex items-center justify-center app-surface'>
+   618→                  <Lock className='w-5 h-5 app-text-muted' />
+   619→                </div>
+   620→                <span className='text-[9px] app-text-muted'>{cfg.label}</span>
+   621→                <span className='text-[8px] app-text-muted'>{cfg.unlockDay} يوم</span>
+   622→              </div>
+   623→            ))}
+   624→          </div>
+   625→        </motion.div>
+   626→
+   627→        {/* Motivational Tip */}
+   628→        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className='glass-card rounded-2xl p-4'>
+   629→          <div className='flex items-start gap-3'>
+   630→            <div className='w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0' style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
+   631→              <Leaf className='w-4 h-4 text-emerald-500' />
+   632→            </div>
+   633→            <div>
+   634→              <h4 className='app-text font-medium text-sm mb-1' style={{ fontFamily: fontClass }}>كيف تنمي حديقتك؟</h4>
+   635→              <p className='app-text-2 text-xs leading-relaxed'>
+   636→                أكمل أذكار الصباح والمساء كل يوم لتحافظ على سلسلتك. كل 3 أيام متتالية تحصل على نبتة جديدة. كلما طالت سلسلتك، حصلت على نباتات أجمل!
+   637→              </p>
+   638→            </div>
+   639→          </div>
+   640→        </motion.div>
+   641→      </main>
+   642→    </motion.div>
+   643→  );
+   644→}
