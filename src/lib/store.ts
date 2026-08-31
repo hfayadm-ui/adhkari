@@ -38,14 +38,14 @@ interface Challenge {
   completed: boolean;
 }
 
-interface GardenPlant {
+export interface GardenPlant {
   id: string;
   type: 'seed' | 'sprout' | 'flower' | 'tree' | 'palm' | 'rose' | 'jasmine' | 'lotus';
-  dayEarned: number; // streak day when earned
+  dayEarned: number;
   unlockedAt: string;
 }
 
-interface StreakDay {
+export interface StreakDay {
   date: string;
   count: number; // dhikr count that day
 }
@@ -168,6 +168,13 @@ interface DhikrState {
   gardenPlants: GardenPlant[];
   gardenLevel: number;
   addGardenPlant: (type: GardenPlant['type']) => void;
+  // Dev helpers
+  setGardenLevel: (level: number) => void;
+  setGardenPlants: (plants: GardenPlant[]) => void;
+  setBestStreak: (n: number) => void;
+  setStreakDays: (days: StreakDay[]) => void;
+  setTodayFreeClicks: (n: number) => void;
+  setStreakFreezesLeft: (n: number) => void;
 
   // Appearance
   selectedBackground: string;
@@ -502,6 +509,12 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
     save('dz_gardenLevel', newLevel);
     set({ gardenPlants: plants, gardenLevel: newLevel });
   },
+  setGardenLevel: (level) => { save('dz_gardenLevel', level); set({ gardenLevel: level }); },
+  setGardenPlants: (plants) => { save('dz_gardenPlants', plants); set({ gardenPlants: plants }); },
+  setBestStreak: (n) => { save('dz_bestStreak', n); set({ bestStreak: n }); },
+  setStreakDays: (days) => { save('dz_streakDays', days); set({ streakDays: days }); },
+  setTodayFreeClicks: (n) => { set({ todayFreeClicks: n }); },
+  setStreakFreezesLeft: (n) => { save('dz_freezesLeft', n); set({ streakFreezesLeft: n }); },
 
   // Appearance
   selectedBackground: load<string>('dz_bg', 'default'),

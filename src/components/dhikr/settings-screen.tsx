@@ -1,13 +1,14 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useDhikrStore, ArabicFont } from '@/lib/store';
+import { useDhikrStore, ArabicFont, GardenPlant, StreakDay } from '@/lib/store';
 import { getFontClass } from '@/lib/font-utils';
 import { IslamicIcon } from '@/components/dhikr/islamic-icons';
-import { Volume2, VolumeX, Type, RotateCcw, MapPin, ChevronDown, Search, Check, Sun, Moon, Download, Upload, Bell } from '@/components/dhikr/islamic-icons';
+import { Volume2, VolumeX, Type, RotateCcw, MapPin, ChevronDown, Search, Check, Sun, Moon, Download, Upload, Bell, Flame, Trees, Sparkles, Trophy, Plus, Trash2, Zap } from '@/components/dhikr/islamic-icons';
 import { countries, CityData, fetchPrayerTimes } from '@/lib/dhikr-data';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import GoogleLogin from '@/components/auth/google-login';
+import TreeVisualization, { treeConfigs } from '@/components/dhikr/tree-visualization';
 
 const fontOptions: { id: ArabicFont; name: string; desc: string; fontVar: string }[] = [
   { id: 'cairo', name: 'القاهرة', desc: 'خط عصري واضح', fontVar: 'var(--font-arabic)' },
@@ -35,6 +36,285 @@ function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
       <motion.div className='absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md'
         animate={{ left: value ? 'calc(100% - 22px)' : '2px' }} transition={{ type: 'spring', stiffness: 500, damping: 30 }} />
     </button>
+  );
+}
+
+/* ========== Developer Panel ========== */
+const plantTypes: { type: GardenPlant['type']; label: string; color: string }[] = [
+  { type: 'seed', label: 'بذرة', color: '#8B6914' },
+  { type: 'sprout', label: 'نبتة', color: '#22c55e' },
+  { type: 'flower', label: 'زهرة', color: '#f472b6' },
+  { type: 'rose', label: 'وردة', color: '#ef4444' },
+  { type: 'jasmine', label: 'ياسمين', color: '#fbbf24' },
+  { type: 'lotus', label: 'لوتس', color: '#818cf8' },
+  { type: 'tree', label: 'شجرة', color: '#10b981' },
+  { type: 'palm', label: 'نخلة', color: '#059669' },
+];
+
+const gardenNames = ['أرض قاحلة', 'حديقة ناشئة', 'حديقة خضراء', 'حديقة الزهور', 'جنة صغيرة', 'روضة رائعة', 'حديقة النخيل', 'جنة المؤمن', 'حديقة الخلد', 'جنة الفردوس'];
+
+function DevSlider({ label, value, min, max, step = 1, onChange, color = 'var(--gold-accent)' }: {
+  label: string; value: number; min: number; max: number; step?: number; onChange: (v: number) => void; color?: string;
+}) {
+  return (
+    <div className='space-y-1'>
+      <div className='flex items-center justify-between'>
+        <span className='app-text-2 text-xs'>{label}</span>
+        <span className='text-xs font-mono font-bold' style={{ color }}>{value}</span>
+      </div>
+      <input type='range' min={min} max={max} step={step} value={value}
+        onChange={e => onChange(Number(e.target.value))}
+        className='w-full h-1.5 rounded-full appearance-none cursor-pointer'
+        style={{
+          background: `linear-gradient(to right, ${color} 0%, ${color} ${((value - min) / (max - min)) * 100}%, var(--app-ring-track) ${((value - min) / (max - min)) * 100}%, var(--app-ring-track) 100%)`,
+          accentColor: color,
+        }} />
+    </div>
+  );
+}
+
+function DevPanel({ fontVar }: { fontVar: string }) {
+  const store = useDhikrStore();
+  const [open, setOpen] = useState(false);
+  const [tab, setTab] = useState<'stats' | 'garden' | 'streak'>('stats');
+  const [genDays, setGenDays] = useState(7);
+  const [genCount, setGenCount] = useState(100);
+
+  const addPlant = (type: GardenPlant['type']) => {
+    const plant: GardenPlant = {
+      id: crypto.randomUUID(),
+      type,
+      dayEarned: store.streak,
+      unlockedAt: new Date().toISOString(),
+    };
+    store.setGardenPlants([...store.gardenPlants, plant]);
+  };
+
+  const generateStreakDays = () => {
+    const days: StreakDay[] = [];
+    for (let i = genDays - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      days.push({ date: d.toDateString(), count: Math.floor(genCount * (0.5 + Math.random() * 0.5)) });
+    }
+    store.setStreakDays(days);
+  };
+
+  const clearPlants = () => store.setGardenPlants([]);
+  const fillAllPlants = () => {
+    const plants: GardenPlant[] = [];
+    const d = new Date();
+    for (let i = 0; i < 24; i++) {
+      const typeIdx = Math.min(Math.floor(i / 3), plantTypes.length - 1);
+      d.setDate(d.getDate() - (i % 3 === 0 ? 1 : 0));
+      plants.push({ id: crypto.randomUUID(), type: plantTypes[typeIdx].type, dayEarned: i + 1, unlockedAt: d.toISOString() });
+    }
+    store.setGardenPlants(plants);
+  };
+
+  const resetAll = () => {
+    store.setStreak(0);
+    store.setTreeLevel(0);
+    store.setGardenLevel(0);
+    store.setGardenPlants([]);
+    store.setBestStreak(0);
+    store.setTotalAllTime(0);
+    store.setStreakDays([]);
+    store.setStreakFreezesLeft(2);
+    store.setFreeCounter(0);
+  };
+
+  return (
+    <>
+      {/* Toggle button */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.38 }}>
+        <button onClick={() => setOpen(!open)}
+          className={`w-full glass-card rounded-2xl p-3.5 flex items-center justify-between transition-all ${open ? 'app-border-c' : ''}`}
+          style={open ? { borderColor: 'rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.05)' } : {}}>
+          <div className='flex items-center gap-3'>
+            <div className='w-9 h-9 rounded-xl flex items-center justify-center bg-red-500/10'>
+              <Zap className='w-4 h-4 text-red-400' />
+            </div>
+            <div className='text-right'>
+              <p className='app-text font-medium text-sm' style={{ fontFamily: fontVar }}>لوحة المطور</p>
+              <p className='app-text-2 text-[10px]'>معاينة المراحل والإنجازات</p>
+            </div>
+          </div>
+          <ChevronDown className={`w-4 h-4 text-red-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+        </button>
+      </motion.div>
+
+      {open && (
+        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+          className='rounded-2xl p-4 space-y-4'
+          style={{ background: 'rgba(239,68,68,0.03)', border: '1px solid rgba(239,68,68,0.15)' }}>
+
+          {/* Tabs */}
+          <div className='flex gap-1 p-1 rounded-xl' style={{ background: 'var(--app-ring-track)' }}>
+            {([['stats', 'الإحصائيات', Trophy], ['garden', 'الحديقة', Trees], ['streak', 'السلسلة', Flame]] as const).map(([id, label, Icon]) => (
+              <button key={id} onClick={() => setTab(id)}
+                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all flex items-center justify-center gap-1.5 ${tab === id ? 'text-white shadow-md' : 'app-text-2'}`}
+                style={tab === id ? { background: 'linear-gradient(135deg, #ef4444, #dc2626)' } : {}}>
+                <Icon className='w-3.5 h-3.5' />
+                <span style={{ fontFamily: fontVar }}>{label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* === STATS TAB === */}
+          {tab === 'stats' && (
+            <div className='space-y-3'>
+              <DevSlider label='السلسلة الحالية (streak)' value={store.streak} min={0} max={60} onChange={v => store.setStreak(v)} color='#f97316' />
+              <DevSlider label='أفضل سلسلة (bestStreak)' value={store.bestStreak} min={0} max={100} onChange={v => store.setBestStreak(v)} color='#ef4444' />
+              <DevSlider label='مستوى الشجرة (treeLevel)' value={store.treeLevel} min={0} max={7} onChange={v => store.setTreeLevel(v)} color='#10b981' />
+              <DevSlider label='مستوى الحديقة (gardenLevel)' value={store.gardenLevel} min={0} max={10} onChange={v => store.setGardenLevel(v)} color='#22c55e' />
+              <DevSlider label='الإجمالي الكلي (totalAllTime)' value={store.totalAllTime} min={0} max={50000} step={100} onChange={v => store.setTotalAllTime(v)} color='var(--gold-accent)' />
+              <DevSlider label='العداد الحر (freeCounter)' value={store.freeCounter} min={0} max={10000} step={50} onChange={v => store.setFreeCounter(v)} color='#818cf8' />
+              <DevSlider label='نقرات اليوم الحر (todayFreeClicks)' value={store.todayFreeClicks} min={0} max={500} step={10} onChange={v => store.setTodayFreeClicks(v)} color='#a78bfa' />
+              <DevSlider label='التجميدات المتبقية' value={store.streakFreezesLeft} min={0} max={10} onChange={v => store.setStreakFreezesLeft(v)} color='#60a5fa' />
+
+              {/* Tree preview */}
+              <div className='p-3 rounded-xl glass-card'>
+                <div className='flex items-center justify-between mb-2'>
+                  <span className='app-text-2 text-xs'>معاينة الشجرة</span>
+                  <span className='text-[10px] app-text-muted'>{treeConfigs[store.selectedTree]?.label || ''} — مستوى {store.treeLevel}</span>
+                </div>
+                <div className='flex justify-center'>
+                  <TreeVisualization treeType={store.selectedTree} level={store.treeLevel} size={120} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* === GARDEN TAB === */}
+          {tab === 'garden' && (
+            <div className='space-y-3'>
+              <div className='flex items-center justify-between'>
+                <div>
+                  <p className='app-text text-sm font-medium' style={{ fontFamily: fontVar }}>{gardenNames[Math.min(store.gardenLevel, gardenNames.length - 1)]}</p>
+                  <p className='app-text-2 text-[10px]'>{store.gardenPlants.length} نبات — مستوى {store.gardenLevel}</p>
+                </div>
+                <DevSlider label='المستوى' value={store.gardenLevel} min={0} max={10} onChange={v => store.setGardenLevel(v)} color='#22c55e' />
+              </div>
+
+              {/* Add plant buttons */}
+              <div>
+                <p className='app-text-2 text-xs mb-2'>إضافة نبات:</p>
+                <div className='flex flex-wrap gap-1.5'>
+                  {plantTypes.map(p => (
+                    <button key={p.type} onClick={() => addPlant(p.type)}
+                      className='px-2.5 py-1.5 rounded-lg text-[10px] font-medium transition-all hover:scale-105'
+                      style={{ background: `${p.color}15`, color: p.color, border: `1px solid ${p.color}30` }}>
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick actions */}
+              <div className='flex gap-2'>
+                <button onClick={fillAllPlants}
+                  className='flex-1 py-2 rounded-xl text-xs font-medium text-white flex items-center justify-center gap-1'
+                  style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}>
+                  <Plus className='w-3.5 h-3.5' /> ملء 24 نبات
+                </button>
+                <button onClick={clearPlants}
+                  className='flex-1 py-2 rounded-xl text-xs font-medium text-red-300 flex items-center justify-center gap-1 bg-red-500/10 border border-red-500/20'>
+                  <Trash2 className='w-3.5 h-3.5' /> مسح الكل
+                </button>
+              </div>
+
+              {/* Plant grid preview */}
+              {store.gardenPlants.length > 0 && (
+                <div className='p-3 rounded-xl glass-card'>
+                  <p className='app-text-2 text-xs mb-2'>معاينة النباتات ({store.gardenPlants.length}):</p>
+                  <div className='grid grid-cols-4 gap-2'>
+                    {store.gardenPlants.slice(-12).map((p) => {
+                      const pt = plantTypes.find(t => t.type === p.type);
+                      return (
+                        <div key={p.id} className='flex flex-col items-center gap-0.5 p-1.5 rounded-xl' style={{ background: `${pt?.color || '#10b981'}10` }}>
+                          <div className='w-3 h-3 rounded-full' style={{ background: pt?.color || '#10b981' }} />
+                          <span className='text-[8px] app-text-muted'>{pt?.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {store.gardenPlants.length > 12 && (
+                    <p className='text-[9px] app-text-muted text-center mt-1'>+{store.gardenPlants.length - 12} آخر</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* === STREAK TAB === */}
+          {tab === 'streak' && (
+            <div className='space-y-3'>
+              <DevSlider label='السلسلة' value={store.streak} min={0} max={60} onChange={v => store.setStreak(v)} color='#f97316' />
+
+              {/* Generate streak days */}
+              <div className='p-3 rounded-xl glass-card space-y-2'>
+                <p className='app-text-2 text-xs'>توليد بيانات أيام السلسلة:</p>
+                <div className='flex gap-2'>
+                  <div className='flex-1'>
+                    <label className='text-[10px] app-text-muted'>عدد الأيام</label>
+                    <input type='number' value={genDays} onChange={e => setGenDays(Math.max(1, Number(e.target.value)))}
+                      className='w-full px-2 py-1.5 rounded-lg text-xs app-input app-text mt-0.5' min={1} max={30} />
+                  </div>
+                  <div className='flex-1'>
+                    <label className='text-[10px] app-text-muted'>العدد اليومي</label>
+                    <input type='number' value={genCount} onChange={e => setGenCount(Math.max(1, Number(e.target.value)))}
+                      className='w-full px-2 py-1.5 rounded-lg text-xs app-input app-text mt-0.5' min={1} />
+                  </div>
+                </div>
+                <button onClick={generateStreakDays}
+                  className='w-full py-2 rounded-xl text-xs font-medium text-white flex items-center justify-center gap-1'
+                  style={{ background: 'linear-gradient(135deg, #f97316, #ea580c)' }}>
+                  <Sparkles className='w-3.5 h-3.5' /> توليد بيانات
+                </button>
+              </div>
+
+              {/* Streak days list */}
+              {store.streakDays.length > 0 && (
+                <div className='p-3 rounded-xl glass-card'>
+                  <p className='app-text-2 text-xs mb-2'>أيام السلسلة ({store.streakDays.length}):</p>
+                  <div className='max-h-40 overflow-y-auto space-y-1 scrollbar-hide'>
+                    {store.streakDays.map((d, i) => (
+                      <div key={i} className='flex items-center justify-between text-[10px] py-1 border-b' style={{ borderColor: 'var(--glass-border)' }}>
+                        <span className='app-text-muted'>{d.date}</span>
+                        <span className='font-mono' style={{ color: '#f97316' }}>{d.count} ذكر</span>
+                      </div>
+                    ))}
+                  </div>
+                  <button onClick={() => store.setStreakDays([])} className='w-full mt-2 py-1.5 rounded-lg text-[10px] text-red-300 bg-red-500/10'>مسح</button>
+                </div>
+              )}
+
+              {/* Quick streak presets */}
+              <div>
+                <p className='app-text-2 text-xs mb-2'>ضبط سريع:</p>
+                <div className='grid grid-cols-4 gap-1.5'>
+                  {[{ label: 'مبتدئ', s: 1, b: 1 }, { label: 'أسبوع', s: 7, b: 7 }, { label: 'شهر', s: 30, b: 30 }, { label: 'محترف', s: 60, b: 90 }].map(p => (
+                    <button key={p.label} onClick={() => { store.setStreak(p.s); store.setBestStreak(p.b); }}
+                      className='py-2 rounded-lg text-[10px] font-medium app-text-2 glass-card app-surface-h transition-colors'>
+                      {p.label}
+                      <span className='block text-[8px] app-text-muted mt-0.5'>{p.s} يوم</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Reset all */}
+          <button onClick={() => { if (confirm('إعادة تعيين كل بيانات التطوير؟')) resetAll(); }}
+            className='w-full py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium transition-colors hover:bg-red-500/20'
+            style={{ fontFamily: fontVar }}>
+            إعادة تعيين كل البيانات
+          </button>
+        </motion.div>
+      )}
+    </>
   );
 }
 
@@ -393,6 +673,9 @@ export default function SettingsScreen() {
               style={{ fontFamily: fontVar }}>حذف جميع البيانات</button>
           </div>
         </SettingRow>
+
+        {/* Dev Panel */}
+        <DevPanel fontVar={fontVar} />
 
         {/* About */}
         <SettingRow delay={0.35}>
