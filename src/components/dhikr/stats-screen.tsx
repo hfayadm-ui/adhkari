@@ -216,7 +216,8 @@ export default function StatsScreen() {
                       initial={{ height: 0 }}
                       animate={{ height: `${Math.max(h, 4)}%` }}
                       transition={{ duration: 0.7, delay: i * 0.05 }}
-                    />\n                  </div>
+                    />
+                  </div>
                   <span className={`text-[9px] ${d.isToday ? 'font-bold' : 'app-text-muted'}`}
                     style={d.isToday ? { color: 'var(--gold-accent)' } : undefined}>{d.label}</span>
                 </div>
