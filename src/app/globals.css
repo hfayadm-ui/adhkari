@@ -484,124 +484,259 @@
 
 /* ================================================ */
 /*   CUSTOM BACKGROUNDS — Islamic Themes              */
+/*   Mode-aware: dark mode gets stronger opacities     */
 /* ================================================ */
 
-/* Default — subtle gold radial glows */
+/* Default — gold radial glows */
 .bg-app-default {
   background-image:
-    radial-gradient(circle at 12% 18%, var(--app-pattern-1) 0%, transparent 45%),
-    radial-gradient(circle at 88% 12%, var(--app-pattern-2) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, var(--app-pattern-1) 0%, transparent 60%);
+    radial-gradient(circle at 12% 18%, rgba(197,160,89,0.15) 0%, transparent 50%),
+    radial-gradient(circle at 88% 12%, rgba(197,160,89,0.10) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(197,160,89,0.08) 0%, transparent 65%);
+}
+.dark .bg-app-default {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(212,175,55,0.18) 0%, transparent 50%),
+    radial-gradient(circle at 88% 12%, rgba(212,175,55,0.12) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(212,175,55,0.10) 0%, transparent 65%);
 }
 
-/* Andalusian Mosque — warm sunset with mosque silhouette at bottom */
+/* Andalusian Mosque — warm sunset with mosque silhouette */
 .bg-app-mosque-andalusia {
   background-image:
-    /* Sky gradient — warm sunset */
+    /* Sky gradient — deep sunset */
     linear-gradient(180deg,
-      rgba(30,20,60,0.12) 0%,
-      rgba(60,25,40,0.08) 40%,
-      rgba(120,60,20,0.06) 70%,
-      rgba(197,160,89,0.04) 100%
+      rgba(30,20,60,0.35) 0%,
+      rgba(80,30,50,0.25) 30%,
+      rgba(140,70,25,0.18) 60%,
+      rgba(197,160,89,0.12) 85%,
+      rgba(249,150,50,0.08) 100%
     ),
     /* Moon glow */
-    radial-gradient(circle at 80% 12%, rgba(212,175,55,0.07) 0%, transparent 25%),
-    /* Mosque silhouette at bottom — dome + minarets using ellipses + rects */
-    radial-gradient(ellipse 100% 12% at 50% 100%, rgba(0,0,0,0.25) 0%, transparent 100%),
-    /* Central dome glow */
-    radial-gradient(ellipse 18% 10% at 50% 93%, rgba(197,160,89,0.08) 0%, transparent 100%),
+    radial-gradient(circle at 80% 10%, rgba(255,220,120,0.25) 0%, transparent 20%),
+    radial-gradient(circle at 80% 10%, rgba(255,220,120,0.08) 0%, transparent 35%),
+    /* Ground / horizon */
+    radial-gradient(ellipse 120% 14% at 50% 100%, rgba(40,25,15,0.45) 0%, transparent 100%),
+    /* Central dome */
+    radial-gradient(ellipse 22% 13% at 50% 90%, rgba(197,160,89,0.22) 0%, transparent 100%),
+    radial-gradient(ellipse 18% 10% at 50% 90%, rgba(0,0,0,0.35) 0%, transparent 100%),
     /* Left minaret */
-    radial-gradient(ellipse 1.5% 14% at 22% 95%, rgba(0,0,0,0.18) 0%, transparent 100%),
+    radial-gradient(ellipse 2% 18% at 22% 92%, rgba(0,0,0,0.40) 0%, transparent 100%),
+    radial-gradient(ellipse 0.8% 18% at 22% 92%, rgba(197,160,89,0.15) 0%, transparent 100%),
     /* Right minaret */
-    radial-gradient(ellipse 1.5% 14% at 78% 95%, rgba(0,0,0,0.18) 0%, transparent 100%),
+    radial-gradient(ellipse 2% 18% at 78% 92%, rgba(0,0,0,0.40) 0%, transparent 100%),
+    radial-gradient(ellipse 0.8% 18% at 78% 92%, rgba(197,160,89,0.15) 0%, transparent 100%),
     /* Warm horizon glow */
-    radial-gradient(ellipse 80% 20% at 50% 100%, rgba(249,115,22,0.05) 0%, transparent 100%);
+    radial-gradient(ellipse 90% 25% at 50% 100%, rgba(249,115,22,0.15) 0%, transparent 100%),
+    /* Stars in sky */
+    radial-gradient(1.2px 1.2px at 15% 8%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 5%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 65% 12%, rgba(255,255,255,0.3) 0%, transparent 100%);
+}
+.dark .bg-app-mosque-andalusia {
+  background-image:
+    linear-gradient(180deg,
+      rgba(20,12,45,0.55) 0%,
+      rgba(50,15,35,0.35) 30%,
+      rgba(100,45,15,0.20) 60%,
+      rgba(197,160,89,0.10) 85%,
+      rgba(249,150,50,0.06) 100%
+    ),
+    radial-gradient(circle at 80% 10%, rgba(255,220,120,0.35) 0%, transparent 18%),
+    radial-gradient(circle at 80% 10%, rgba(255,220,120,0.10) 0%, transparent 35%),
+    radial-gradient(ellipse 120% 14% at 50% 100%, rgba(0,0,0,0.55) 0%, transparent 100%),
+    radial-gradient(ellipse 22% 13% at 50% 90%, rgba(212,175,55,0.18) 0%, transparent 100%),
+    radial-gradient(ellipse 18% 10% at 50% 90%, rgba(0,0,0,0.50) 0%, transparent 100%),
+    radial-gradient(ellipse 2% 18% at 22% 92%, rgba(0,0,0,0.55) 0%, transparent 100%),
+    radial-gradient(ellipse 0.8% 18% at 22% 92%, rgba(212,175,55,0.12) 0%, transparent 100%),
+    radial-gradient(ellipse 2% 18% at 78% 92%, rgba(0,0,0,0.55) 0%, transparent 100%),
+    radial-gradient(ellipse 0.8% 18% at 78% 92%, rgba(212,175,55,0.12) 0%, transparent 100%),
+    radial-gradient(ellipse 90% 25% at 50% 100%, rgba(249,115,22,0.10) 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 15% 8%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 5%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 65% 12%, rgba(255,255,255,0.4) 0%, transparent 100%);
 }
 
-/* Islamic Geometric Pattern — interlocking star tessellation */
+/* Islamic Geometric Pattern — 8-point star tessellation */
 .bg-app-islamic-pattern {
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpolygon points='40,4 56,22 56,38 40,56 24,38 24,22' fill='none' stroke='rgba(197,160,89,0.06)' stroke-width='0.8'/%3E%3Cpolygon points='40,16 50,26 50,34 40,44 30,34 30,26' fill='none' stroke='rgba(197,160,89,0.04)' stroke-width='0.6'/%3E%3Cline x1='40' y1='4' x2='40' y2='56' stroke='rgba(197,160,89,0.025)' stroke-width='0.4'/%3E%3Cline x1='24' y1='30' x2='56' y2='30' stroke='rgba(197,160,89,0.025)' stroke-width='0.4'/%3E%3Ccircle cx='40' cy='30' r='2' fill='rgba(197,160,89,0.05)'/%3E%3C/svg%3E"),
-    radial-gradient(circle at 50% 30%, rgba(197,160,89,0.04) 0%, transparent 50%);
-  background-size: 80px 80px, 100% 100%;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='none'/%3E%3Cpolygon points='30,2 38,14 54,14 42,24 46,40 30,32 14,40 18,24 6,14 22,14' fill='none' stroke='rgba(197,160,89,0.18)' stroke-width='0.7'/%3E%3Cpolygon points='30,10 35,18 44,18 37,24 39,34 30,28 21,34 23,24 16,18 25,18' fill='none' stroke='rgba(197,160,89,0.12)' stroke-width='0.5'/%3E%3Ccircle cx='30' cy='30' r='2.5' fill='rgba(197,160,89,0.10)'/%3E%3Cline x1='30' y1='2' x2='30' y2='58' stroke='rgba(197,160,89,0.06)' stroke-width='0.4'/%3E%3Cline x1='2' y1='30' x2='58' y2='30' stroke='rgba(197,160,89,0.06)' stroke-width='0.4'/%3E%3C/svg%3E"),
+    radial-gradient(circle at 50% 30%, rgba(197,160,89,0.10) 0%, transparent 55%),
+    radial-gradient(circle at 20% 80%, rgba(197,160,89,0.06) 0%, transparent 40%);
+  background-size: 60px 60px, 100% 100%, 100% 100%;
+}
+.dark .bg-app-islamic-pattern {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='none'/%3E%3Cpolygon points='30,2 38,14 54,14 42,24 46,40 30,32 14,40 18,24 6,14 22,14' fill='none' stroke='rgba(212,175,55,0.22)' stroke-width='0.7'/%3E%3Cpolygon points='30,10 35,18 44,18 37,24 39,34 30,28 21,34 23,24 16,18 25,18' fill='none' stroke='rgba(212,175,55,0.14)' stroke-width='0.5'/%3E%3Ccircle cx='30' cy='30' r='2.5' fill='rgba(212,175,55,0.12)'/%3E%3Cline x1='30' y1='2' x2='30' y2='58' stroke='rgba(212,175,55,0.08)' stroke-width='0.4'/%3E%3Cline x1='2' y1='30' x2='58' y2='30' stroke='rgba(212,175,55,0.08)' stroke-width='0.4'/%3E%3C/svg%3E"),
+    radial-gradient(circle at 50% 30%, rgba(212,175,55,0.12) 0%, transparent 55%),
+    radial-gradient(circle at 20% 80%, rgba(212,175,55,0.08) 0%, transparent 40%);
+  background-size: 60px 60px, 100% 100%, 100% 100%;
 }
 
-/* Golden Dome — radial golden light emanating from top */
+/* Golden Dome — radial golden light from top */
 .bg-app-golden-dome {
   background-image:
     /* Main dome glow */
-    radial-gradient(ellipse 60% 45% at 50% 5%, rgba(212,175,55,0.12) 0%, transparent 100%),
-    /* Secondary rings */
-    radial-gradient(ellipse 40% 30% at 50% 8%, rgba(197,160,89,0.08) 0%, transparent 100%),
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(212,175,55,0.28) 0%, transparent 100%),
+    /* Inner bright core */
+    radial-gradient(ellipse 35% 30% at 50% 5%, rgba(255,220,120,0.18) 0%, transparent 100%),
     /* Light rays */
     conic-gradient(from 0deg at 50% 5%,
-      transparent 0deg, rgba(212,175,55,0.02) 10deg, transparent 20deg,
-      transparent 30deg, rgba(212,175,55,0.015) 40deg, transparent 50deg,
-      transparent 60deg, rgba(212,175,55,0.02) 70deg, transparent 80deg,
-      transparent 90deg, rgba(212,175,55,0.015) 100deg, transparent 110deg,
-      transparent 120deg, rgba(212,175,55,0.02) 130deg, transparent 140deg,
-      transparent 150deg, rgba(212,175,55,0.015) 160deg, transparent 170deg,
-      transparent 180deg, rgba(212,175,55,0.02) 190deg, transparent 200deg,
-      transparent 210deg, rgba(212,175,55,0.015) 220deg, transparent 230deg,
-      transparent 240deg, rgba(212,175,55,0.02) 250deg, transparent 260deg,
-      transparent 270deg, rgba(212,175,55,0.015) 280deg, transparent 290deg,
-      transparent 300deg, rgba(212,175,55,0.02) 310deg, transparent 320deg,
-      transparent 330deg, rgba(212,175,55,0.015) 340deg, transparent 360deg
+      transparent 0deg, rgba(212,175,55,0.08) 8deg, transparent 16deg,
+      transparent 27deg, rgba(212,175,55,0.06) 35deg, transparent 43deg,
+      transparent 54deg, rgba(212,175,55,0.08) 62deg, transparent 70deg,
+      transparent 81deg, rgba(212,175,55,0.06) 89deg, transparent 97deg,
+      transparent 108deg, rgba(212,175,55,0.08) 116deg, transparent 124deg,
+      transparent 135deg, rgba(212,175,55,0.06) 143deg, transparent 151deg,
+      transparent 162deg, rgba(212,175,55,0.08) 170deg, transparent 178deg,
+      transparent 189deg, rgba(212,175,55,0.06) 197deg, transparent 205deg,
+      transparent 216deg, rgba(212,175,55,0.08) 224deg, transparent 232deg,
+      transparent 243deg, rgba(212,175,55,0.06) 251deg, transparent 259deg,
+      transparent 270deg, rgba(212,175,55,0.08) 278deg, transparent 286deg,
+      transparent 297deg, rgba(212,175,55,0.06) 305deg, transparent 313deg,
+      transparent 324deg, rgba(212,175,55,0.08) 332deg, transparent 340deg,
+      transparent 351deg, rgba(212,175,55,0.06) 359deg, transparent 360deg
     ),
+    /* Dome arch outline */
+    radial-gradient(ellipse 40% 55% at 50% 5%, transparent 45%, rgba(212,175,55,0.10) 46%, rgba(212,175,55,0.10) 48%, transparent 49%),
     /* Bottom warm glow */
-    radial-gradient(ellipse 80% 15% at 50% 100%, rgba(197,160,89,0.04) 0%, transparent 100%);
+    radial-gradient(ellipse 80% 18% at 50% 100%, rgba(197,160,89,0.10) 0%, transparent 100%);
+}
+.dark .bg-app-golden-dome {
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(212,175,55,0.30) 0%, transparent 100%),
+    radial-gradient(ellipse 35% 30% at 50% 5%, rgba(255,220,120,0.20) 0%, transparent 100%),
+    conic-gradient(from 0deg at 50% 5%,
+      transparent 0deg, rgba(212,175,55,0.10) 8deg, transparent 16deg,
+      transparent 27deg, rgba(212,175,55,0.07) 35deg, transparent 43deg,
+      transparent 54deg, rgba(212,175,55,0.10) 62deg, transparent 70deg,
+      transparent 81deg, rgba(212,175,55,0.07) 89deg, transparent 97deg,
+      transparent 108deg, rgba(212,175,55,0.10) 116deg, transparent 124deg,
+      transparent 135deg, rgba(212,175,55,0.07) 143deg, transparent 151deg,
+      transparent 162deg, rgba(212,175,55,0.10) 170deg, transparent 178deg,
+      transparent 189deg, rgba(212,175,55,0.07) 197deg, transparent 205deg,
+      transparent 216deg, rgba(212,175,55,0.10) 224deg, transparent 232deg,
+      transparent 243deg, rgba(212,175,55,0.07) 251deg, transparent 259deg,
+      transparent 270deg, rgba(212,175,55,0.10) 278deg, transparent 286deg,
+      transparent 297deg, rgba(212,175,55,0.07) 305deg, transparent 313deg,
+      transparent 324deg, rgba(212,175,55,0.10) 332deg, transparent 340deg,
+      transparent 351deg, rgba(212,175,55,0.07) 359deg, transparent 360deg
+    ),
+    radial-gradient(ellipse 40% 55% at 50% 5%, transparent 45%, rgba(212,175,55,0.12) 46%, rgba(212,175,55,0.12) 48%, transparent 49%),
+    radial-gradient(ellipse 80% 18% at 50% 100%, rgba(212,175,55,0.08) 0%, transparent 100%);
 }
 
-/* Mihrab — arch shape with inner pattern */
+/* Mihrab — pointed arch with green glow */
 .bg-app-mihrab {
   background-image:
     /* Outer arch glow */
-    radial-gradient(ellipse 50% 60% at 50% 40%, rgba(16,185,129,0.05) 0%, transparent 100%),
-    /* Inner arch — pointed shape using overlapping gradients */
-    radial-gradient(ellipse 30% 45% at 50% 35%, rgba(16,185,129,0.04) 0%, transparent 100%),
-    /* Arch outline simulation */
-    radial-gradient(ellipse 35% 50% at 50% 38%, transparent 48%, rgba(16,185,129,0.06) 49%, rgba(16,185,129,0.06) 51%, transparent 52%),
+    radial-gradient(ellipse 55% 65% at 50% 40%, rgba(16,185,129,0.15) 0%, transparent 100%),
+    /* Inner arch */
+    radial-gradient(ellipse 35% 50% at 50% 35%, rgba(16,185,129,0.10) 0%, transparent 100%),
+    /* Arch outline */
+    radial-gradient(ellipse 42% 58% at 50% 38%, transparent 46%, rgba(16,185,129,0.20) 47%, rgba(16,185,129,0.20) 49%, transparent 50%),
     /* Inner arch outline */
-    radial-gradient(ellipse 25% 40% at 50% 37%, transparent 47%, rgba(16,185,129,0.04) 48%, rgba(16,185,129,0.04) 50%, transparent 51%),
-    /* Center point */
-    radial-gradient(circle 2px at 50% 15%, rgba(212,175,55,0.1) 0%, transparent 100%),
-    /* Vertical axis line */
-    linear-gradient(180deg, rgba(16,185,129,0.03) 0%, rgba(16,185,129,0.01) 40%, transparent 70%);
+    radial-gradient(ellipse 30% 45% at 50% 37%, transparent 45%, rgba(16,185,129,0.14) 46%, rgba(16,185,129,0.14) 48%, transparent 49%),
+    /* Center gold point */
+    radial-gradient(circle 4px at 50% 14%, rgba(212,175,55,0.35) 0%, transparent 100%),
+    /* Vertical axis */
+    linear-gradient(180deg, rgba(16,185,129,0.12) 0%, rgba(16,185,129,0.04) 40%, transparent 70%),
+    /* Side pillars */
+    linear-gradient(90deg, transparent 30%, rgba(16,185,129,0.06) 30.5%, rgba(16,185,129,0.06) 31%, transparent 31.5%),
+    linear-gradient(90deg, transparent 69%, rgba(16,185,129,0.06) 69.5%, rgba(16,185,129,0.06) 70%, transparent 70.5%);
+}
+.dark .bg-app-mihrab {
+  background-image:
+    radial-gradient(ellipse 55% 65% at 50% 40%, rgba(16,185,129,0.18) 0%, transparent 100%),
+    radial-gradient(ellipse 35% 50% at 50% 35%, rgba(16,185,129,0.12) 0%, transparent 100%),
+    radial-gradient(ellipse 42% 58% at 50% 38%, transparent 46%, rgba(16,185,129,0.22) 47%, rgba(16,185,129,0.22) 49%, transparent 50%),
+    radial-gradient(ellipse 30% 45% at 50% 37%, transparent 45%, rgba(16,185,129,0.16) 46%, rgba(16,185,129,0.16) 48%, transparent 49%),
+    radial-gradient(circle 4px at 50% 14%, rgba(212,175,55,0.45) 0%, transparent 100%),
+    linear-gradient(180deg, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0.05) 40%, transparent 70%),
+    linear-gradient(90deg, transparent 30%, rgba(16,185,129,0.08) 30.5%, rgba(16,185,129,0.08) 31%, transparent 31.5%),
+    linear-gradient(90deg, transparent 69%, rgba(16,185,129,0.08) 69.5%, rgba(16,185,129,0.08) 70%, transparent 70.5%);
 }
 
-/* Stars Night — twinkling gold stars */
+/* Stars Night — bright gold & white stars */
 .bg-app-stars {
   background-image:
-    radial-gradient(1px 1px at 10% 15%, rgba(212,175,55,0.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 25% 8%, rgba(255,255,255,0.4) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 40% 22%, rgba(212,175,55,0.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 55% 5%, rgba(255,255,255,0.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 70% 18%, rgba(212,175,55,0.4) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 85% 10%, rgba(255,255,255,0.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 15% 45%, rgba(255,255,255,0.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 35% 55%, rgba(212,175,55,0.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,0.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 80% 50%, rgba(212,175,55,0.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 5% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 50% 75%, rgba(212,175,55,0.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 90% 65%, rgba(255,255,255,0.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 20% 90%, rgba(212,175,55,0.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.5) 0%, transparent 100%),
-    radial-gradient(ellipse at 80% 15%, rgba(212,175,55,0.08) 0%, transparent 50%);
+    radial-gradient(1.5px 1.5px at 10% 15%, rgba(212,175,55,0.80) 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 25% 8%, rgba(255,255,255,0.70) 0%, transparent 100%),
+    radial-gradient(2px 2px at 40% 22%, rgba(212,175,55,0.50) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 5%, rgba(255,255,255,0.80) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 70% 18%, rgba(212,175,55,0.65) 0%, transparent 100%),
+    radial-gradient(2px 2px at 85% 10%, rgba(255,255,255,0.50) 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 15% 45%, rgba(255,255,255,0.55) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 35% 55%, rgba(212,175,55,0.65) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,0.75) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 80% 50%, rgba(212,175,55,0.50) 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 5% 70%, rgba(255,255,255,0.60) 0%, transparent 100%),
+    radial-gradient(2px 2px at 50% 75%, rgba(212,175,55,0.80) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 65%, rgba(255,255,255,0.55) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 20% 90%, rgba(212,175,55,0.65) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.75) 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 45% 32%, rgba(212,175,55,0.45) 0%, transparent 100%),
+    radial-gradient(1px 1px at 65% 80%, rgba(255,255,255,0.50) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 30% 68%, rgba(212,175,55,0.55) 0%, transparent 100%),
+    /* Moon glow */
+    radial-gradient(circle at 80% 15%, rgba(255,220,120,0.15) 0%, transparent 25%),
+    radial-gradient(circle at 80% 15%, rgba(212,175,55,0.08) 0%, transparent 40%);
+}
+.dark .bg-app-stars {
+  background-image:
+    radial-gradient(1.5px 1.5px at 10% 15%, rgba(212,175,55,1.0) 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 25% 8%, rgba(255,255,255,0.85) 0%, transparent 100%),
+    radial-gradient(2px 2px at 40% 22%, rgba(212,175,55,0.65) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 5%, rgba(255,255,255,1.0) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 70% 18%, rgba(212,175,55,0.80) 0%, transparent 100%),
+    radial-gradient(2px 2px at 85% 10%, rgba(255,255,255,0.65) 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 15% 45%, rgba(255,255,255,0.70) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 35% 55%, rgba(212,175,55,0.80) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,0.90) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 80% 50%, rgba(212,175,55,0.65) 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 5% 70%, rgba(255,255,255,0.75) 0%, transparent 100%),
+    radial-gradient(2px 2px at 50% 75%, rgba(212,175,55,1.0) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 65%, rgba(255,255,255,0.70) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 20% 90%, rgba(212,175,55,0.80) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.90) 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 45% 32%, rgba(212,175,55,0.60) 0%, transparent 100%),
+    radial-gradient(1px 1px at 65% 80%, rgba(255,255,255,0.65) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 30% 68%, rgba(212,175,55,0.70) 0%, transparent 100%),
+    radial-gradient(circle at 80% 15%, rgba(255,220,120,0.20) 0%, transparent 25%),
+    radial-gradient(circle at 80% 15%, rgba(212,175,55,0.10) 0%, transparent 40%);
 }
 
 /* Dawn — warm sunrise gradient */
 .bg-app-dawn {
   background-image:
-    linear-gradient(180deg, transparent 0%, rgba(251,191,36,0.03) 50%, rgba(249,115,22,0.04) 100%),
-    radial-gradient(ellipse at 50% 100%, rgba(249,115,22,0.08) 0%, transparent 50%);
+    linear-gradient(180deg, rgba(99,102,241,0.08) 0%, rgba(251,191,36,0.12) 45%, rgba(249,115,22,0.18) 75%, rgba(239,68,68,0.10) 100%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(249,115,22,0.20) 0%, transparent 100%),
+    radial-gradient(ellipse 30% 25% at 50% 85%, rgba(251,191,36,0.15) 0%, transparent 100%),
+    /* Sun glow */
+    radial-gradient(circle at 50% 78%, rgba(255,200,50,0.12) 0%, transparent 30%);
+}
+.dark .bg-app-dawn {
+  background-image:
+    linear-gradient(180deg, rgba(99,102,241,0.12) 0%, rgba(251,191,36,0.10) 45%, rgba(249,115,22,0.15) 75%, rgba(239,68,68,0.08) 100%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(249,115,22,0.18) 0%, transparent 100%),
+    radial-gradient(ellipse 30% 25% at 50% 85%, rgba(251,191,36,0.12) 0%, transparent 100%),
+    radial-gradient(circle at 50% 78%, rgba(255,200,50,0.10) 0%, transparent 30%);
 }
 
-/* Garden — soft green nature feel */
+/* Garden — green nature feel */
 .bg-app-garden {
   background-image:
-    radial-gradient(circle at 20% 80%, rgba(16,185,129,0.05) 0%, transparent 35%),
-    radial-gradient(circle at 80% 70%, rgba(52,211,153,0.04) 0%, transparent 30%),
-    radial-gradient(circle at 50% 90%, rgba(16,185,129,0.06) 0%, transparent 40%),
-    radial-gradient(circle at 10% 30%, rgba(197,160,89,0.02) 0%, transparent 25%);
+    radial-gradient(circle at 20% 80%, rgba(16,185,129,0.18) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(52,211,153,0.14) 0%, transparent 35%),
+    radial-gradient(circle at 50% 90%, rgba(16,185,129,0.20) 0%, transparent 45%),
+    radial-gradient(circle at 10% 30%, rgba(197,160,89,0.08) 0%, transparent 30%),
+    radial-gradient(circle at 65% 25%, rgba(16,185,129,0.08) 0%, transparent 25%);
+}
+.dark .bg-app-garden {
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(16,185,129,0.20) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(52,211,153,0.16) 0%, transparent 35%),
+    radial-gradient(circle at 50% 90%, rgba(16,185,129,0.22) 0%, transparent 45%),
+    radial-gradient(circle at 10% 30%, rgba(197,160,89,0.10) 0%, transparent 30%),
+    radial-gradient(circle at 65% 25%, rgba(16,185,129,0.10) 0%, transparent 25%);
 }

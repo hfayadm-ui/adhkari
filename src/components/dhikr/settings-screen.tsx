@@ -409,14 +409,14 @@ export default function SettingsScreen() {
           </div>
           <div className='grid grid-cols-2 gap-2'>
             {[
-              { id: 'default', name: 'افتراضي', preview: 'radial-gradient(circle, rgba(197,160,89,0.12), transparent 60%)', icon: '✦' },
-              { id: 'mosque-andalusia', name: 'مسجد أندلسي', preview: 'linear-gradient(180deg, rgba(30,20,60,0.3), rgba(120,60,20,0.15), rgba(197,160,89,0.1))', icon: '🕌' },
-              { id: 'islamic-pattern', name: 'زخارف إسلامية', preview: 'repeating-conic-gradient(rgba(197,160,89,0.08) 0% 25%, transparent 25% 50%) 0 0/20px 20px', icon: '✿' },
-              { id: 'golden-dome', name: 'قبة ذهبية', preview: 'radial-gradient(ellipse at 50% 20%, rgba(212,175,55,0.2), transparent 60%)', icon: '🌙' },
-              { id: 'mihrab', name: 'محراب', preview: 'radial-gradient(ellipse at 50% 40%, rgba(16,185,129,0.15), transparent 60%)', icon: '🤍' },
-              { id: 'stars', name: 'نجوم ليلية', preview: 'radial-gradient(1px 1px at 30% 30%, rgba(212,175,55,0.6), transparent), radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,0.5), transparent)', icon: '✶' },
-              { id: 'dawn', name: 'فجر', preview: 'linear-gradient(180deg, transparent, rgba(251,191,36,0.12), rgba(249,115,22,0.12))', icon: '☀' },
-              { id: 'garden', name: 'حديقة', preview: 'radial-gradient(circle, rgba(16,185,129,0.12), transparent), radial-gradient(circle at 80% 80%, rgba(52,211,153,0.1), transparent)', icon: '🌿' },
+              { id: 'default', name: 'افتراضي', preview: 'radial-gradient(circle at 30% 30%, rgba(197,160,89,0.35), transparent 60%), radial-gradient(circle at 70% 60%, rgba(197,160,89,0.20), transparent 50%)', icon: '✦' },
+              { id: 'mosque-andalusia', name: 'مسجد أندلسي', preview: 'linear-gradient(180deg, rgba(30,20,60,0.5), rgba(120,60,20,0.3), rgba(197,160,89,0.2)), radial-gradient(circle at 80% 12%, rgba(255,220,120,0.4), transparent 25%), radial-gradient(ellipse 100% 15% at 50% 100%, rgba(0,0,0,0.5), transparent)', icon: '🕌' },
+              { id: 'islamic-pattern', name: 'زخارف إسلامية', preview: 'repeating-conic-gradient(rgba(197,160,89,0.15) 0% 25%, transparent 25% 50%) 0 0/20px 20px, radial-gradient(circle, rgba(197,160,89,0.12), transparent 70%)', icon: '✿' },
+              { id: 'golden-dome', name: 'قبة ذهبية', preview: 'radial-gradient(ellipse at 50% 10%, rgba(212,175,55,0.45), rgba(255,220,120,0.2) 30%, transparent 70%)', icon: '🌙' },
+              { id: 'mihrab', name: 'محراب', preview: 'radial-gradient(ellipse at 50% 40%, rgba(16,185,129,0.25), transparent 70%), radial-gradient(ellipse at 50% 40%, transparent 45%, rgba(16,185,129,0.3) 46%, rgba(16,185,129,0.3) 48%, transparent 49%)', icon: '🤍' },
+              { id: 'stars', name: 'نجوم ليلية', preview: 'radial-gradient(1.5px 1.5px at 25% 25%, rgba(212,175,55,0.9), transparent), radial-gradient(1.5px 1.5px at 70% 60%, rgba(255,255,255,0.8), transparent), radial-gradient(1px 1px at 50% 40%, rgba(212,175,55,0.7), transparent), radial-gradient(1px 1px at 15% 75%, rgba(255,255,255,0.6), transparent)', icon: '✶' },
+              { id: 'dawn', name: 'فجر', preview: 'linear-gradient(180deg, rgba(99,102,241,0.12), rgba(251,191,36,0.2), rgba(249,115,22,0.3))', icon: '☀' },
+              { id: 'garden', name: 'حديقة', preview: 'radial-gradient(circle at 30% 70%, rgba(16,185,129,0.3), transparent 50%), radial-gradient(circle at 70% 40%, rgba(52,211,153,0.25), transparent 45%)', icon: '🌿' },
             ].map(bg => (
               <button
                 key={bg.id}
