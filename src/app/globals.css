@@ -483,14 +483,93 @@
 .font-arabic-scheherazade { font-family: 'Scheherazade New', serif; }
 
 /* ================================================ */
-/*   CUSTOM BACKGROUNDS                              */
+/*   CUSTOM BACKGROUNDS — Islamic Themes              */
 /* ================================================ */
+
+/* Default — subtle gold radial glows */
 .bg-app-default {
   background-image:
     radial-gradient(circle at 12% 18%, var(--app-pattern-1) 0%, transparent 45%),
     radial-gradient(circle at 88% 12%, var(--app-pattern-2) 0%, transparent 40%),
     radial-gradient(circle at 50% 50%, var(--app-pattern-1) 0%, transparent 60%);
 }
+
+/* Andalusian Mosque — warm sunset with mosque silhouette at bottom */
+.bg-app-mosque-andalusia {
+  background-image:
+    /* Sky gradient — warm sunset */
+    linear-gradient(180deg,
+      rgba(30,20,60,0.12) 0%,
+      rgba(60,25,40,0.08) 40%,
+      rgba(120,60,20,0.06) 70%,
+      rgba(197,160,89,0.04) 100%
+    ),
+    /* Moon glow */
+    radial-gradient(circle at 80% 12%, rgba(212,175,55,0.07) 0%, transparent 25%),
+    /* Mosque silhouette at bottom — dome + minarets using ellipses + rects */
+    radial-gradient(ellipse 100% 12% at 50% 100%, rgba(0,0,0,0.25) 0%, transparent 100%),
+    /* Central dome glow */
+    radial-gradient(ellipse 18% 10% at 50% 93%, rgba(197,160,89,0.08) 0%, transparent 100%),
+    /* Left minaret */
+    radial-gradient(ellipse 1.5% 14% at 22% 95%, rgba(0,0,0,0.18) 0%, transparent 100%),
+    /* Right minaret */
+    radial-gradient(ellipse 1.5% 14% at 78% 95%, rgba(0,0,0,0.18) 0%, transparent 100%),
+    /* Warm horizon glow */
+    radial-gradient(ellipse 80% 20% at 50% 100%, rgba(249,115,22,0.05) 0%, transparent 100%);
+}
+
+/* Islamic Geometric Pattern — interlocking star tessellation */
+.bg-app-islamic-pattern {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpolygon points='40,4 56,22 56,38 40,56 24,38 24,22' fill='none' stroke='rgba(197,160,89,0.06)' stroke-width='0.8'/%3E%3Cpolygon points='40,16 50,26 50,34 40,44 30,34 30,26' fill='none' stroke='rgba(197,160,89,0.04)' stroke-width='0.6'/%3E%3Cline x1='40' y1='4' x2='40' y2='56' stroke='rgba(197,160,89,0.025)' stroke-width='0.4'/%3E%3Cline x1='24' y1='30' x2='56' y2='30' stroke='rgba(197,160,89,0.025)' stroke-width='0.4'/%3E%3Ccircle cx='40' cy='30' r='2' fill='rgba(197,160,89,0.05)'/%3E%3C/svg%3E"),
+    radial-gradient(circle at 50% 30%, rgba(197,160,89,0.04) 0%, transparent 50%);
+  background-size: 80px 80px, 100% 100%;
+}
+
+/* Golden Dome — radial golden light emanating from top */
+.bg-app-golden-dome {
+  background-image:
+    /* Main dome glow */
+    radial-gradient(ellipse 60% 45% at 50% 5%, rgba(212,175,55,0.12) 0%, transparent 100%),
+    /* Secondary rings */
+    radial-gradient(ellipse 40% 30% at 50% 8%, rgba(197,160,89,0.08) 0%, transparent 100%),
+    /* Light rays */
+    conic-gradient(from 0deg at 50% 5%,
+      transparent 0deg, rgba(212,175,55,0.02) 10deg, transparent 20deg,
+      transparent 30deg, rgba(212,175,55,0.015) 40deg, transparent 50deg,
+      transparent 60deg, rgba(212,175,55,0.02) 70deg, transparent 80deg,
+      transparent 90deg, rgba(212,175,55,0.015) 100deg, transparent 110deg,
+      transparent 120deg, rgba(212,175,55,0.02) 130deg, transparent 140deg,
+      transparent 150deg, rgba(212,175,55,0.015) 160deg, transparent 170deg,
+      transparent 180deg, rgba(212,175,55,0.02) 190deg, transparent 200deg,
+      transparent 210deg, rgba(212,175,55,0.015) 220deg, transparent 230deg,
+      transparent 240deg, rgba(212,175,55,0.02) 250deg, transparent 260deg,
+      transparent 270deg, rgba(212,175,55,0.015) 280deg, transparent 290deg,
+      transparent 300deg, rgba(212,175,55,0.02) 310deg, transparent 320deg,
+      transparent 330deg, rgba(212,175,55,0.015) 340deg, transparent 360deg
+    ),
+    /* Bottom warm glow */
+    radial-gradient(ellipse 80% 15% at 50% 100%, rgba(197,160,89,0.04) 0%, transparent 100%);
+}
+
+/* Mihrab — arch shape with inner pattern */
+.bg-app-mihrab {
+  background-image:
+    /* Outer arch glow */
+    radial-gradient(ellipse 50% 60% at 50% 40%, rgba(16,185,129,0.05) 0%, transparent 100%),
+    /* Inner arch — pointed shape using overlapping gradients */
+    radial-gradient(ellipse 30% 45% at 50% 35%, rgba(16,185,129,0.04) 0%, transparent 100%),
+    /* Arch outline simulation */
+    radial-gradient(ellipse 35% 50% at 50% 38%, transparent 48%, rgba(16,185,129,0.06) 49%, rgba(16,185,129,0.06) 51%, transparent 52%),
+    /* Inner arch outline */
+    radial-gradient(ellipse 25% 40% at 50% 37%, transparent 47%, rgba(16,185,129,0.04) 48%, rgba(16,185,129,0.04) 50%, transparent 51%),
+    /* Center point */
+    radial-gradient(circle 2px at 50% 15%, rgba(212,175,55,0.1) 0%, transparent 100%),
+    /* Vertical axis line */
+    linear-gradient(180deg, rgba(16,185,129,0.03) 0%, rgba(16,185,129,0.01) 40%, transparent 70%);
+}
+
+/* Stars Night — twinkling gold stars */
 .bg-app-stars {
   background-image:
     radial-gradient(1px 1px at 10% 15%, rgba(212,175,55,0.5) 0%, transparent 100%),
@@ -510,47 +589,15 @@
     radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.5) 0%, transparent 100%),
     radial-gradient(ellipse at 80% 15%, rgba(212,175,55,0.08) 0%, transparent 50%);
 }
-.bg-app-mosque {
-  background-image:
-    radial-gradient(ellipse at 50% 95%, rgba(197,160,89,0.06) 0%, transparent 40%),
-    radial-gradient(ellipse at 50% 100%, rgba(197,160,89,0.04) 0%, transparent 25%),
-    linear-gradient(180deg, transparent 60%, rgba(197,160,89,0.03) 100%);
-}
-.bg-app-waves {
-  background-image:
-    repeating-linear-gradient(
-      135deg,
-      transparent,
-      transparent 20px,
-      rgba(197,160,89,0.02) 20px,
-      rgba(197,160,89,0.02) 22px
-    ),
-    repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 30px,
-      rgba(212,175,55,0.015) 30px,
-      rgba(212,175,55,0.015) 32px
-    );
-}
-.bg-app-flowers {
-  background-image:
-    radial-gradient(circle at 20% 30%, rgba(244,114,182,0.04) 0%, transparent 30%),
-    radial-gradient(circle at 80% 25%, rgba(244,114,182,0.03) 0%, transparent 25%),
-    radial-gradient(circle at 50% 70%, rgba(167,139,250,0.04) 0%, transparent 35%),
-    radial-gradient(circle at 15% 80%, rgba(251,191,36,0.03) 0%, transparent 20%),
-    radial-gradient(circle at 85% 75%, rgba(52,211,153,0.04) 0%, transparent 25%);
-}
+
+/* Dawn — warm sunrise gradient */
 .bg-app-dawn {
   background-image:
     linear-gradient(180deg, transparent 0%, rgba(251,191,36,0.03) 50%, rgba(249,115,22,0.04) 100%),
     radial-gradient(ellipse at 50% 100%, rgba(249,115,22,0.08) 0%, transparent 50%);
 }
-.bg-app-night {
-  background-image:
-    linear-gradient(180deg, rgba(30,27,75,0.08) 0%, rgba(15,14,13,0.02) 100%),
-    radial-gradient(circle at 85% 10%, rgba(212,175,55,0.06) 0%, transparent 30%);
-}
+
+/* Garden — soft green nature feel */
 .bg-app-garden {
   background-image:
     radial-gradient(circle at 20% 80%, rgba(16,185,129,0.05) 0%, transparent 35%),
