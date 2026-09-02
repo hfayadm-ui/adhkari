@@ -1,0 +1,743 @@
+     1→@import "tailwindcss";
+     2→@import "tw-animate-css";
+     3→
+     4→/* Safe area for notched phones */
+     5→.pb-safe {
+     6→  padding-bottom: env(safe-area-inset-bottom, 0px);
+     7→}
+     8→.pt-safe {
+     9→  padding-top: env(safe-area-inset-top, 0px);
+    10→}
+    11→
+    12→@custom-variant dark (&:is(.dark *));
+    13→
+    14→@theme inline {
+    15→  --color-background: var(--background);
+    16→  --color-foreground: var(--foreground);
+    17→  --font-sans: var(--font-arabic);
+    18→  --font-mono: var(--font-geist-mono);
+    19→  --font-arabic: var(--font-arabic);
+    20→  --color-sidebar-ring: var(--sidebar-ring);
+    21→  --color-sidebar-border: var(--sidebar-border);
+    22→  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    23→  --color-sidebar-accent: var(--sidebar-accent);
+    24→  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    25→  --color-sidebar-primary: var(--sidebar-primary);
+    26→  --color-sidebar-foreground: var(--sidebar-foreground);
+    27→  --color-sidebar: var(--sidebar);
+    28→  --color-chart-5: var(--chart-5);
+    29→  --color-chart-4: var(--chart-4);
+    30→  --color-chart-3: var(--chart-3);
+    31→  --color-chart-2: var(--chart-2);
+    32→  --color-chart-1: var(--chart-1);
+    33→  --color-ring: var(--ring);
+    34→  --color-input: var(--input);
+    35→  --color-border: var(--border);
+    36→  --color-destructive: var(--destructive);
+    37→  --color-accent-foreground: var(--accent-foreground);
+    38→  --color-accent: var(--accent);
+    39→  --color-muted-foreground: var(--muted-foreground);
+    40→  --color-muted: var(--muted);
+    41→  --color-secondary-foreground: var(--secondary-foreground);
+    42→  --color-secondary: var(--secondary);
+    43→  --color-primary-foreground: var(--primary-foreground);
+    44→  --color-primary: var(--primary);
+    45→  --color-popover-foreground: var(--popover-foreground);
+    46→  --color-popover: var(--popover);
+    47→  --color-card-foreground: var(--card-foreground);
+    48→  --color-card: var(--card);
+    49→  --radius-sm: calc(var(--radius) - 4px);
+    50→  --radius-md: calc(var(--radius) - 2px);
+    51→  --radius-lg: var(--radius);
+    52→  --radius-xl: calc(var(--radius) + 4px);
+    53→}
+    54→
+    55→/* ================================================ */
+    56→/*   LIGHT MODE — Creamy White + Matte Gold          */
+    57→/*   Modern Glassmorphism Islamic Design System      */
+    58→/* ================================================ */
+    59→:root {
+    60→  --radius: 0.75rem;
+    61→  --background: #FDFBF7;
+    62→  --foreground: #2C2825;
+    63→  --card: rgba(255,255,255,0.58);
+    64→  --card-foreground: #2C2825;
+    65→  --popover: rgba(255,255,255,0.82);
+    66→  --popover-foreground: #2C2825;
+    67→  --primary: #C5A059;
+    68→  --primary-foreground: #FFFFFF;
+    69→  --secondary: rgba(197,160,89,0.06);
+    70→  --secondary-foreground: #5C5651;
+    71→  --muted: #F3EDE2;
+    72→  --muted-foreground: #8A8279;
+    73→  --accent: #F0EBE3;
+    74→  --accent-foreground: #2C2825;
+    75→  --destructive: #DC2626;
+    76→  --border: rgba(197,160,89,0.12);
+    77→  --input: #F0EBE3;
+    78→  --ring: #C5A059;
+    79→  --gold: #C5A059;
+    80→  --chart-1: #C5A059;
+    81→  --chart-2: #D4AF37;
+    82→  --chart-3: #8B7209;
+    83→  --chart-4: #B8960C;
+    84→  --chart-5: #E5C054;
+    85→  --sidebar: #FAF7F2;
+    86→  --sidebar-foreground: #2C2825;
+    87→  --sidebar-primary: #C5A059;
+    88→  --sidebar-primary-foreground: #FFFFFF;
+    89→  --sidebar-accent: rgba(197,160,89,0.08);
+    90→  --sidebar-accent-foreground: #5C5651;
+    91→  --sidebar-border: rgba(197,160,89,0.10);
+    92→  --sidebar-ring: #C5A059;
+    93→
+    94→  /* ---- App Design Tokens — LIGHT ---- */
+    95→  --app-bg: #FDFBF7;
+    96→  --app-bg-warm: #FAF6F0;
+    97→  --app-text: #2C2825;
+    98→  --app-text-2: #5C5651;
+    99→  --app-text-3: #8A8279;
+   100→  --app-text-muted: #8A8279;
+   101→  --app-surface: rgba(0,0,0,0.025);
+   102→  --app-surface-hover: rgba(0,0,0,0.048);
+   103→
+   104→  /* Glassmorphism Tokens */
+   105→  --glass-bg: rgba(255,255,255,0.52);
+   106→  --glass-bg-elevated: rgba(255,255,255,0.65);
+   107→  --glass-bg-subtle: rgba(255,255,255,0.35);
+   108→  --glass-border: rgba(197,160,89,0.10);
+   109→  --glass-border-subtle: rgba(197,160,89,0.06);
+   110→  --glass-blur: 24px;
+   111→  --glass-blur-elevated: 36px;
+   112→  --glass-saturate: 1.4;
+   113→  --glass-inset-top: rgba(255,255,255,0.35);
+   114→  --glass-inset-bottom: rgba(0,0,0,0.02);
+   115→
+   116→  /* Shadow System — Soft Ambient */
+   117→  --shadow-sm: 0 2px 8px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.01);
+   118→  --shadow-md: 0 4px 16px rgba(0,0,0,0.03), 0 1px 4px rgba(0,0,0,0.015), inset 0 1px 0 rgba(255,255,255,0.25);
+   119→  --shadow-lg: 0 8px 32px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02), inset 0 1px 0 rgba(255,255,255,0.3);
+   120→  --shadow-xl: 0 12px 48px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.025), inset 0 1px 0 rgba(255,255,255,0.35);
+   121→  --shadow-float: 0 16px 56px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255,255,255,0.4);
+   122→
+   123→  /* App-specific tokens */
+   124→  --app-card-bg: var(--glass-bg);
+   125→  --app-card-border: var(--glass-border);
+   126→  --app-nav-bg: rgba(253,251,247,0.72);
+   127→  --app-modal-bg: #FFFFFF;
+   128→  --app-shimmer: rgba(197,160,89,0.04);
+   129→  --app-pattern-1: rgba(197,160,89,0.03);
+   130→  --app-pattern-2: rgba(139,114,9,0.02);
+   131→  --app-ring-track: rgba(0,0,0,0.05);
+   132→  --app-chart-bar: rgba(197,160,89,0.12);
+   133→  --app-scrollbar: rgba(197,160,89,0.15);
+   134→  --app-input-bg: rgba(0,0,0,0.025);
+   135→  --app-input-border: rgba(0,0,0,0.07);
+   136→
+   137→  /* Gold Palette — Matte Gold System */
+   138→  --gold-accent: #C5A059;
+   139→  --gold-bright: #D4AF37;
+   140→  --gold-soft: #B8960C;
+   141→  --gold-pale: #E8D5A8;
+   142→  --gold-glow: rgba(197,160,89,0.12);
+   143→  --gold-glow-strong: rgba(197,160,89,0.20);
+   144→  --gold-border: rgba(197,160,89,0.16);
+   145→  --gold-border-glow: rgba(197,160,89,0.25);
+   146→  --gold-shadow: 0 0 20px rgba(197,160,89,0.08), 0 0 40px rgba(197,160,89,0.03);
+   147→}
+   148→
+   149→/* ================================================ */
+   150→/*   DARK MODE — Warm Dark + Matte Gold              */
+   151→/* ================================================ */
+   152→.dark {
+   153→  --background: #0F0E0D;
+   154→  --foreground: #F0EBE3;
+   155→  --card: rgba(255,255,255,0.035);
+   156→  --card-foreground: #F0EBE3;
+   157→  --popover: rgba(255,255,255,0.055);
+   158→  --popover-foreground: #F0EBE3;
+   159→  --primary: #D4AF37;
+   160→  --primary-foreground: #0F0E0D;
+   161→  --secondary: rgba(212,175,55,0.08);
+   162→  --secondary-foreground: #A69E94;
+   163→  --muted: #1A1918;
+   164→  --muted-foreground: #6B6560;
+   165→  --accent: rgba(212,175,55,0.06);
+   166→  --accent-foreground: #F0EBE3;
+   167→  --destructive: #EF4444;
+   168→  --border: rgba(212,175,55,0.08);
+   169→  --input: #1A1918;
+   170→  --ring: #D4AF37;
+   171→  --gold: #D4AF37;
+   172→  --chart-1: #D4AF37;
+   173→  --chart-2: #E5C054;
+   174→  --chart-3: #B8960C;
+   175→  --chart-4: #C5A059;
+   176→  --chart-5: #8B7209;
+   177→  --sidebar: #141312;
+   178→  --sidebar-foreground: #F0EBE3;
+   179→  --sidebar-primary: #D4AF37;
+   180→  --sidebar-primary-foreground: #0F0E0D;
+   181→  --sidebar-accent: rgba(212,175,55,0.06);
+   182→  --sidebar-accent-foreground: #A69E94;
+   183→  --sidebar-border: rgba(212,175,55,0.06);
+   184→  --sidebar-ring: #D4AF37;
+   185→
+   186→  /* ---- App Design Tokens — DARK ---- */
+   187→  --app-bg: #0F0E0D;
+   188→  --app-bg-warm: #141312;
+   189→  --app-text: #F0EBE3;
+   190→  --app-text-2: #A69E94;
+   191→  --app-text-3: #6B6560;
+   192→  --app-text-muted: #6B6560;
+   193→  --app-surface: rgba(255,255,255,0.035);
+   194→  --app-surface-hover: rgba(255,255,255,0.065);
+   195→
+   196→  /* Glassmorphism Tokens — Dark */
+   197→  --glass-bg: rgba(255,255,255,0.03);
+   198→  --glass-bg-elevated: rgba(255,255,255,0.045);
+   199→  --glass-bg-subtle: rgba(255,255,255,0.02);
+   200→  --glass-border: rgba(212,175,55,0.07);
+   201→  --glass-border-subtle: rgba(212,175,55,0.04);
+   202→  --glass-blur: 20px;
+   203→  --glass-blur-elevated: 32px;
+   204→  --glass-saturate: 1.2;
+   205→  --glass-inset-top: rgba(255,255,255,0.03);
+   206→  --glass-inset-bottom: rgba(0,0,0,0.15);
+   207→
+   208→  /* Shadow System — Dark Ambient */
+   209→  --shadow-sm: 0 2px 8px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.10);
+   210→  --shadow-md: 0 4px 16px rgba(0,0,0,0.2), 0 1px 4px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.03);
+   211→  --shadow-lg: 0 8px 32px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.04);
+   212→  --shadow-xl: 0 12px 48px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.05);
+   213→  --shadow-float: 0 16px 56px rgba(0,0,0,0.35), 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
+   214→
+   215→  /* App-specific tokens */
+   216→  --app-card-bg: var(--glass-bg);
+   217→  --app-card-border: var(--glass-border);
+   218→  --app-nav-bg: rgba(15,14,13,0.78);
+   219→  --app-modal-bg: #1A1918;
+   220→  --app-shimmer: rgba(212,175,55,0.04);
+   221→  --app-pattern-1: rgba(212,175,55,0.02);
+   222→  --app-pattern-2: rgba(197,160,89,0.015);
+   223→  --app-ring-track: rgba(255,255,255,0.05);
+   224→  --app-chart-bar: rgba(212,175,55,0.10);
+   225→  --app-scrollbar: rgba(212,175,55,0.12);
+   226→  --app-input-bg: rgba(255,255,255,0.03);
+   227→  --app-input-border: rgba(255,255,255,0.07);
+   228→
+   229→  /* Gold Palette — Dark Mode */
+   230→  --gold-accent: #D4AF37;
+   231→  --gold-bright: #E5C054;
+   232→  --gold-soft: #B8960C;
+   233→  --gold-pale: #3D3420;
+   234→  --gold-glow: rgba(212,175,55,0.10);
+   235→  --gold-glow-strong: rgba(212,175,55,0.18);
+   236→  --gold-border: rgba(212,175,55,0.12);
+   237→  --gold-border-glow: rgba(212,175,55,0.20);
+   238→  --gold-shadow: 0 0 20px rgba(212,175,55,0.06), 0 0 40px rgba(212,175,55,0.02);
+   239→}
+   240→
+   241→/* ================================================ */
+   242→/*   Base Layer                                       */
+   243→/* ================================================ */
+   244→@layer base {
+   245→  * {
+   246→    @apply border-border outline-ring/50;
+   247→  }
+   248→  body {
+   249→    @apply bg-background text-foreground;
+   250→    -webkit-tap-highlight-color: transparent;
+   251→    -webkit-user-select: none;
+   252→    user-select: none;
+   253→  }
+   254→}
+   255→
+   256→/* ---- Scrollbar ---- */
+   257→::-webkit-scrollbar { width: 3px; }
+   258→::-webkit-scrollbar-track { background: transparent; }
+   259→::-webkit-scrollbar-thumb { background: var(--app-scrollbar); border-radius: 10px; }
+   260→::-webkit-scrollbar-thumb:hover { background: var(--gold-accent); opacity: 0.5; }
+   261→
+   262→/* ================================================ */
+   263→/*   App Theme Utility Classes                       */
+   264→/* ================================================ */
+   265→.app-text { color: var(--app-text); }
+   266→.app-text-2 { color: var(--app-text-2); }
+   267→.app-text-muted { color: var(--app-text-muted); }
+   268→.app-surface { background: var(--app-surface); }
+   269→.app-surface-h:hover { background: var(--app-surface-hover); }
+   270→.app-border-c { border-color: var(--app-card-border); }
+   271→.app-input { background: var(--app-input-bg); border-color: var(--app-input-border); }
+   272→
+   273→/* Gold accent utilities */
+   274→.text-gold { color: var(--gold-accent); }
+   275→.text-gold-bright { color: var(--gold-bright); }
+   276→.text-gold-soft { color: var(--gold-soft); }
+   277→.bg-gold { background: var(--gold-accent); }
+   278→.bg-gold-glow { background: var(--gold-glow); }
+   279→.border-gold { border-color: var(--gold-border); }
+   280→.shadow-gold { box-shadow: var(--gold-shadow); }
+   281→
+   282→/* ================================================ */
+   283→/*   Animations                                      */
+   284→/* ================================================ */
+   285→@keyframes gentle-pulse {
+   286→  0%, 100% { box-shadow: 0 0 0 0 var(--gold-glow); }
+   287→  50% { box-shadow: 0 0 0 14px transparent; }
+   288→}
+   289→.pulse-gentle { animation: gentle-pulse 2.8s ease-in-out infinite; }
+   290→
+   291→@keyframes text-reveal {
+   292→  from { background-position: 0% 50%; }
+   293→   to { background-position: 200% 50%; }
+   294→}
+   295→.text-karaoke {
+   296→  background: linear-gradient(90deg, var(--gold-accent) 0%, var(--gold-bright) 40%, var(--gold-accent) 80%);
+   297→  background-size: 200% auto;
+   298→  -webkit-background-clip: text;
+   299→  -webkit-text-fill-color: transparent;
+   300→  background-clip: text;
+   301→  animation: text-reveal 4s linear infinite;
+   302→}
+   303→
+   304→/* Subtle float animation for FABs */
+   305→@keyframes gentle-float {
+   306→  0%, 100% { transform: translateY(0); }
+   307→  50% { transform: translateY(-4px); }
+   308→}
+   309→.float-gentle { animation: gentle-float 3s ease-in-out infinite; }
+   310→
+   311→/* ================================================ */
+   312→/*   Islamic Utilities                                */
+   313→/* ================================================ */
+   314→@keyframes islamic-shimmer {
+   315→  0% { background-position: -200% 0; }
+   316→  100% { background-position: 200% 0; }
+   317→}
+   318→.islamic-shimmer {
+   319→  background: linear-gradient(90deg, transparent 0%, var(--app-shimmer) 50%, transparent 100%);
+   320→  background-size: 200% 100%;
+   321→  animation: islamic-shimmer 4s ease-in-out infinite;
+   322→}
+   323→
+   324→.islamic-border {
+   325→  border-image: linear-gradient(135deg, var(--gold-border), rgba(197,160,89,0.03), var(--gold-border)) 1;
+   326→}
+   327→
+   328→/* ================================================ */
+   329→/*   GLASSMORPHISM SYSTEM — 3 Tiers                  */
+   330→/* ================================================ */
+   331→
+   332→/* Tier 1: Subtle Glass — for small elements, chips, tags */
+   333→.glass-subtle {
+   334→  background: var(--glass-bg-subtle);
+   335→  backdrop-filter: blur(calc(var(--glass-blur) * 0.6)) saturate(var(--glass-saturate));
+   336→  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.6)) saturate(var(--glass-saturate));
+   337→  border: 1px solid var(--glass-border-subtle);
+   338→  box-shadow: var(--shadow-sm);
+   339→}
+   340→
+   341→/* Tier 2: Standard Glass Card — default for most cards */
+   342→.glass-card {
+   343→  background: var(--glass-bg);
+   344→  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+   345→  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+   346→  border: 1px solid var(--glass-border);
+   347→  box-shadow: var(--shadow-md);
+   348→}
+   349→
+   350→/* Tier 3: Elevated Glass — hero cards, important sections */
+   351→.glass-card-elevated {
+   352→  background: var(--glass-bg-elevated);
+   353→  backdrop-filter: blur(var(--glass-blur-elevated)) saturate(calc(var(--glass-saturate) + 0.2));
+   354→  -webkit-backdrop-filter: blur(var(--glass-blur-elevated)) saturate(calc(var(--glass-saturate) + 0.2));
+   355→  border: 1px solid var(--glass-border);
+   356→  box-shadow: var(--shadow-lg);
+   357→}
+   358→
+   359→/* Tier 4: Floating Glass — modals, overlays, FAB panels */
+   360→.glass-float {
+   361→  background: var(--glass-bg-elevated);
+   362→  backdrop-filter: blur(var(--glass-blur-elevated)) saturate(calc(var(--glass-saturate) + 0.3));
+   363→  -webkit-backdrop-filter: blur(var(--glass-blur-elevated)) saturate(calc(var(--glass-saturate) + 0.3));
+   364→  border: 1px solid var(--glass-border);
+   365→  box-shadow: var(--shadow-float);
+   366→}
+   367→
+   368→/* Glass with gold glow border — for active/featured cards */
+   369→.glass-glow {
+   370→  background: var(--glass-bg);
+   371→  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+   372→  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+   373→  border: 1px solid var(--gold-border-glow);
+   374→  box-shadow: var(--shadow-md), var(--gold-shadow);
+   375→}
+   376→
+   377→/* Navigation glass bar */
+   378→.glass-nav {
+   379→  background: var(--app-nav-bg);
+   380→  backdrop-filter: blur(calc(var(--glass-blur-elevated) * 1.2)) saturate(calc(var(--glass-saturate) + 0.4));
+   381→  -webkit-backdrop-filter: blur(calc(var(--glass-blur-elevated) * 1.2)) saturate(calc(var(--glass-saturate) + 0.4));
+   382→  border: 1px solid var(--glass-border);
+   383→  box-shadow: 0 -2px 24px rgba(0,0,0,0.04), 0 -1px 4px rgba(0,0,0,0.02), inset 0 1px 0 var(--glass-inset-top);
+   384→}
+   385→
+   386→/* Gold glow effect */
+   387→.gold-glow {
+   388→  box-shadow: var(--gold-shadow);
+   389→}
+   390→
+   391→/* ================================================ */
+   392→/*   Islamic Geometric Pattern — Background          */
+   393→/* ================================================ */
+   394→.islamic-pattern-bg {
+   395→  background-image:
+   396→    radial-gradient(ellipse at 15% 15%, var(--app-pattern-1) 0%, transparent 50%),
+   397→    radial-gradient(ellipse at 85% 20%, var(--app-pattern-2) 0%, transparent 45%),
+   398→    radial-gradient(ellipse at 50% 80%, var(--app-pattern-1) 0%, transparent 55%),
+   399→    radial-gradient(ellipse at 20% 70%, var(--app-pattern-2) 0%, transparent 40%),
+   400→    radial-gradient(ellipse at 75% 85%, var(--app-pattern-1) 0%, transparent 35%);
+   401→}
+   402→
+   403→/* ================================================ */
+   404→/*   Buttons System                                  */
+   405→/* ================================================ */
+   406→
+   407→/* Primary Gold CTA — gradient with glow */
+   408→.btn-gold {
+   409→  background: linear-gradient(135deg, var(--gold-accent) 0%, var(--gold-bright) 50%, var(--gold-accent) 100%);
+   410→  background-size: 200% 200%;
+   411→  color: #FFFFFF;
+   412→  font-weight: 700;
+   413→  border: 1px solid rgba(255,255,255,0.10);
+   414→  box-shadow:
+   415→    0 4px 20px var(--gold-glow),
+   416→    0 1px 3px rgba(0,0,0,0.06),
+   417→    inset 0 1px 0 rgba(255,255,255,0.15);
+   418→  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+   419→}
+   420→.btn-gold:hover {
+   421→  background-position: 100% 100%;
+   422→  box-shadow:
+   423→    0 6px 28px var(--gold-glow-strong),
+   424→    0 2px 6px rgba(0,0,0,0.08),
+   425→    inset 0 1px 0 rgba(255,255,255,0.20);
+   426→}
+   427→.btn-gold:active {
+   428→  transform: scale(0.97);
+   429→  box-shadow:
+   430→    0 2px 10px var(--gold-glow),
+   431→    0 1px 2px rgba(0,0,0,0.04);
+   432→}
+   433→
+   434→/* Glass outline button — subtle glass with hover glow */
+   435→.btn-glass {
+   436→  background: var(--glass-bg);
+   437→  backdrop-filter: blur(calc(var(--glass-blur) * 0.7));
+   438→  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.7));
+   439→  border: 1px solid var(--glass-border);
+   440→  color: var(--app-text);
+   441→  box-shadow: var(--shadow-sm);
+   442→  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+   443→}
+   444→.btn-glass:hover {
+   445→  background: var(--glass-bg-elevated);
+   446→  border-color: var(--gold-border);
+   447→  box-shadow: var(--shadow-md), var(--gold-shadow);
+   448→}
+   449→.btn-glass:active {
+   450→  transform: scale(0.97);
+   451→}
+   452→
+   453→/* Glass button with gold glow border — for active states */
+   454→.btn-glass-gold {
+   455→  background: var(--gold-glow);
+   456→  backdrop-filter: blur(calc(var(--glass-blur) * 0.7));
+   457→  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.7));
+   458→  border: 1px solid var(--gold-border);
+   459→  color: var(--gold-accent);
+   460→  box-shadow: var(--shadow-sm), var(--gold-shadow);
+   461→  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+   462→}
+   463→.btn-glass-gold:hover {
+   464→  background: var(--gold-glow-strong);
+   465→  border-color: var(--gold-border-glow);
+   466→}
+   467→
+   468→/* Gold metallic border highlight */
+   469→.border-gold-shine {
+   470→  border: 1px solid var(--glass-border);
+   471→  box-shadow:
+   472→    inset 0 0 0 1px rgba(197,160,89,0.04),
+   473→    0 0 0 1px rgba(197,160,89,0.02);
+   474→}
+   475→
+   476→/* ================================================ */
+   477→/*   Arabic Font Classes                             */
+   478→/* ================================================ */
+   479→.font-arabic-amiri { font-family: 'Amiri', serif; }
+   480→.font-arabic-naskh { font-family: 'Noto Naskh Arabic', serif; }
+   481→.font-arabic-tajawal { font-family: 'Tajawal', sans-serif; }
+   482→.font-arabic-ibm-plex { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+   483→.font-arabic-scheherazade { font-family: 'Scheherazade New', serif; }
+   484→
+   485→/* ================================================ */
+   486→/*   CUSTOM BACKGROUNDS — Islamic Themes              */
+   487→/*   Mode-aware: dark mode gets stronger opacities     */
+   488→/* ================================================ */
+   489→
+   490→/* Default — gold radial glows */
+   491→.bg-app-default {
+   492→  background-image:
+   493→    radial-gradient(circle at 12% 18%, rgba(197,160,89,0.15) 0%, transparent 50%),
+   494→    radial-gradient(circle at 88% 12%, rgba(197,160,89,0.10) 0%, transparent 45%),
+   495→    radial-gradient(circle at 50% 50%, rgba(197,160,89,0.08) 0%, transparent 65%);
+   496→}
+   497→.dark .bg-app-default {
+   498→  background-image:
+   499→    radial-gradient(circle at 12% 18%, rgba(212,175,55,0.18) 0%, transparent 50%),
+   500→    radial-gradient(circle at 88% 12%, rgba(212,175,55,0.12) 0%, transparent 45%),
+   501→    radial-gradient(circle at 50% 50%, rgba(212,175,55,0.10) 0%, transparent 65%);
+   502→}
+   503→
+   504→/* Andalusian Mosque — warm sunset with mosque silhouette */
+   505→.bg-app-mosque-andalusia {
+   506→  background-image:
+   507→    /* Sky gradient — deep sunset */
+   508→    linear-gradient(180deg,
+   509→      rgba(30,20,60,0.35) 0%,
+   510→      rgba(80,30,50,0.25) 30%,
+   511→      rgba(140,70,25,0.18) 60%,
+   512→      rgba(197,160,89,0.12) 85%,
+   513→      rgba(249,150,50,0.08) 100%
+   514→    ),
+   515→    /* Moon glow */
+   516→    radial-gradient(circle at 80% 10%, rgba(255,220,120,0.25) 0%, transparent 20%),
+   517→    radial-gradient(circle at 80% 10%, rgba(255,220,120,0.08) 0%, transparent 35%),
+   518→    /* Ground / horizon */
+   519→    radial-gradient(ellipse 120% 14% at 50% 100%, rgba(40,25,15,0.45) 0%, transparent 100%),
+   520→    /* Central dome */
+   521→    radial-gradient(ellipse 22% 13% at 50% 90%, rgba(197,160,89,0.22) 0%, transparent 100%),
+   522→    radial-gradient(ellipse 18% 10% at 50% 90%, rgba(0,0,0,0.35) 0%, transparent 100%),
+   523→    /* Left minaret */
+   524→    radial-gradient(ellipse 2% 18% at 22% 92%, rgba(0,0,0,0.40) 0%, transparent 100%),
+   525→    radial-gradient(ellipse 0.8% 18% at 22% 92%, rgba(197,160,89,0.15) 0%, transparent 100%),
+   526→    /* Right minaret */
+   527→    radial-gradient(ellipse 2% 18% at 78% 92%, rgba(0,0,0,0.40) 0%, transparent 100%),
+   528→    radial-gradient(ellipse 0.8% 18% at 78% 92%, rgba(197,160,89,0.15) 0%, transparent 100%),
+   529→    /* Warm horizon glow */
+   530→    radial-gradient(ellipse 90% 25% at 50% 100%, rgba(249,115,22,0.15) 0%, transparent 100%),
+   531→    /* Stars in sky */
+   532→    radial-gradient(1.2px 1.2px at 15% 8%, rgba(255,255,255,0.5) 0%, transparent 100%),
+   533→    radial-gradient(1px 1px at 45% 5%, rgba(255,255,255,0.4) 0%, transparent 100%),
+   534→    radial-gradient(1.5px 1.5px at 65% 12%, rgba(255,255,255,0.3) 0%, transparent 100%);
+   535→}
+   536→.dark .bg-app-mosque-andalusia {
+   537→  background-image:
+   538→    linear-gradient(180deg,
+   539→      rgba(20,12,45,0.55) 0%,
+   540→      rgba(50,15,35,0.35) 30%,
+   541→      rgba(100,45,15,0.20) 60%,
+   542→      rgba(197,160,89,0.10) 85%,
+   543→      rgba(249,150,50,0.06) 100%
+   544→    ),
+   545→    radial-gradient(circle at 80% 10%, rgba(255,220,120,0.35) 0%, transparent 18%),
+   546→    radial-gradient(circle at 80% 10%, rgba(255,220,120,0.10) 0%, transparent 35%),
+   547→    radial-gradient(ellipse 120% 14% at 50% 100%, rgba(0,0,0,0.55) 0%, transparent 100%),
+   548→    radial-gradient(ellipse 22% 13% at 50% 90%, rgba(212,175,55,0.18) 0%, transparent 100%),
+   549→    radial-gradient(ellipse 18% 10% at 50% 90%, rgba(0,0,0,0.50) 0%, transparent 100%),
+   550→    radial-gradient(ellipse 2% 18% at 22% 92%, rgba(0,0,0,0.55) 0%, transparent 100%),
+   551→    radial-gradient(ellipse 0.8% 18% at 22% 92%, rgba(212,175,55,0.12) 0%, transparent 100%),
+   552→    radial-gradient(ellipse 2% 18% at 78% 92%, rgba(0,0,0,0.55) 0%, transparent 100%),
+   553→    radial-gradient(ellipse 0.8% 18% at 78% 92%, rgba(212,175,55,0.12) 0%, transparent 100%),
+   554→    radial-gradient(ellipse 90% 25% at 50% 100%, rgba(249,115,22,0.10) 0%, transparent 100%),
+   555→    radial-gradient(1.2px 1.2px at 15% 8%, rgba(255,255,255,0.7) 0%, transparent 100%),
+   556→    radial-gradient(1px 1px at 45% 5%, rgba(255,255,255,0.5) 0%, transparent 100%),
+   557→    radial-gradient(1.5px 1.5px at 65% 12%, rgba(255,255,255,0.4) 0%, transparent 100%);
+   558→}
+   559→
+   560→/* Islamic Geometric Pattern — 8-point star tessellation */
+   561→.bg-app-islamic-pattern {
+   562→  background-image:
+   563→    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='none'/%3E%3Cpolygon points='30,2 38,14 54,14 42,24 46,40 30,32 14,40 18,24 6,14 22,14' fill='none' stroke='rgba(197,160,89,0.18)' stroke-width='0.7'/%3E%3Cpolygon points='30,10 35,18 44,18 37,24 39,34 30,28 21,34 23,24 16,18 25,18' fill='none' stroke='rgba(197,160,89,0.12)' stroke-width='0.5'/%3E%3Ccircle cx='30' cy='30' r='2.5' fill='rgba(197,160,89,0.10)'/%3E%3Cline x1='30' y1='2' x2='30' y2='58' stroke='rgba(197,160,89,0.06)' stroke-width='0.4'/%3E%3Cline x1='2' y1='30' x2='58' y2='30' stroke='rgba(197,160,89,0.06)' stroke-width='0.4'/%3E%3C/svg%3E"),
+   564→    radial-gradient(circle at 50% 30%, rgba(197,160,89,0.10) 0%, transparent 55%),
+   565→    radial-gradient(circle at 20% 80%, rgba(197,160,89,0.06) 0%, transparent 40%);
+   566→  background-size: 60px 60px, 100% 100%, 100% 100%;
+   567→}
+   568→.dark .bg-app-islamic-pattern {
+   569→  background-image:
+   570→    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='none'/%3E%3Cpolygon points='30,2 38,14 54,14 42,24 46,40 30,32 14,40 18,24 6,14 22,14' fill='none' stroke='rgba(212,175,55,0.22)' stroke-width='0.7'/%3E%3Cpolygon points='30,10 35,18 44,18 37,24 39,34 30,28 21,34 23,24 16,18 25,18' fill='none' stroke='rgba(212,175,55,0.14)' stroke-width='0.5'/%3E%3Ccircle cx='30' cy='30' r='2.5' fill='rgba(212,175,55,0.12)'/%3E%3Cline x1='30' y1='2' x2='30' y2='58' stroke='rgba(212,175,55,0.08)' stroke-width='0.4'/%3E%3Cline x1='2' y1='30' x2='58' y2='30' stroke='rgba(212,175,55,0.08)' stroke-width='0.4'/%3E%3C/svg%3E"),
+   571→    radial-gradient(circle at 50% 30%, rgba(212,175,55,0.12) 0%, transparent 55%),
+   572→    radial-gradient(circle at 20% 80%, rgba(212,175,55,0.08) 0%, transparent 40%);
+   573→  background-size: 60px 60px, 100% 100%, 100% 100%;
+   574→}
+   575→
+   576→/* Golden Dome — radial golden light from top */
+   577→.bg-app-golden-dome {
+   578→  background-image:
+   579→    /* Main dome glow */
+   580→    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(212,175,55,0.28) 0%, transparent 100%),
+   581→    /* Inner bright core */
+   582→    radial-gradient(ellipse 35% 30% at 50% 5%, rgba(255,220,120,0.18) 0%, transparent 100%),
+   583→    /* Light rays */
+   584→    conic-gradient(from 0deg at 50% 5%,
+   585→      transparent 0deg, rgba(212,175,55,0.08) 8deg, transparent 16deg,
+   586→      transparent 27deg, rgba(212,175,55,0.06) 35deg, transparent 43deg,
+   587→      transparent 54deg, rgba(212,175,55,0.08) 62deg, transparent 70deg,
+   588→      transparent 81deg, rgba(212,175,55,0.06) 89deg, transparent 97deg,
+   589→      transparent 108deg, rgba(212,175,55,0.08) 116deg, transparent 124deg,
+   590→      transparent 135deg, rgba(212,175,55,0.06) 143deg, transparent 151deg,
+   591→      transparent 162deg, rgba(212,175,55,0.08) 170deg, transparent 178deg,
+   592→      transparent 189deg, rgba(212,175,55,0.06) 197deg, transparent 205deg,
+   593→      transparent 216deg, rgba(212,175,55,0.08) 224deg, transparent 232deg,
+   594→      transparent 243deg, rgba(212,175,55,0.06) 251deg, transparent 259deg,
+   595→      transparent 270deg, rgba(212,175,55,0.08) 278deg, transparent 286deg,
+   596→      transparent 297deg, rgba(212,175,55,0.06) 305deg, transparent 313deg,
+   597→      transparent 324deg, rgba(212,175,55,0.08) 332deg, transparent 340deg,
+   598→      transparent 351deg, rgba(212,175,55,0.06) 359deg, transparent 360deg
+   599→    ),
+   600→    /* Dome arch outline */
+   601→    radial-gradient(ellipse 40% 55% at 50% 5%, transparent 45%, rgba(212,175,55,0.10) 46%, rgba(212,175,55,0.10) 48%, transparent 49%),
+   602→    /* Bottom warm glow */
+   603→    radial-gradient(ellipse 80% 18% at 50% 100%, rgba(197,160,89,0.10) 0%, transparent 100%);
+   604→}
+   605→.dark .bg-app-golden-dome {
+   606→  background-image:
+   607→    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(212,175,55,0.30) 0%, transparent 100%),
+   608→    radial-gradient(ellipse 35% 30% at 50% 5%, rgba(255,220,120,0.20) 0%, transparent 100%),
+   609→    conic-gradient(from 0deg at 50% 5%,
+   610→      transparent 0deg, rgba(212,175,55,0.10) 8deg, transparent 16deg,
+   611→      transparent 27deg, rgba(212,175,55,0.07) 35deg, transparent 43deg,
+   612→      transparent 54deg, rgba(212,175,55,0.10) 62deg, transparent 70deg,
+   613→      transparent 81deg, rgba(212,175,55,0.07) 89deg, transparent 97deg,
+   614→      transparent 108deg, rgba(212,175,55,0.10) 116deg, transparent 124deg,
+   615→      transparent 135deg, rgba(212,175,55,0.07) 143deg, transparent 151deg,
+   616→      transparent 162deg, rgba(212,175,55,0.10) 170deg, transparent 178deg,
+   617→      transparent 189deg, rgba(212,175,55,0.07) 197deg, transparent 205deg,
+   618→      transparent 216deg, rgba(212,175,55,0.10) 224deg, transparent 232deg,
+   619→      transparent 243deg, rgba(212,175,55,0.07) 251deg, transparent 259deg,
+   620→      transparent 270deg, rgba(212,175,55,0.10) 278deg, transparent 286deg,
+   621→      transparent 297deg, rgba(212,175,55,0.07) 305deg, transparent 313deg,
+   622→      transparent 324deg, rgba(212,175,55,0.10) 332deg, transparent 340deg,
+   623→      transparent 351deg, rgba(212,175,55,0.07) 359deg, transparent 360deg
+   624→    ),
+   625→    radial-gradient(ellipse 40% 55% at 50% 5%, transparent 45%, rgba(212,175,55,0.12) 46%, rgba(212,175,55,0.12) 48%, transparent 49%),
+   626→    radial-gradient(ellipse 80% 18% at 50% 100%, rgba(212,175,55,0.08) 0%, transparent 100%);
+   627→}
+   628→
+   629→/* Mihrab — pointed arch with green glow */
+   630→.bg-app-mihrab {
+   631→  background-image:
+   632→    /* Outer arch glow */
+   633→    radial-gradient(ellipse 55% 65% at 50% 40%, rgba(16,185,129,0.15) 0%, transparent 100%),
+   634→    /* Inner arch */
+   635→    radial-gradient(ellipse 35% 50% at 50% 35%, rgba(16,185,129,0.10) 0%, transparent 100%),
+   636→    /* Arch outline */
+   637→    radial-gradient(ellipse 42% 58% at 50% 38%, transparent 46%, rgba(16,185,129,0.20) 47%, rgba(16,185,129,0.20) 49%, transparent 50%),
+   638→    /* Inner arch outline */
+   639→    radial-gradient(ellipse 30% 45% at 50% 37%, transparent 45%, rgba(16,185,129,0.14) 46%, rgba(16,185,129,0.14) 48%, transparent 49%),
+   640→    /* Center gold point */
+   641→    radial-gradient(circle 4px at 50% 14%, rgba(212,175,55,0.35) 0%, transparent 100%),
+   642→    /* Vertical axis */
+   643→    linear-gradient(180deg, rgba(16,185,129,0.12) 0%, rgba(16,185,129,0.04) 40%, transparent 70%),
+   644→    /* Side pillars */
+   645→    linear-gradient(90deg, transparent 30%, rgba(16,185,129,0.06) 30.5%, rgba(16,185,129,0.06) 31%, transparent 31.5%),
+   646→    linear-gradient(90deg, transparent 69%, rgba(16,185,129,0.06) 69.5%, rgba(16,185,129,0.06) 70%, transparent 70.5%);
+   647→}
+   648→.dark .bg-app-mihrab {
+   649→  background-image:
+   650→    radial-gradient(ellipse 55% 65% at 50% 40%, rgba(16,185,129,0.18) 0%, transparent 100%),
+   651→    radial-gradient(ellipse 35% 50% at 50% 35%, rgba(16,185,129,0.12) 0%, transparent 100%),
+   652→    radial-gradient(ellipse 42% 58% at 50% 38%, transparent 46%, rgba(16,185,129,0.22) 47%, rgba(16,185,129,0.22) 49%, transparent 50%),
+   653→    radial-gradient(ellipse 30% 45% at 50% 37%, transparent 45%, rgba(16,185,129,0.16) 46%, rgba(16,185,129,0.16) 48%, transparent 49%),
+   654→    radial-gradient(circle 4px at 50% 14%, rgba(212,175,55,0.45) 0%, transparent 100%),
+   655→    linear-gradient(180deg, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0.05) 40%, transparent 70%),
+   656→    linear-gradient(90deg, transparent 30%, rgba(16,185,129,0.08) 30.5%, rgba(16,185,129,0.08) 31%, transparent 31.5%),
+   657→    linear-gradient(90deg, transparent 69%, rgba(16,185,129,0.08) 69.5%, rgba(16,185,129,0.08) 70%, transparent 70.5%);
+   658→}
+   659→
+   660→/* Stars Night — bright gold & white stars */
+   661→.bg-app-stars {
+   662→  background-image:
+   663→    radial-gradient(1.5px 1.5px at 10% 15%, rgba(212,175,55,0.80) 0%, transparent 100%),
+   664→    radial-gradient(1.2px 1.2px at 25% 8%, rgba(255,255,255,0.70) 0%, transparent 100%),
+   665→    radial-gradient(2px 2px at 40% 22%, rgba(212,175,55,0.50) 0%, transparent 100%),
+   666→    radial-gradient(1px 1px at 55% 5%, rgba(255,255,255,0.80) 0%, transparent 100%),
+   667→    radial-gradient(1.5px 1.5px at 70% 18%, rgba(212,175,55,0.65) 0%, transparent 100%),
+   668→    radial-gradient(2px 2px at 85% 10%, rgba(255,255,255,0.50) 0%, transparent 100%),
+   669→    radial-gradient(1.2px 1.2px at 15% 45%, rgba(255,255,255,0.55) 0%, transparent 100%),
+   670→    radial-gradient(1.5px 1.5px at 35% 55%, rgba(212,175,55,0.65) 0%, transparent 100%),
+   671→    radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,0.75) 0%, transparent 100%),
+   672→    radial-gradient(1.5px 1.5px at 80% 50%, rgba(212,175,55,0.50) 0%, transparent 100%),
+   673→    radial-gradient(1.2px 1.2px at 5% 70%, rgba(255,255,255,0.60) 0%, transparent 100%),
+   674→    radial-gradient(2px 2px at 50% 75%, rgba(212,175,55,0.80) 0%, transparent 100%),
+   675→    radial-gradient(1px 1px at 90% 65%, rgba(255,255,255,0.55) 0%, transparent 100%),
+   676→    radial-gradient(1.5px 1.5px at 20% 90%, rgba(212,175,55,0.65) 0%, transparent 100%),
+   677→    radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.75) 0%, transparent 100%),
+   678→    radial-gradient(1.2px 1.2px at 45% 32%, rgba(212,175,55,0.45) 0%, transparent 100%),
+   679→    radial-gradient(1px 1px at 65% 80%, rgba(255,255,255,0.50) 0%, transparent 100%),
+   680→    radial-gradient(1.5px 1.5px at 30% 68%, rgba(212,175,55,0.55) 0%, transparent 100%),
+   681→    /* Moon glow */
+   682→    radial-gradient(circle at 80% 15%, rgba(255,220,120,0.15) 0%, transparent 25%),
+   683→    radial-gradient(circle at 80% 15%, rgba(212,175,55,0.08) 0%, transparent 40%);
+   684→}
+   685→.dark .bg-app-stars {
+   686→  background-image:
+   687→    radial-gradient(1.5px 1.5px at 10% 15%, rgba(212,175,55,1.0) 0%, transparent 100%),
+   688→    radial-gradient(1.2px 1.2px at 25% 8%, rgba(255,255,255,0.85) 0%, transparent 100%),
+   689→    radial-gradient(2px 2px at 40% 22%, rgba(212,175,55,0.65) 0%, transparent 100%),
+   690→    radial-gradient(1px 1px at 55% 5%, rgba(255,255,255,1.0) 0%, transparent 100%),
+   691→    radial-gradient(1.5px 1.5px at 70% 18%, rgba(212,175,55,0.80) 0%, transparent 100%),
+   692→    radial-gradient(2px 2px at 85% 10%, rgba(255,255,255,0.65) 0%, transparent 100%),
+   693→    radial-gradient(1.2px 1.2px at 15% 45%, rgba(255,255,255,0.70) 0%, transparent 100%),
+   694→    radial-gradient(1.5px 1.5px at 35% 55%, rgba(212,175,55,0.80) 0%, transparent 100%),
+   695→    radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,0.90) 0%, transparent 100%),
+   696→    radial-gradient(1.5px 1.5px at 80% 50%, rgba(212,175,55,0.65) 0%, transparent 100%),
+   697→    radial-gradient(1.2px 1.2px at 5% 70%, rgba(255,255,255,0.75) 0%, transparent 100%),
+   698→    radial-gradient(2px 2px at 50% 75%, rgba(212,175,55,1.0) 0%, transparent 100%),
+   699→    radial-gradient(1px 1px at 90% 65%, rgba(255,255,255,0.70) 0%, transparent 100%),
+   700→    radial-gradient(1.5px 1.5px at 20% 90%, rgba(212,175,55,0.80) 0%, transparent 100%),
+   701→    radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.90) 0%, transparent 100%),
+   702→    radial-gradient(1.2px 1.2px at 45% 32%, rgba(212,175,55,0.60) 0%, transparent 100%),
+   703→    radial-gradient(1px 1px at 65% 80%, rgba(255,255,255,0.65) 0%, transparent 100%),
+   704→    radial-gradient(1.5px 1.5px at 30% 68%, rgba(212,175,55,0.70) 0%, transparent 100%),
+   705→    radial-gradient(circle at 80% 15%, rgba(255,220,120,0.20) 0%, transparent 25%),
+   706→    radial-gradient(circle at 80% 15%, rgba(212,175,55,0.10) 0%, transparent 40%);
+   707→}
+   708→
+   709→/* Dawn — warm sunrise gradient */
+   710→.bg-app-dawn {
+   711→  background-image:
+   712→    linear-gradient(180deg, rgba(99,102,241,0.08) 0%, rgba(251,191,36,0.12) 45%, rgba(249,115,22,0.18) 75%, rgba(239,68,68,0.10) 100%),
+   713→    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(249,115,22,0.20) 0%, transparent 100%),
+   714→    radial-gradient(ellipse 30% 25% at 50% 85%, rgba(251,191,36,0.15) 0%, transparent 100%),
+   715→    /* Sun glow */
+   716→    radial-gradient(circle at 50% 78%, rgba(255,200,50,0.12) 0%, transparent 30%);
+   717→}
+   718→.dark .bg-app-dawn {
+   719→  background-image:
+   720→    linear-gradient(180deg, rgba(99,102,241,0.12) 0%, rgba(251,191,36,0.10) 45%, rgba(249,115,22,0.15) 75%, rgba(239,68,68,0.08) 100%),
+   721→    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(249,115,22,0.18) 0%, transparent 100%),
+   722→    radial-gradient(ellipse 30% 25% at 50% 85%, rgba(251,191,36,0.12) 0%, transparent 100%),
+   723→    radial-gradient(circle at 50% 78%, rgba(255,200,50,0.10) 0%, transparent 30%);
+   724→}
+   725→
+   726→/* Garden — green nature feel */
+   727→.bg-app-garden {
+   728→  background-image:
+   729→    radial-gradient(circle at 20% 80%, rgba(16,185,129,0.18) 0%, transparent 40%),
+   730→    radial-gradient(circle at 80% 70%, rgba(52,211,153,0.14) 0%, transparent 35%),
+   731→    radial-gradient(circle at 50% 90%, rgba(16,185,129,0.20) 0%, transparent 45%),
+   732→    radial-gradient(circle at 10% 30%, rgba(197,160,89,0.08) 0%, transparent 30%),
+   733→    radial-gradient(circle at 65% 25%, rgba(16,185,129,0.08) 0%, transparent 25%);
+   734→}
+   735→.dark .bg-app-garden {
+   736→  background-image:
+   737→    radial-gradient(circle at 20% 80%, rgba(16,185,129,0.20) 0%, transparent 40%),
+   738→    radial-gradient(circle at 80% 70%, rgba(52,211,153,0.16) 0%, transparent 35%),
+   739→    radial-gradient(circle at 50% 90%, rgba(16,185,129,0.22) 0%, transparent 45%),
+   740→    radial-gradient(circle at 10% 30%, rgba(197,160,89,0.10) 0%, transparent 30%),
+   741→    radial-gradient(circle at 65% 25%, rgba(16,185,129,0.10) 0%, transparent 25%);
+   742→}
+   743→
