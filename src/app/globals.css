@@ -740,3 +740,138 @@
     radial-gradient(circle at 10% 30%, rgba(197,160,89,0.10) 0%, transparent 30%),
     radial-gradient(circle at 65% 25%, rgba(16,185,129,0.10) 0%, transparent 25%);
 }
+
+/* ===== REAL ISLAMIC IMAGE BACKGROUNDS ===== */
+
+.bg-app-mosque-andalusia-img {
+  background-image: url('/backgrounds/mosque-andalusian.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.bg-app-mosque-andalusia-img::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  pointer-events: none;
+  z-index: 0;
+}
+.dark .bg-app-mosque-andalusia-img::after {
+  background: rgba(0,0,0,0.7);
+}
+
+.bg-app-geometric-pattern-img {
+  background-image: url('/backgrounds/geometric-pattern.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.bg-app-geometric-pattern-img::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  pointer-events: none;
+  z-index: 0;
+}
+.dark .bg-app-geometric-pattern-img::after {
+  background: rgba(0,0,0,0.65);
+}
+
+.bg-app-mosque-night-img {
+  background-image: url('/backgrounds/mosque-night.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.bg-app-mosque-night-img::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  pointer-events: none;
+  z-index: 0;
+}
+.dark .bg-app-mosque-night-img::after {
+  background: rgba(0,0,0,0.6);
+}
+
+.bg-app-calligraphy-img {
+  background-image: url('/backgrounds/calligraphy-bismillah.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.bg-app-calligraphy-img::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  pointer-events: none;
+  z-index: 0;
+}
+.dark .bg-app-calligraphy-img::after {
+  background: rgba(0,0,0,0.65);
+}
+
+.bg-app-islamic-arch-img {
+  background-image: url('/backgrounds/islamic-arch.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.bg-app-islamic-arch-img::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  pointer-events: none;
+  z-index: 0;
+}
+.dark .bg-app-islamic-arch-img::after {
+  background: rgba(0,0,0,0.65);
+}
+
+.bg-app-mosque-interior-img {
+  background-image: url('/backgrounds/mosque-interior.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.bg-app-mosque-interior-img::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  pointer-events: none;
+  z-index: 0;
+}
+.dark .bg-app-mosque-interior-img::after {
+  background: rgba(0,0,0,0.65);
+}
+
+.bg-app-arabesque-img {
+  background-image: url('/backgrounds/arabesque-pattern.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.bg-app-arabesque-img::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  pointer-events: none;
+  z-index: 0;
+}
+.dark .bg-app-arabesque-img::after {
+  background: rgba(0,0,0,0.65);
+}
