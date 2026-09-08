@@ -176,6 +176,14 @@ interface DhikrState {
   setEveningDone: () => void;
   lastNotifTime: Record<string, number>;
   markNotifSent: (key: string) => void;
+
+  // User Profile
+  userName: string;
+  setUserName: (name: string) => void;
+  userAvatar: string;
+  setUserAvatar: (id: string) => void;
+  joinedAt: string;
+  setJoinedAt: (iso: string) => void;
 }
 
 function load<T>(key: string, def: T): T {
@@ -501,4 +509,12 @@ export const useDhikrStore = create<DhikrState>((set, get) => ({
     save('dz_lastNotif', times);
     set({ lastNotifTime: times });
   },
+
+  // User Profile
+  userName: load<string>('dz_userName', ''),
+  setUserName: (name) => { save('dz_userName', name); set({ userName: name }); },
+  userAvatar: load<string>('dz_userAvatar', 'crescent'),
+  setUserAvatar: (id) => { save('dz_userAvatar', id); set({ userAvatar: id }); },
+  joinedAt: load<string>('dz_joinedAt', ''),
+  setJoinedAt: (iso) => { save('dz_joinedAt', iso); set({ joinedAt: iso }); },
 }));

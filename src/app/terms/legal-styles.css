@@ -1,1 +1,73 @@
-../privacy/legal-styles.css
+.prose-legal {
+  --legal-color: var(--app-text);
+  --legal-color-muted: var(--app-text-2);
+  --legal-heading: var(--app-text);
+  --legal-border: var(--gold-border);
+  --legal-bg: var(--gold-glow);
+  color: var(--legal-color);
+  font-size: 0.9375rem;
+  line-height: 1.85;
+}
+
+.prose-legal h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--legal-heading);
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--legal-border);
+}
+
+.prose-legal h3 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--legal-heading);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-legal p {
+  margin-bottom: 1rem;
+  color: var(--legal-color-muted);
+}
+
+.prose-legal ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.prose-legal ul li {
+  position: relative;
+  padding-right: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--legal-color-muted);
+}
+
+.prose-legal ul li::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold-accent);
+}
+
+.prose-legal strong {
+  color: var(--legal-color);
+  font-weight: 600;
+}
+
+.legal-updated {
+  font-size: 0.8125rem;
+  color: var(--gold-accent);
+  background: var(--legal-bg);
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--legal-border);
+  margin-bottom: 2rem;
+}

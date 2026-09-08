@@ -7,7 +7,7 @@ import { IslamicIcon } from '@/components/dhikr/islamic-icons';
 import { Volume2, VolumeX, Type, RotateCcw, MapPin, ChevronDown, Search, Check, Sun, Moon, Download, Upload, Bell, Flame, Sparkles, Trophy, Zap } from '@/components/dhikr/islamic-icons';
 import { countries, CityData, fetchPrayerTimes } from '@/lib/dhikr-data';
 import { useState, useEffect, useMemo, useRef } from 'react';
-import GoogleLogin from '@/components/auth/google-login';
+import ProfileCard from '@/components/dhikr/profile-card';
 import TreeVisualization, { treeConfigs } from '@/components/dhikr/tree-visualization';
 
 const fontOptions: { id: ArabicFont; name: string; desc: string; fontVar: string }[] = [
@@ -311,9 +311,9 @@ export default function SettingsScreen() {
       </header>
 
       <main className='flex-1 px-4 pt-3 space-y-3'>
-        {/* Google Login */}
+        {/* User Profile */}
         <div style={{ animationDelay: '0.05s' }}>
-          <GoogleLogin fontVar={fontVar} />
+          <ProfileCard />
         </div>
 
         {/* Mode Toggle */}

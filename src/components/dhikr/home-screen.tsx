@@ -10,6 +10,7 @@ import BreathingCard from '@/components/dhikr/breathing-card';
 import { shareAsImage } from '@/lib/share-card';
 import { requestNotificationPermission } from '@/lib/smart-notifs';
 import TreeVisualization from '@/components/dhikr/tree-visualization';
+import { UserAvatar } from '@/components/dhikr/profile-card';
 
 export default function HomeScreen() {
   const {
@@ -17,6 +18,7 @@ export default function HomeScreen() {
     streak, treeLevel, completedPrayers, freeCounter,
     arabicFont, selectedCity, prayerTimes, setPrayerTimes,
     totalAllTime, challenges, streakFreezesLeft, selectedTree,
+    userAvatar, userName,
   } = useDhikrStore();
 
   const [hijriDate] = useState(() => getSimpleHijriDate());
@@ -84,14 +86,18 @@ export default function HomeScreen() {
       <header className='px-4 pt-4 pb-2'>
         <div className='flex items-center justify-between mb-1'>
           <div className='flex items-center gap-2.5'>
-            <div
-              className='w-10 h-10 rounded-xl flex items-center justify-center'
-              style={{ background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setCurrentScreen('settings')}
+              className='shrink-0'
+              aria-label='الملف الشخصي'
             >
-              <IslamicIcon name='mosque' className='w-5 h-5' color='var(--gold-accent)' />
-            </div>
+              <UserAvatar avatarId={userAvatar} size={42} />
+            </motion.button>
             <div>
-              <h1 className='text-2xl font-bold app-text' style={{ fontFamily: fontClass }}>أذكاري</h1>
+              <h1 className='text-2xl font-bold app-text' style={{ fontFamily: fontClass }}>
+                {userName ? `أهلًا، ${userName}` : 'أذكاري'}
+              </h1>
               {hijriDate && <p className='app-text-2 text-xs mt-0.5'>{hijriDate}</p>}
             </div>
           </div>

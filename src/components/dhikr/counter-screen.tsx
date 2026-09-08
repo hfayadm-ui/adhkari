@@ -81,7 +81,7 @@ export default function CounterScreen() {
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='flex flex-col min-h-screen pb-24'>
       <header className='px-4 pt-4 pb-2 flex items-center justify-between'>
         <div className='flex items-center gap-2.5'>
-          <IslamicIcon name='hand' className='w-6 h-6' color='var(--gold-accent)' />
+          <IslamicIcon name='misbaha' className='w-6 h-6' color='var(--gold-accent)' />
           <div>
             <h1 className='text-2xl font-bold app-text' style={{ fontFamily: fontVar }}>المسبحة</h1>
             <p className='app-text-2 text-xs' style={{ fontFamily: fontVar }}>العداد الحر / اضغط طويلاً للتصفير</p>
@@ -166,7 +166,7 @@ export default function CounterScreen() {
           className='w-32 h-32 rounded-full btn-gold shadow-2xl border-2 flex items-center justify-center active:shadow-inner transition-shadow mb-6 gold-glow'
         >
           <motion.span animate={{ scale: tapAnim ? 0.9 : 1 }}>
-            <IslamicIcon name='hand-tap' className='w-12 h-12 app-text' color='#ffffff' />
+            <IslamicIcon name='misbaha' className='w-14 h-14' color='#ffffff' />
           </motion.span>
         </motion.button>
 

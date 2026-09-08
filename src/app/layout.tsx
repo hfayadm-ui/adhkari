@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cairo, Amiri, Noto_Naskh_Arabic, Tajawal, IBM_Plex_Sans_Arabic, Scheherazade_New } from "next/font/google";
 import ThemeSync from "@/components/theme-sync";
-import SessionProvider from "@/components/auth/session-provider";
 import ErrorBoundary from "@/components/error-boundary";
 import "./globals.css";
 
@@ -124,10 +123,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             opacity: 0.4,
           }}
         />
-        <SessionProvider>
         <ThemeSync />
         <div className='relative z-10'><ErrorBoundary>{children}</ErrorBoundary></div>
-        </SessionProvider>
       </body>
     </html>
   );

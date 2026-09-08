@@ -94,6 +94,28 @@ function HandTapIcon({ className = 'w-6 h-6', color = 'currentColor' }: { classN
   );
 }
 
+/* Misbaha (prayer beads): bead loop with leader bead + tassel */
+function MisbahaIcon({ className = 'w-6 h-6', color = 'currentColor' }: { className?: string; color?: string }) {
+  // 9 beads on an ellipse (cx 12, cy 9.8, rx 6.6, ry 4.6), wide gap at the bottom
+  const beads: [number, number][] = [
+    [7.33, 13.05], [5.53, 10.70], [5.90, 8.04], [8.33, 5.98],
+    [12.0, 5.2], [15.67, 5.98], [18.10, 8.04], [18.47, 10.70], [16.67, 13.05],
+  ];
+  return (
+    <svg className={className} viewBox='0 0 24 24' fill='none'>
+      {beads.map(([bx, by], i) => (
+        <circle key={i} cx={bx} cy={by} r={1.5} fill={color} />
+      ))}
+      {/* leader bead (imam) */}
+      <ellipse cx='12' cy='16.3' rx='1.5' ry='2.0' fill={color} />
+      {/* tassel */}
+      <path d='M12 18.4V21.4' stroke={color} strokeWidth='1.4' strokeLinecap='round' />
+      <path d='M12 19.4L10.5 21.2' stroke={color} strokeWidth='1.2' strokeLinecap='round' />
+      <path d='M12 19.4L13.5 21.2' stroke={color} strokeWidth='1.2' strokeLinecap='round' />
+    </svg>
+  );
+}
+
 // Icon name to component mapping
 const iconMap: Record<string, React.FC<{className?: string; color?: string}>> = {
   'mosque': MosqueIcon,
@@ -111,6 +133,7 @@ const iconMap: Record<string, React.FC<{className?: string; color?: string}>> = 
   'book': BookOpen,
   'hand': Hand,
   'hand-tap': HandTapIcon,
+  'misbaha': MisbahaIcon,
   'bar-chart': BarChart3,
   'settings': Settings,
   'home': Home,
@@ -186,6 +209,9 @@ export function IslamicIcon({ name, className = 'w-5 h-5', color, style }: IconP
 }
 
 export default IslamicIcon;
+
+// Custom icon named exports
+export { MisbahaIcon };
 
 // Re-export all lucide icons used elsewhere
 export {

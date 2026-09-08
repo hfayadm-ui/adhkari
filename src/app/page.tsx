@@ -63,6 +63,10 @@ export default function Home() {
     // Ensure today's daily record exists for stats tracking
     const store = useDhikrStore.getState();
     store.ensureTodayRecord();
+    // Initialize profile join date on first launch
+    if (!store.joinedAt) {
+      store.setJoinedAt(new Date().toISOString());
+    }
     // Reset daily free clicks counter if new day
     const lastFreeDate = localStorage.getItem('dz_freeClicksDate');
     if (lastFreeDate !== today) {
