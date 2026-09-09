@@ -1,7 +1,14 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, MotionGlobalConfig } from 'framer-motion';
 import { useDhikrStore, Screen } from '@/lib/store';
+import { isLowEndDevice } from '@/lib/perf';
+
+// On weak devices complete every framer-motion animation instantly:
+// screens appear immediately with zero animation cost (same final UI).
+if (typeof window !== 'undefined' && isLowEndDevice) {
+  MotionGlobalConfig.skipAnimations = true;
+}
 import HomeScreen from '@/components/dhikr/home-screen';
 import LibraryScreen from '@/components/dhikr/library-screen';
 import CounterScreen from '@/components/dhikr/counter-screen';
@@ -87,10 +94,12 @@ export default function Home() {
         <AnimatePresence mode='wait'>
           <motion.div
             key={currentScreen}
-            initial={{ opacity: 0, x: 20 }}
+            initial={isLowEndDevice ? false : { opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            exit={isLowEndDevice
+              ? { opacity: 0, transition: { duration: 0 } }
+              : { opacity: 0, x: -12 }}
+            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
             className='min-h-screen'
           >
             {currentScreen === 'home' && <HomeScreen />}
