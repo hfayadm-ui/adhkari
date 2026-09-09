@@ -321,6 +321,24 @@
   animation: islamic-shimmer 4s ease-in-out infinite;
 }
 
+/* ================================================
+   Low-end device performance mode
+   Same visual design, cheaper rendering: smaller
+   glass blur radius, static shimmer, no heavy
+   GPU filters on ambient orbs. Enabled via a
+   `.low-perf` class set before first paint.
+   ================================================ */
+.low-perf {
+  --glass-blur: 10px;
+  --glass-blur-elevated: 12px;
+}
+.low-perf .islamic-shimmer {
+  animation: none;
+}
+.low-perf .perf-orb {
+  filter: none !important;
+}
+
 .islamic-border {
   border-image: linear-gradient(135deg, var(--gold-border), rgba(197,160,89,0.03), var(--gold-border)) 1;
 }

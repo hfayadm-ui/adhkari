@@ -70,6 +70,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
         <script
           dangerouslySetInnerHTML={{
+            __html: `(function(){try{var c=navigator.hardwareConcurrency||8;var m=navigator.deviceMemory||8;var r=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(c<=4||m<=3||r)document.documentElement.classList.add('low-perf')}catch(e){}})()`,
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
             __html: `if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})})}`,
           }}
         />
@@ -98,7 +103,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
         {/* Decorative gold accent orbs — ambient light effect */}
         <div
-          className='fixed pointer-events-none z-0'
+          className='fixed pointer-events-none z-0 perf-orb'
           style={{
             top: '-15%',
             right: '-10%',
@@ -111,7 +116,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           }}
         />
         <div
-          className='fixed pointer-events-none z-0'
+          className='fixed pointer-events-none z-0 perf-orb'
           style={{
             bottom: '-20%',
             left: '-15%',

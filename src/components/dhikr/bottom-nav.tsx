@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useDhikrStore, Screen } from '@/lib/store';
+import { isLowEndDevice } from '@/lib/perf';
 import { Home, BookOpen, BarChart3, Settings } from '@/components/dhikr/islamic-icons';
 import { MisbahaIcon } from '@/components/dhikr/islamic-icons';
 
@@ -74,8 +75,8 @@ export default function BottomNav() {
           className='relative rounded-[1.6rem] pb-safe'
           style={{
             background: 'var(--app-nav-bg)',
-            backdropFilter: 'blur(40px) saturate(1.6)',
-            WebkitBackdropFilter: 'blur(40px) saturate(1.6)',
+            backdropFilter: 'blur(var(--glass-blur-elevated)) saturate(1.6)',
+            WebkitBackdropFilter: 'blur(var(--glass-blur-elevated)) saturate(1.6)',
             border: '1px solid var(--gold-border)',
             boxShadow: '0 12px 40px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.28)',
           }}
@@ -115,7 +116,7 @@ export default function BottomNav() {
                   background: 'radial-gradient(circle, var(--gold-glow-strong), transparent 70%)',
                 }}
                 animate={{ opacity: counterActive ? [0.85, 1, 0.85] : 0.5 }}
-                transition={{ duration: 2.6, repeat: counterActive ? Infinity : 0, ease: 'easeInOut' }}
+                transition={isLowEndDevice ? { duration: 0 } : { duration: 2.6, repeat: counterActive ? Infinity : 0, ease: 'easeInOut' }}
               />
               {/* Gold disc */}
               <motion.div

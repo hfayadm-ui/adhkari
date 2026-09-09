@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useId, useMemo } from 'react';
+import { isLowEndDevice } from '@/lib/perf';
 
 interface TreeVizProps {
   treeType: string;
@@ -89,7 +90,7 @@ function Ground({ cx, baseY, s, g, uid, flowerColor }: {
   const rnd = seededRand(7);
   const grassColor = '#4c9a63';
   const grassCount = g > 0.3 ? 3 + Math.floor(g * 3) : 0;
-  const blades = [];
+  const blades: { key: number; bx: number; by: number; h: number; lean: number }[] = [];
   for (let i = 0; i < grassCount; i++) {
     const side = i % 2 === 0 ? -1 : 1;
     blades.push({
@@ -461,7 +462,7 @@ function PalmTreeSVG({ s, cfg, growth, uid }: { s: number; cfg: TreeStage; growt
   const midY = baseY - trunkH * 0.55;
 
   const frondCount = Math.max(5, Math.round(4 + g * 5));
-  const fronds = [];
+  const fronds: { angle: number; len: number; sag: number; flat: number }[] = [];
   for (let k = 0; k < frondCount; k++) {
     const t = frondCount === 1 ? 0.5 : k / (frondCount - 1);
     const angle = (-168 + t * 156) * (Math.PI / 180);
@@ -473,7 +474,7 @@ function PalmTreeSVG({ s, cfg, growth, uid }: { s: number; cfg: TreeStage; growt
   fronds.sort((a, b) => b.flat - a.flat);
 
   const ringCount = 5;
-  const rings = [];
+  const rings: { px: number; py: number; hw: number; key: number }[] = [];
   for (let i = 1; i <= ringCount; i++) {
     const t = i / (ringCount + 1);
     const u = 1 - t;
@@ -587,7 +588,7 @@ function CedarTree({ s, cfg, growth, uid }: { s: number; cfg: TreeStage; growth:
   const halfW0 = s * 0.26 * g;
   const trunkTopY = baseY - trunkH;
 
-  const tiers = [];
+  const tiers: { d: string; bd: string; wobble: number; key: number }[] = [];
   for (let i = 0; i < tierCount; i++) {
     const w = halfW0 * (1 - i * 0.20);
     const y = trunkTopY - i * tierH * 0.66;
@@ -683,7 +684,7 @@ function WillowTreeSVG({ s, cfg, growth, uid }: { s: number; cfg: TreeStage; gro
   const canopyCY = trunkTopY - canopyR * 0.30;
 
   const strandCount = 9;
-  const strands = [];
+  const strands: { startX: number; startY: number; endX: number; endY: number; cpX: number; cpY: number; key: number }[] = [];
   for (let k = 0; k < strandCount; k++) {
     const xo = (-0.8 + (1.6 * k) / (strandCount - 1)) * canopyR;
     const startX = cx + xo * 0.9;
@@ -738,7 +739,7 @@ function WillowTreeSVG({ s, cfg, growth, uid }: { s: number; cfg: TreeStage; gro
 
       {/* Drooping strands + leaf dots, swaying gently */}
       <motion.g
-        animate={{ x: [0, s * 0.006, -s * 0.006, 0] }}
+        animate={isLowEndDevice ? undefined : { x: [0, s * 0.006, -s * 0.006, 0] }}
         transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         {strands.map(st => (
@@ -750,7 +751,7 @@ function WillowTreeSVG({ s, cfg, growth, uid }: { s: number; cfg: TreeStage; gro
             fill="none"
             opacity={0.55}
             strokeLinecap="round"
-            animate={{ d: [strandD(st, 0), strandD(st, s * 0.012), strandD(st, -s * 0.012), strandD(st, 0)] }}
+            animate={isLowEndDevice ? undefined : { d: [strandD(st, 0), strandD(st, s * 0.012), strandD(st, -s * 0.012), strandD(st, 0)] }}
             transition={{ duration: 4.5 + (st.key % 3), repeat: Infinity, ease: 'easeInOut', delay: st.key * 0.25 }}
           />
         ))}
@@ -791,7 +792,7 @@ export default function TreeVisualization({ treeType, level, size = 200 }: TreeV
   const rawId = useId();
   const uid = useMemo(() => `tr${rawId.replace(/[^a-zA-Z0-9]/g, '')}`, [rawId]);
 
-  const swayAmount = growth > 0.2 ? 0.8 + growth * 0.5 : 0;
+  const swayAmount = !isLowEndDevice && growth > 0.2 ? 0.8 + growth * 0.5 : 0;
   const swayDuration = treeType === 'palm' ? 5 : treeType === 'willow' ? 4.5 : 4;
 
   const treeSVG = useMemo(() => {
@@ -806,7 +807,7 @@ export default function TreeVisualization({ treeType, level, size = 200 }: TreeV
     }
   }, [treeType, s, cfg, growth, uid]);
 
-  const fireflies = size >= 100 && growth >= 0.55
+  const fireflies = !isLowEndDevice && size >= 100 && growth >= 0.55
     ? [
       { left: 0.28, top: 0.30, d: 4.2, del: 0, r: 2.2 },
       { left: 0.66, top: 0.22, d: 5.1, del: 0.8, r: 1.7 },
@@ -834,8 +835,8 @@ export default function TreeVisualization({ treeType, level, size = 200 }: TreeV
             left: size * 0.17,
             background: `radial-gradient(circle, ${cfg.color}16, transparent 70%)`,
           }}
-          animate={{ opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+          animate={{ opacity: isLowEndDevice ? 0.45 : [0.3, 0.6, 0.3] }}
+          transition={isLowEndDevice ? { duration: 0 } : { duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
         />
       )}
 
